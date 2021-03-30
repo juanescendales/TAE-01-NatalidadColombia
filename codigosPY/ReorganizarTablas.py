@@ -35,10 +35,12 @@ for cols in datacsv:
         datosFila[2] = cols[3]
         datosFila[3] = cols[6]
         datosFila[6] = cols[10]
+        datosFila[7] = cols[8]
         #datosFila[7] = cols[26]
     elif(cols[9] == '2'):
         datosFila[4] = cols[3]
         datosFila[5] = cols[6]
+        datosFila[8] = cols[8]
         #datosFila[8] = cols[29]
     if(cols[9] == '3'):
         hijos += 1
@@ -83,7 +85,7 @@ csvwriter = csv.writer(archivoNuevo, delimiter=';')
 
 # Creo una nueva cabecera para la información procesada
 cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe',
-                 'Sexo Jefe', 'Secuencia Conyuge', 'Sexo Conyuge', 'Tipo Union', 'Educacion padre', 'Educacion madre']
+                 'Sexo Jefe', 'Secuencia Conyuge', 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge']
 
 # writing the fields
 csvwriter.writerow(cabeceraNueva)
