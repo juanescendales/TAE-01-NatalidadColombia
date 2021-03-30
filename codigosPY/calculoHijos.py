@@ -49,6 +49,7 @@ datosNuevos.append([identificador, hijos])
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalCaracCompHogar.close()
 
+
 # Leemos el csv Salud para ser usado posteriormente
 archivoOriginalSalud = open(
     '../DatosCSV/Salud.csv', 'r')
