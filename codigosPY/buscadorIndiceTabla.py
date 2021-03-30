@@ -2,7 +2,7 @@ import csv
 
 pathArchivo = '../DatosCSV/Caracteristicas y composicion del hogar.csv'
 
-nombreCabecera = "P6088"
+nombreCabecera = "P6040"
 
 # Leemos el csv para ser usado posteriormente
 archivoOriginalCaracCompHogar = open(
