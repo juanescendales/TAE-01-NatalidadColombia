@@ -1,8 +1,8 @@
 import csv
 
-pathArchivo = '../DatosCSV/Fuerza de trabajo.csv'
+pathArchivo = '../DatosCSV/Educacion.csv'
 
-nombreCabecera = "P6435"
+nombreCabecera = "P8587"
 
 # Leemos el csv para ser usado posteriormente
 archivoOriginalCaracCompHogar = open(

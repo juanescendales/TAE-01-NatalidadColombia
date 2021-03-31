@@ -15,7 +15,8 @@ cabecera = next(datacsv)
 identificador = ''
 hijos = 0
 datosNuevos = []
-datosFila = ['', '', '', '', '', '', '', '', '', '', '', '', '', '']
+datosFila = ['', '', '', '', '', '', '',
+             '', '', '', '', '', '', '', '', '', '', '', '']
 
 # Itero las filas, obteniendo sus columnas
 for cols in datacsv:
@@ -28,7 +29,7 @@ for cols in datacsv:
             datosFila[1] = hijos
             datosNuevos.append(datosFila)
             datosFila = ['', '', '', '', '', '',
-                         '', '', '', '', '', '', '', '']
+                         '', '', '', '', '', '', '', '', '', '', '', '', '']
 
         hijos = 0
         identificador = identificadorRow
@@ -128,30 +129,93 @@ datacsvTrabajo = csv.reader(archivoOriginalTrabajo, delimiter=';')
 # Cabecera del archivo
 cabecera = next(datacsvTrabajo)
 
-
 index = 0
 identificador = datosNuevos[0][0]
-# Quito el -# para ser usado en otras tablas
-pattern = '[^-]*'
-identificador = re.match(pattern, identificador).group()
+ingresos = 0
+
 # Itero las filas, obteniendo sus columnas
 for cols in datacsvTrabajo:
     identificadorRow = cols[0] + "-" + cols[2]
-    cols[3]
-    datosNuevos[index][2]
-    datosNuevos[index][4]
-    while(identificadorRow == identificador and index < len(datosNuevos)):
-        if (index < len(datosNuevos)):
-            datosNuevos[index][12] = cols[17]
-            datosNuevos[index][13] = cols[17]
 
+    if(identificador != identificadorRow):
+        datosNuevos[index][14] = ingresos
+        identificador = identificadorRow
         index += 1
-        if (index < len(datosNuevos)):
-            identificador = re.match(pattern, datosNuevos[index][0]).group()
+        ingresos = 0
+
+    if(datosNuevos[index][2] == cols[3]):
+        datosNuevos[index][12] = cols[17]
+        if (cols[25] != ' '):
+            ingresos += int(cols[25])
+    elif(datosNuevos[index][4] == cols[3]):
+        datosNuevos[index][13] = cols[17]
+        if (cols[25] != ' '):
+            ingresos += int(cols[25])
 
 
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalTrabajo.close()
+
+# Leemos el csv Vivienda para ser usado posteriormente
+archivoOriginalTecnologia = open(
+    '../DatosCSV/Tecnologias de informacion y comunicacion.csv', 'r')
+
+# Leo los datos del archivo csv de Vivienda
+datacsvTecnologia = csv.reader(archivoOriginalTecnologia, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvTecnologia)
+
+index = 0
+identificador = datosNuevos[0][0]
+
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvTecnologia:
+    identificadorRow = cols[0] + "-" + cols[2]
+
+    if(identificador != identificadorRow):
+        identificador = identificadorRow
+        index += 1
+
+    if(datosNuevos[index][2] == cols[3]):
+        datosNuevos[index][15] = cols[45]
+    elif(datosNuevos[index][4] == cols[3]):
+        datosNuevos[index][16] = cols[45]
+
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalTecnologia.close()
+
+
+# Leemos el csv Vivienda para ser usado posteriormente
+archivoOriginalEducacion = open(
+    '../DatosCSV/Educacion.csv', 'r')
+
+# Leo los datos del archivo csv de Vivienda
+datacsvEducacion = csv.reader(archivoOriginalEducacion, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvEducacion)
+
+index = 0
+identificador = datosNuevos[0][0]
+
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvEducacion:
+    identificadorRow = cols[0] + "-" + cols[2]
+
+    if(identificador != identificadorRow):
+        identificador = identificadorRow
+        index += 1
+
+    if(datosNuevos[index][2] == cols[3]):
+        datosNuevos[index][17] = cols[7]
+    elif(datosNuevos[index][4] == cols[3]):
+        datosNuevos[index][18] = cols[7]
+
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalEducacion.close()
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open('../DatosCSVProcesados/Datos.csv', 'w', newline='')
@@ -160,8 +224,11 @@ archivoNuevo = open('../DatosCSVProcesados/Datos.csv', 'w', newline='')
 csvwriter = csv.writer(archivoNuevo, delimiter=';')
 
 # Creo una nueva cabecera para la información procesada
-cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe',
-                 'Sexo Jefe', 'Secuencia Conyuge', 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge', 'Region', 'Energia', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge']
+cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Conyuge',
+                 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge', 'Region',
+                 'Energia', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge',
+                 'Ingresos totales', 'Uso tecnologia Jefe', 'Uso tecnologia conyuge',
+                 'Edu Jefe', 'Edu Conyuge']
 
 # writing the fields
 csvwriter.writerow(cabeceraNueva)
