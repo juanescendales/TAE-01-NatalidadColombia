@@ -1,0 +1,33 @@
+---
+title: "Analisis Descriptivo"
+author: "Daniel Escobar David"
+date: "30/3/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+datos <- read.csv2("./DatosCSVProcesados/Datos.csv")
+```
+
+# Pre-Procesamiento De Los Datos
+
+```{r}
+datos$Sexo.Jefe <- factor(datos$Sexo.Jefe)
+datos$Tipo.Union <- factor(datos$Tipo.Union)
+```
+
+```{r}
+library(ggplot2)
+
+ggplot(datos,aes(x=Tipo.Union,y=Hijos))+geom_boxplot()
+ggplot(datos,aes(y=Edad.Jefe,x=factor(Hijos)))+geom_boxplot()
+```
+
+```{r}
+test <- glm(factor(Hijos)~Tipo.Union, family="poisson", data=datos)
+```
+
