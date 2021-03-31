@@ -1,6 +1,6 @@
 # Libreria csv para trabajar con archivos csv
 import csv
-
+import re
 
 # Leemos el csv para ser usado posteriormente
 archivoOriginalCaracCompHogar = open(
@@ -15,18 +15,20 @@ cabecera = next(datacsv)
 identificador = ''
 hijos = 0
 datosNuevos = []
-datosFila = ['', '', '', '', '', '', '', '', '']
+datosFila = ['', '', '', '', '', '', '', '', '', '', '', '', '', '']
 
 # Itero las filas, obteniendo sus columnas
 for cols in datacsv:
     identificadorRow = cols[0] + "-" + cols[2]
+
     if(identificador != identificadorRow):
         # Condicional por primera iteracion para no contar el espacio blanco
         if(identificador != ''):
             datosFila[0] = identificador
             datosFila[1] = hijos
             datosNuevos.append(datosFila)
-            datosFila = ['', '', '', '', '', '', '', '', '']
+            datosFila = ['', '', '', '', '', '',
+                         '', '', '', '', '', '', '', '']
 
         hijos = 0
         identificador = identificadorRow
@@ -36,18 +38,19 @@ for cols in datacsv:
         datosFila[3] = cols[6]
         datosFila[6] = cols[10]
         datosFila[7] = cols[8]
-        #datosFila[7] = cols[26]
     elif(cols[9] == '2'):
         datosFila[4] = cols[3]
         datosFila[5] = cols[6]
         datosFila[8] = cols[8]
-        #datosFila[8] = cols[29]
     if(cols[9] == '3'):
         hijos += 1
 
-# Para agregar la ultima fila, por como se codifica se pierde el ultimo dato
-datosNuevos.append([identificador, hijos])
 
+# Para agregar la ultima fila, por como se codifica se pierde el ultimo dato
+
+datosFila[0] = identificador
+datosFila[1] = hijos
+datosNuevos.append(datosFila)
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalCaracCompHogar.close()
 
@@ -77,6 +80,79 @@ for cols in datacsvSalud:
         identificador = identificadorRow
         index += 1
 
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalSalud.close()
+
+# Leemos el csv Vivienda para ser usado posteriormente
+archivoOriginalVivienda = open(
+    '../DatosCSV/Datos de la vivienda.csv', 'r')
+
+# Leo los datos del archivo csv de Vivienda
+datacsvVivienda = csv.reader(archivoOriginalVivienda, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvVivienda)
+
+
+index = 0
+identificador = datosNuevos[0][0]
+# Quito el -# para ser usado en otras tablas
+pattern = '[^-]*'
+identificador = re.match(pattern, identificador).group()
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvVivienda:
+    identificadorRow = cols[0]
+
+    while(identificadorRow == identificador and index < len(datosNuevos)):
+        if (index < len(datosNuevos)):
+            datosNuevos[index][9] = cols[4]
+            datosNuevos[index][10] = cols[14]
+            datosNuevos[index][11] = cols[15]
+
+        index += 1
+        if (index < len(datosNuevos)):
+            identificador = re.match(pattern, datosNuevos[index][0]).group()
+
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalVivienda.close()
+
+# Leemos el csv Vivienda para ser usado posteriormente
+archivoOriginalTrabajo = open(
+    '../DatosCSV/Fuerza de trabajo.csv', 'r')
+
+# Leo los datos del archivo csv de Vivienda
+datacsvTrabajo = csv.reader(archivoOriginalTrabajo, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvTrabajo)
+
+
+index = 0
+identificador = datosNuevos[0][0]
+# Quito el -# para ser usado en otras tablas
+pattern = '[^-]*'
+identificador = re.match(pattern, identificador).group()
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvTrabajo:
+    identificadorRow = cols[0] + "-" + cols[2]
+    cols[3]
+    datosNuevos[index][2]
+    datosNuevos[index][4]
+    while(identificadorRow == identificador and index < len(datosNuevos)):
+        if (index < len(datosNuevos)):
+            datosNuevos[index][12] = cols[17]
+            datosNuevos[index][13] = cols[17]
+
+        index += 1
+        if (index < len(datosNuevos)):
+            identificador = re.match(pattern, datosNuevos[index][0]).group()
+
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalTrabajo.close()
+
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open('../DatosCSVProcesados/Datos.csv', 'w', newline='')
 
@@ -85,7 +161,7 @@ csvwriter = csv.writer(archivoNuevo, delimiter=';')
 
 # Creo una nueva cabecera para la información procesada
 cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe',
-                 'Sexo Jefe', 'Secuencia Conyuge', 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge']
+                 'Sexo Jefe', 'Secuencia Conyuge', 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge', 'Region', 'Energia', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge']
 
 # writing the fields
 csvwriter.writerow(cabeceraNueva)
