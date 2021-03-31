@@ -9,15 +9,33 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r, message=F}
+rm(list=ls())
+library(dplyr)
+library(ggplot2)
+
 datos <- read.csv2("./DatosCSVProcesados/Datos.csv")
 ```
 
 # Pre-Procesamiento De Los Datos
 
+## NAs por fila
+
 ```{r}
-datos$Sexo.Jefe <- factor(datos$Sexo.Jefe)
-datos$Tipo.Union <- factor(datos$Tipo.Union)
+NAs <- apply(datos, 2, is.na)
+apply(NAs, 2, sum)
+```
+
+
+```{r}
+variables_categoricas <- datos %>% 
+  select(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Energia,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Edad.Conyuge,Estrato.vivienda) %>% 
+  mutate_if(is.numeric,as.factor)
+
+variables_numericas <- datos %>% 
+  select(-c(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Energia,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Edad.Conyuge,Estrato.vivienda))
+
+datos <- cbind(variables_numericas,variables_categoricas)
 ```
 
 ```{r}
