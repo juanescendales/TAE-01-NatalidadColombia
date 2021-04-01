@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 library(dplyr)
 library(ggplot2)
-library(MASS)
+#library(MASS)
 library(pscl)
 
 
@@ -44,14 +44,14 @@ variables_categoricas_p <- datos_pareja %>%
   mutate_if(is.numeric,as.factor)
 
 variables_categoricas_s <- datos_soltero %>% 
-  select(Sexo.Jefe,Tipo.Union,Region,Energia,Trabajo.Jefe,Edu.Jefe,Estrato.vivienda,Uso.tecnologia.Jefe) %>% 
+  select(Sexo.Jefe,Region,Energia,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe) %>% 
   mutate_if(is.numeric,as.factor)
 
 variables_numericas_p <- datos_pareja %>% 
   select(-c(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Energia,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Estrato.vivienda,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge))
 
 variables_numericas_s <- datos_soltero %>% 
-  select(-c(Sexo.Jefe,Tipo.Union,Region,Energia,Trabajo.Jefe,Edu.Jefe,Estrato.vivienda,Uso.tecnologia.Jefe))
+  select(-c(Sexo.Jefe,Region,Energia,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe))
 
 datos_pareja <- cbind(variables_numericas_p,variables_categoricas_p)
 datos_soltero <- cbind(variables_numericas_s,variables_categoricas_s)
@@ -90,7 +90,6 @@ ggplot(datos_soltero,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(
 ggplot(datos_pareja,aes(x=factor(Hijos),y=Edad.Jefe))+geom_boxplot()+labs(title ="Edad del jefe del hogar segun numero de hijos" ,subtitle ="Parejas" )
 ggplot(datos_pareja,aes(x=factor(Hijos),y=Edad.Conyuge))+geom_boxplot()+labs(title ="Edad del conyuge del hogar segun numero de hijos" ,subtitle ="Parejas" )
 
-ggplot(datos_soltero,aes(x=factor(Hijos),y=Edad.Jefe))+geom_boxplot()+labs(title ="Edad del jefe del hogar segun numero de hijos" ,subtitle ="Solteros" )
 ```
 
 #### Ingresos Totales
@@ -111,7 +110,7 @@ ggplot(datos_soltero,aes(x=Sexo.Jefe,y=Hijos))+geom_boxplot()+labs(title ="Numer
 #### Tipo de Union
 ```{r}
 ggplot(datos_pareja,aes(x=Tipo.Union,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el tipo de union del jefe del hogar " ,subtitle ="Parejas" )
-ggplot(datos_soltero,aes(x=Tipo.Union,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el tipo de union del jefe del hogar " ,subtitle ="Solteros" )
+
 ```
 
 #### Region
@@ -145,7 +144,7 @@ ggplot(datos_soltero,aes(x=Edu.Jefe,y=Hijos))+geom_boxplot()+labs(title ="Numero
 #### Estrato Vivienda
 ```{r}
 ggplot(datos_pareja,aes(x=Estrato.vivienda,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el estrato de la vivienda " ,subtitle ="Parejas" )
-ggplot(datos_soltero,aes(x=Estrato.vivienda,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el estrato de la vivienda " ,subtitle ="Solteros" )
+
 ```
 
 #### Uso de tecnologia jefe y/o conyuge
@@ -162,7 +161,7 @@ Las variables que muy probablente sean significativas al momento de predecir el 
 
 - Para parejas: Edad.Jefe,Edad.conyuge,Ingresos.totales,Tipo.Union,Energia,Trabajo.Jefe y Uso.tecnologia.jefe
 
--Parea solteros:Edad.Jefe,Sexo.Jefe y Uso.tecnologia.jefe
+-Parea solteros:Ingresos.totales,Sexo.Jefe y Uso.tecnologia.jefe
 
 # Pre-procesamiento
 
@@ -174,11 +173,11 @@ datos_pareja <- datos_pareja[,-c(1,3,4)]
 datos_soltero <- datos_soltero[,-c(1,3)]
 
 datos_modelo_p <- as.data.frame(cbind("Hijos"=datos_pareja$Hijos[!is.na(datos_pareja$Estrato.vivienda)],model.matrix(Hijos~.,datos_pareja)[,-1]))
-datos_modelo_s <-  as.data.frame(cbind("Hijos"=datos_soltero$Hijos[!is.na(datos_soltero$Estrato.vivienda)],model.matrix(Hijos~.,datos_soltero)[,-1]))
+datos_modelo_s <-  as.data.frame(cbind("Hijos"=datos_soltero$Hijos,model.matrix(Hijos~Ingresos.totales+Sexo.Jefe+Uso.tecnologia.Jefe,datos_soltero)[,-1]))
 
+
+datos_modelo_p <- datos_modelo_p[,-17] # Dicha variable no varia
 ```
 
-```{r}
-test <-zeroinfl(Hijos~.,data=datos_modelo_s, dist = "negbin", EM = TRUE)
-```
+
 
