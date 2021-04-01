@@ -18,6 +18,36 @@ datosNuevos = []
 datosFila = ['', '', '', '', '', '', '',
              '', '', '', '', '', '', '', '', '', '', '', '']
 
+# Creo una nueva cabecera para la información procesada
+cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Conyuge',
+                 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge', 'Region',
+                 'Energia', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge',
+                 'Ingresos totales', 'Uso tecnologia Jefe', 'Uso tecnologia conyuge',
+                 'Edu Jefe', 'Edu Conyuge']
+
+""" Indices columna
+0 Codigo
+1 Hijos
+2 Secuencia Jefe
+3 Sexo Jefe
+4 Secuencia Conyuge
+5 Sexo Conyuge
+6 Tipo Union
+7 Edad Jefe
+8 Edad Conyuge
+9 Region
+10 Energia
+11 Estrato vivienda
+12 Trabajo Jefe
+13 Trabajo conyuge
+14 Ingresos totales
+15 Uso tecnologia Jefe
+16 Uso tecnologia conyuge
+17 Edu Jefe
+18 Edu Conyuge
+"""
+
+
 # Itero las filas, obteniendo sus columnas
 for cols in datacsv:
     identificadorRow = cols[0] + "-" + cols[2]
@@ -138,17 +168,17 @@ for cols in datacsvTrabajo:
     identificadorRow = cols[0] + "-" + cols[2]
 
     if(identificador != identificadorRow):
-        datosNuevos[index][14] = ingresos
+        #datosNuevos[index][14] = ingresos
         identificador = identificadorRow
         index += 1
         ingresos = 0
 
     if(datosNuevos[index][2] == cols[3]):
-        datosNuevos[index][12] = cols[17]
+        datosNuevos[index][12] = cols[5]
         if (cols[25] != ' '):
             ingresos += int(cols[25])
     elif(datosNuevos[index][4] == cols[3]):
-        datosNuevos[index][13] = cols[17]
+        datosNuevos[index][13] = cols[5]
         if (cols[25] != ' '):
             ingresos += int(cols[25])
 
@@ -178,9 +208,19 @@ for cols in datacsvTecnologia:
         index += 1
 
     if(datosNuevos[index][2] == cols[3]):
-        datosNuevos[index][15] = cols[45]
+        if(cols[17] == '5'):
+            datosNuevos[index][15] = 0
+        elif(cols[17] == '1' or cols[17] == '2'):
+            datosNuevos[index][15] = 2
+        else:
+            datosNuevos[index][15] = 1
     elif(datosNuevos[index][4] == cols[3]):
-        datosNuevos[index][16] = cols[45]
+        if(cols[17] == '5'):
+            datosNuevos[index][16] = 0
+        elif(cols[17] == '1' or cols[17] == '2'):
+            datosNuevos[index][16] = 2
+        else:
+            datosNuevos[index][16] = 1
 
 
 # Luego de leer y procesar el archivo, lo cerramos
@@ -209,32 +249,118 @@ for cols in datacsvEducacion:
         index += 1
 
     if(datosNuevos[index][2] == cols[3]):
-        datosNuevos[index][17] = cols[7]
+        if(cols[7] == '1'):
+            datosNuevos[index][17] = 0
+        elif(cols[7] == '2' or cols[7] == '3' or cols[7] == '4' or cols[7] == '5'):
+            datosNuevos[index][17] = 1
+        elif(cols[7] == '6' or cols[7] == '8' or cols[7] == '10'):
+            datosNuevos[index][17] = 2
+        else:
+            datosNuevos[index][17] = 3
+
     elif(datosNuevos[index][4] == cols[3]):
-        datosNuevos[index][18] = cols[7]
+        if(cols[7] == '1'):
+            datosNuevos[index][18] = 0
+        elif(cols[7] == '2' or cols[7] == '3' or cols[7] == '4' or cols[7] == '5'):
+            datosNuevos[index][18] = 1
+        elif(cols[7] == '6' or cols[7] == '8' or cols[7] == '10'):
+            datosNuevos[index][18] = 2
+        else:
+            datosNuevos[index][18] = 3
 
 
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalEducacion.close()
 
+
+# Filtrar datos por condicion
+datosFiltrados = []
+
+# Filtro 9
+for dato in datosNuevos:
+    if(dato[11] != '9'):
+        datosFiltrados.append(dato)
+
+# Filtrar datos por condicion
+datosFiltradosPareja = []
+datosFiltradosSolo = []
+
+# Datos separados
+for dato in datosFiltrados:
+    if(dato[4] != ''):
+        datosFiltradosPareja.append(dato)
+    else:
+        datosFiltradosSolo.append(dato)
+
 # Creamos un archivo nuevo donde almacenamos el resultado
-archivoNuevo = open('../DatosCSVProcesados/Datos.csv', 'w', newline='')
+archivoNuevo = open(
+    '../DatosCSVProcesados/DatosCompletos.csv', 'w', newline='')
 
 # Dispongo el archivo para escribir datos en el
 csvwriter = csv.writer(archivoNuevo, delimiter=';')
-
-# Creo una nueva cabecera para la información procesada
-cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Conyuge',
-                 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge', 'Region',
-                 'Energia', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge',
-                 'Ingresos totales', 'Uso tecnologia Jefe', 'Uso tecnologia conyuge',
-                 'Edu Jefe', 'Edu Conyuge']
 
 # writing the fields
 csvwriter.writerow(cabeceraNueva)
 
 # writing the data rows
-csvwriter.writerows(datosNuevos)
+csvwriter.writerows(datosFiltrados)
+
+
+# Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
+archivoNuevo.close()
+
+
+# Creamos un archivo nuevo donde almacenamos el resultado
+archivoNuevo = open(
+    '../DatosCSVProcesados/DatosCompletos.csv', 'w', newline='')
+
+# Dispongo el archivo para escribir datos en el
+csvwriter = csv.writer(archivoNuevo, delimiter=';')
+
+# writing the fields
+csvwriter.writerow(cabeceraNueva)
+
+# writing the data rows
+csvwriter.writerows(datosFiltrados)
+
+
+# Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
+archivoNuevo.close()
+
+
+# Creamos un archivo nuevo donde almacenamos el resultado
+archivoNuevo = open(
+    '../DatosCSVProcesados/DatosPareja.csv', 'w', newline='')
+
+# Dispongo el archivo para escribir datos en el
+csvwriter = csv.writer(archivoNuevo, delimiter=';')
+
+# writing the fields
+csvwriter.writerow(cabeceraNueva)
+
+# writing the data rows
+csvwriter.writerows(datosFiltradosPareja)
+
+
+# Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
+archivoNuevo.close()
+
+# Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
+archivoNuevo.close()
+
+
+# Creamos un archivo nuevo donde almacenamos el resultado
+archivoNuevo = open(
+    '../DatosCSVProcesados/DatosSoltero.csv', 'w', newline='')
+
+# Dispongo el archivo para escribir datos en el
+csvwriter = csv.writer(archivoNuevo, delimiter=';')
+
+# writing the fields
+csvwriter.writerow(cabeceraNueva)
+
+# writing the data rows
+csvwriter.writerows(datosFiltradosSolo)
 
 
 # Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
