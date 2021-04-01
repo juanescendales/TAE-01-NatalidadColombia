@@ -47,6 +47,59 @@ cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Co
 18 Edu Conyuge
 """
 
+# funciones utiles
+
+
+def sumaIngresos(cols):
+    ingresos = 0
+    if (cols[25] != ' '):
+        ingresos += int(cols[25])
+    if (cols[35] != ' '):
+        ingresos += int(cols[35])
+    if (cols[37] != ' '):
+        ingresos += int(cols[37])
+    if (cols[39] != ' '):
+        ingresos += int(cols[39])
+    if (cols[41] != ' '):
+        ingresos += int(cols[41])
+    if (cols[53] != ' '):
+        ingresos += int(cols[53])
+    if (cols[76] != ' '):
+        ingresos += int(cols[76])
+    if (cols[81] != ' '):
+        ingresos += int(cols[81])
+    if (cols[86] != ' '):
+        ingresos += int(cols[86])
+    if (cols[88] != ' '):
+        ingresos += int(cols[88])
+    if (cols[90] != ' '):
+        ingresos += int(cols[90])
+    ingresosDiv = 0
+    if (cols[44] != ' '):
+        ingresosDiv += int(cols[44])
+    if (cols[46] != ' '):
+        ingresosDiv += int(cols[46])
+    if (cols[48] != ' '):
+        ingresosDiv += int(cols[48])
+    if (cols[50] != ' '):
+        ingresosDiv += int(cols[50])
+    if (cols[52] != ' '):
+        ingresosDiv += int(cols[52])
+    if (cols[54] != ' '):
+        ingresosDiv += int(cols[54])
+    if (cols[92] != ' '):
+        ingresosDiv += int(cols[92])
+    if (cols[95] != ' '):
+        ingresosDiv += int(cols[95])
+    if (cols[97] != ' '):
+        ingresosDiv += int(cols[97])
+    if (cols[99] != ' '):
+        ingresosDiv += int(cols[99])
+    ingresos += int(ingresosDiv/12)
+
+    # print(ingresos)
+    return ingresos
+
 
 # Itero las filas, obteniendo sus columnas
 for cols in datacsv:
@@ -168,20 +221,19 @@ for cols in datacsvTrabajo:
     identificadorRow = cols[0] + "-" + cols[2]
 
     if(identificador != identificadorRow):
-        #datosNuevos[index][14] = ingresos
+        datosNuevos[index][14] = ingresos
         identificador = identificadorRow
         index += 1
         ingresos = 0
 
     if(datosNuevos[index][2] == cols[3]):
         datosNuevos[index][12] = cols[5]
-        if (cols[25] != ' '):
-            ingresos += int(cols[25])
+        ingresos += sumaIngresos(cols)
     elif(datosNuevos[index][4] == cols[3]):
         datosNuevos[index][13] = cols[5]
-        if (cols[25] != ' '):
-            ingresos += int(cols[25])
+        ingresos += sumaIngresos(cols)
 
+datosNuevos[index][14] = ingresos
 
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalTrabajo.close()
@@ -294,7 +346,7 @@ for dato in datosFiltrados:
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open(
-    '../DatosCSVProcesados/DatosCompletos.csv', 'w', newline='')
+    '../DatosCSVProcesados/DatosCompletosING.csv', 'w', newline='')
 
 # Dispongo el archivo para escribir datos en el
 csvwriter = csv.writer(archivoNuevo, delimiter=';')
@@ -312,25 +364,7 @@ archivoNuevo.close()
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open(
-    '../DatosCSVProcesados/DatosCompletos.csv', 'w', newline='')
-
-# Dispongo el archivo para escribir datos en el
-csvwriter = csv.writer(archivoNuevo, delimiter=';')
-
-# writing the fields
-csvwriter.writerow(cabeceraNueva)
-
-# writing the data rows
-csvwriter.writerows(datosFiltrados)
-
-
-# Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
-archivoNuevo.close()
-
-
-# Creamos un archivo nuevo donde almacenamos el resultado
-archivoNuevo = open(
-    '../DatosCSVProcesados/DatosPareja.csv', 'w', newline='')
+    '../DatosCSVProcesados/DatosParejaING.csv', 'w', newline='')
 
 # Dispongo el archivo para escribir datos en el
 csvwriter = csv.writer(archivoNuevo, delimiter=';')
@@ -351,7 +385,7 @@ archivoNuevo.close()
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open(
-    '../DatosCSVProcesados/DatosSoltero.csv', 'w', newline='')
+    '../DatosCSVProcesados/DatosSolteroING.csv', 'w', newline='')
 
 # Dispongo el archivo para escribir datos en el
 csvwriter = csv.writer(archivoNuevo, delimiter=';')

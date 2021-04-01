@@ -2,7 +2,7 @@ import csv
 
 pathArchivo = '../DatosCSV/Fuerza de trabajo.csv'
 
-nombreCabecera = "P6240"
+nombreCabecera = "P8654S1"
 
 # Leemos el csv para ser usado posteriormente
 archivoOriginalCaracCompHogar = open(
