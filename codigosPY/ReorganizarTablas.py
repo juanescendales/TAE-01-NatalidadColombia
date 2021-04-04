@@ -1,6 +1,8 @@
 # Libreria csv para trabajar con archivos csv
 import csv
 import re
+import numpy
+import random
 
 # Leemos el csv para ser usado posteriormente
 archivoOriginalCaracCompHogar = open(
@@ -132,6 +134,31 @@ datacsvSHogar = csv.reader(archivoOriginalSHogar, delimiter=';')
 # Cabecera del archivo
 cabecera = next(datacsvSHogar)
 
+datosTransformar = []
+
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvSHogar:
+    n = cols[58].split(",")
+    datosTransformar.append(int(n[0]))
+
+np = numpy.array(datosTransformar)
+
+media = int(np.mean())
+std = int(np.std())
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalSHogar.close()
+
+# Leemos el csv Salud para ser usado posteriormente
+archivoOriginalSHogar = open(
+    '../DatosCSV/Servicios del hogar.csv', 'r')
+
+# Leo los datos del archivo csv de Salud
+datacsvSHogar = csv.reader(archivoOriginalSHogar, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvSHogar)
+
 index = 0
 identificador = datosNuevos[0][0]
 
@@ -141,7 +168,16 @@ for cols in datacsvSHogar:
     if(datosNuevos[index][0] == identificadorRow):
         datosNuevos[index][10] = cols[62]
         n = cols[58].split(",")
-        datosNuevos[index][14] = int(n[0])
+        num = int(n[0])
+        if(num == 0):
+            n = random.randint(media-std, media+std)
+            if (n < 0):
+                datosNuevos[index][14] = 0
+            else:
+                datosNuevos[index][14] = n
+
+        else:
+            datosNuevos[index][14] = num
         datosNuevos[index][20] = cols[4]
         datosNuevos[index][21] = cols[5]
     index += 1
@@ -149,6 +185,31 @@ for cols in datacsvSHogar:
 
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalSHogar.close()
+
+# Leemos el csv Salud para ser usado posteriormente
+archivoOriginalUsoEnergeticos = open(
+    '../DatosCSV/Uso de energeticos del hogar.csv', 'r')
+
+# Leo los datos del archivo csv de Salud
+datacsvUsoEnergetico = csv.reader(archivoOriginalUsoEnergeticos, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvUsoEnergetico)
+
+datosTransformar = []
+
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvUsoEnergetico:
+    if(cols[37] != ' '):
+        datosTransformar.append(int(int(cols[36])/int(cols[37])))
+
+np = numpy.array(datosTransformar)
+
+media = int(np.mean())
+std = int(np.std())
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalUsoEnergeticos.close()
 
 # Leemos el csv Salud para ser usado posteriormente
 archivoOriginalUsoEnergeticos = open(
@@ -170,13 +231,16 @@ for cols in datacsvUsoEnergetico:
         if(cols[37] != ' '):
             datosNuevos[index][22] = int(int(cols[36])/int(cols[37]))
         else:
-            datosNuevos[index][22] = 0
+            n = random.randint(media-std, media+std)
+            if (n < 0):
+                datosNuevos[index][22] = 0
+            else:
+                datosNuevos[index][22] = n
         if(cols[5] != ' '):
             datosNuevos[index][23] = cols[5]
         else:
             datosNuevos[index][23] = 0
     index += 1
-
 
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalUsoEnergeticos.close()
