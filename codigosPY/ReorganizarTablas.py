@@ -16,7 +16,7 @@ identificador = ''
 hijos = 0
 datosNuevos = []
 datosFila = ['', '', '', '', '', '', '',
-             '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+             '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 
 # Creo una nueva cabecera para la información procesada
 cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Conyuge',
@@ -24,7 +24,7 @@ cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Co
                  'Cantidad de personas', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge',
                  'Ingresos totales', 'Uso tecnologia Jefe', 'Uso tecnologia conyuge',
                  'Edu Jefe', 'Edu Conyuge', 'Afiliacion salud', 'N cuartos', 'N cuartos dormir',
-                 'Valor Electricidad', 'Valor Combustible', 'N usos Lavadora']
+                 'Valor Electricidad', 'N usos Lavadora']
 
 """ Indices columna
 0 Codigo
@@ -50,8 +50,7 @@ cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Co
 20 N cuartos
 21 N cuartos dormir
 22 Valor Electricidad
-23 Valor Combustible
-24 N usos Lavadora
+23 N usos Lavadora
 """
 
 
@@ -66,7 +65,7 @@ for cols in datacsv:
             datosFila[1] = hijos
             datosNuevos.append(datosFila)
             datosFila = ['', '', '', '', '', '',
-                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 
         hijos = 0
         identificador = identificadorRow
@@ -172,8 +171,10 @@ for cols in datacsvUsoEnergetico:
             datosNuevos[index][22] = int(int(cols[36])/int(cols[37]))
         else:
             datosNuevos[index][22] = 0
-        datosNuevos[index][23] = cols[42]
-        datosNuevos[index][24] = cols[5]
+        if(cols[5] != ' '):
+            datosNuevos[index][23] = cols[5]
+        else:
+            datosNuevos[index][23] = 0
     index += 1
 
 
@@ -362,7 +363,7 @@ cabeceraNueva = ['Codigo', 'Hijos', 'Sexo Jefe', 'Sexo Conyuge', 'Tipo Union', '
                  'Edad Conyuge', 'Region', 'Cantidad de personas', 'Estrato vivienda', 'Trabajo Jefe',
                  'Trabajo conyuge', 'Ingresos totales', 'Uso tecnologia Jefe', 'Uso tecnologia conyuge',
                  'Edu Jefe', 'Edu Conyuge', 'Afiliacion salud', 'N cuartos', 'N cuartos dormir',
-                 'Valor Electricidad', 'Valor Combustible', 'N usos Lavadora']
+                 'Valor Electricidad', 'N usos Lavadora']
 
 
 # Creamos un archivo nuevo donde almacenamos el resultado
@@ -407,7 +408,7 @@ cabeceraNueva = ['Codigo', 'Hijos', 'Sexo Jefe', 'Tipo Union', 'Edad Jefe',
                  'Region', 'Cantidad de personas', 'Estrato vivienda', 'Trabajo Jefe',
                  'Ingresos totales', 'Uso tecnologia Jefe',
                  'Edu Jefe', 'Afiliacion salud', 'N cuartos', 'N cuartos dormir',
-                 'Valor Electricidad', 'Valor Combustible', 'N usos Lavadora']
+                 'Valor Electricidad', 'N usos Lavadora']
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open(
