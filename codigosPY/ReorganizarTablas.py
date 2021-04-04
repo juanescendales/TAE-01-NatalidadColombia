@@ -16,14 +16,15 @@ identificador = ''
 hijos = 0
 datosNuevos = []
 datosFila = ['', '', '', '', '', '', '',
-             '', '', '', '', '', '', '', '', '', '', '', '']
+             '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 
 # Creo una nueva cabecera para la información procesada
 cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Conyuge',
                  'Sexo Conyuge', 'Tipo Union', 'Edad Jefe', 'Edad Conyuge', 'Region',
-                 'Energia', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge',
+                 'Cantidad de personas', 'Estrato vivienda', 'Trabajo Jefe', 'Trabajo conyuge',
                  'Ingresos totales', 'Uso tecnologia Jefe', 'Uso tecnologia conyuge',
-                 'Edu Jefe', 'Edu Conyuge']
+                 'Edu Jefe', 'Edu Conyuge', 'Afiliacion salud', 'N cuartos', 'N cuartos dormir',
+                 'Valor Electricidad', 'Valor Combustible', 'N usos Lavadora']
 
 """ Indices columna
 0 Codigo
@@ -36,7 +37,7 @@ cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Co
 7 Edad Jefe
 8 Edad Conyuge
 9 Region
-10 Energia
+10 Cantidad de personas
 11 Estrato vivienda
 12 Trabajo Jefe
 13 Trabajo conyuge
@@ -45,60 +46,13 @@ cabeceraNueva = ['Codigo', 'Hijos', 'Secuencia Jefe', 'Sexo Jefe', 'Secuencia Co
 16 Uso tecnologia conyuge
 17 Edu Jefe
 18 Edu Conyuge
+19 Afiliacion salud
+20 N cuartos
+21 N cuartos dormir
+22 Valor Electricidad
+23 Valor Combustible
+24 N usos Lavadora
 """
-
-# funciones utiles
-
-
-def sumaIngresos(cols):
-    ingresos = 0
-    if (cols[25] != ' '):
-        ingresos += int(cols[25])
-    if (cols[35] != ' '):
-        ingresos += int(cols[35])
-    if (cols[37] != ' '):
-        ingresos += int(cols[37])
-    if (cols[39] != ' '):
-        ingresos += int(cols[39])
-    if (cols[41] != ' '):
-        ingresos += int(cols[41])
-    if (cols[53] != ' '):
-        ingresos += int(cols[53])
-    if (cols[76] != ' '):
-        ingresos += int(cols[76])
-    if (cols[81] != ' '):
-        ingresos += int(cols[81])
-    if (cols[86] != ' '):
-        ingresos += int(cols[86])
-    if (cols[88] != ' '):
-        ingresos += int(cols[88])
-    if (cols[90] != ' '):
-        ingresos += int(cols[90])
-    ingresosDiv = 0
-    if (cols[44] != ' '):
-        ingresosDiv += int(cols[44])
-    if (cols[46] != ' '):
-        ingresosDiv += int(cols[46])
-    if (cols[48] != ' '):
-        ingresosDiv += int(cols[48])
-    if (cols[50] != ' '):
-        ingresosDiv += int(cols[50])
-    if (cols[52] != ' '):
-        ingresosDiv += int(cols[52])
-    if (cols[54] != ' '):
-        ingresosDiv += int(cols[54])
-    if (cols[92] != ' '):
-        ingresosDiv += int(cols[92])
-    if (cols[95] != ' '):
-        ingresosDiv += int(cols[95])
-    if (cols[97] != ' '):
-        ingresosDiv += int(cols[97])
-    if (cols[99] != ' '):
-        ingresosDiv += int(cols[99])
-    ingresos += int(ingresosDiv/12)
-
-    # print(ingresos)
-    return ingresos
 
 
 # Itero las filas, obteniendo sus columnas
@@ -112,7 +66,7 @@ for cols in datacsv:
             datosFila[1] = hijos
             datosNuevos.append(datosFila)
             datosFila = ['', '', '', '', '', '',
-                         '', '', '', '', '', '', '', '', '', '', '', '', '']
+                         '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
 
         hijos = 0
         identificador = identificadorRow
@@ -156,17 +110,74 @@ identificador = datosNuevos[0][0]
 # Itero las filas, obteniendo sus columnas
 for cols in datacsvSalud:
     identificadorRow = cols[0] + "-" + cols[2]
-    if(datosNuevos[index][0] == identificadorRow and (datosNuevos[index][2] == cols[3] or datosNuevos[index][4] == cols[3])):
-        if(cols[94] == '1' or cols[94] == '2'):
-            datosNuevos[index][1] += 1
-
     if(identificador != identificadorRow):
         identificador = identificadorRow
         index += 1
 
+    if(datosNuevos[index][0] == identificadorRow and (datosNuevos[index][2] == cols[3] or datosNuevos[index][4] == cols[3])):
+        if(cols[94] == '1' or cols[94] == '2'):
+            datosNuevos[index][1] += 1
+    if(cols[3] == '1'):
+        datosNuevos[index][19] = cols[4]
 
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalSalud.close()
+
+# Leemos el csv Salud para ser usado posteriormente
+archivoOriginalSHogar = open(
+    '../DatosCSV/Servicios del hogar.csv', 'r')
+
+# Leo los datos del archivo csv de Salud
+datacsvSHogar = csv.reader(archivoOriginalSHogar, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvSHogar)
+
+index = 0
+identificador = datosNuevos[0][0]
+
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvSHogar:
+    identificadorRow = cols[0] + "-" + cols[3]
+    if(datosNuevos[index][0] == identificadorRow):
+        datosNuevos[index][10] = cols[62]
+        datosNuevos[index][14] = cols[58]
+        datosNuevos[index][20] = cols[4]
+        datosNuevos[index][21] = cols[5]
+    index += 1
+
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalSHogar.close()
+
+# Leemos el csv Salud para ser usado posteriormente
+archivoOriginalUsoEnergeticos = open(
+    '../DatosCSV/Uso de energeticos del hogar.csv', 'r')
+
+# Leo los datos del archivo csv de Salud
+datacsvUsoEnergetico = csv.reader(archivoOriginalUsoEnergeticos, delimiter=';')
+
+# Cabecera del archivo
+cabecera = next(datacsvUsoEnergetico)
+
+index = 0
+identificador = datosNuevos[0][0]
+
+# Itero las filas, obteniendo sus columnas
+for cols in datacsvUsoEnergetico:
+    identificadorRow = cols[0] + "-" + cols[3]
+    if(datosNuevos[index][0] == identificadorRow):
+        if(cols[37] != ' '):
+            datosNuevos[index][22] = int(int(cols[36])/int(cols[37]))
+        else:
+            datosNuevos[index][22] = 0
+        datosNuevos[index][23] = cols[42]
+        datosNuevos[index][24] = cols[5]
+    index += 1
+
+
+# Luego de leer y procesar el archivo, lo cerramos
+archivoOriginalUsoEnergeticos.close()
 
 # Leemos el csv Vivienda para ser usado posteriormente
 archivoOriginalVivienda = open(
@@ -191,7 +202,6 @@ for cols in datacsvVivienda:
     while(identificadorRow == identificador and index < len(datosNuevos)):
         if (index < len(datosNuevos)):
             datosNuevos[index][9] = cols[4]
-            datosNuevos[index][10] = cols[14]
             datosNuevos[index][11] = cols[15]
 
         index += 1
@@ -214,26 +224,19 @@ cabecera = next(datacsvTrabajo)
 
 index = 0
 identificador = datosNuevos[0][0]
-ingresos = 0
 
 # Itero las filas, obteniendo sus columnas
 for cols in datacsvTrabajo:
     identificadorRow = cols[0] + "-" + cols[2]
 
     if(identificador != identificadorRow):
-        datosNuevos[index][14] = ingresos
         identificador = identificadorRow
         index += 1
-        ingresos = 0
 
     if(datosNuevos[index][2] == cols[3]):
         datosNuevos[index][12] = cols[5]
-        ingresos += sumaIngresos(cols)
     elif(datosNuevos[index][4] == cols[3]):
         datosNuevos[index][13] = cols[5]
-        ingresos += sumaIngresos(cols)
-
-datosNuevos[index][14] = ingresos
 
 # Luego de leer y procesar el archivo, lo cerramos
 archivoOriginalTrabajo.close()
@@ -330,7 +333,9 @@ datosFiltrados = []
 
 # Filtro 9
 for dato in datosNuevos:
-    if(dato[11] != '9'):
+    if(dato[11] != '9' and dato[11] != ' ' and dato[19] != '9'):
+        dato.pop(4)
+        dato.pop(2)
         datosFiltrados.append(dato)
 
 # Filtrar datos por condicion
@@ -339,10 +344,25 @@ datosFiltradosSolo = []
 
 # Datos separados
 for dato in datosFiltrados:
-    if(dato[4] != ''):
+    if(dato[3] != ''):
         datosFiltradosPareja.append(dato)
     else:
-        datosFiltradosSolo.append(dato)
+
+        datos = dato.copy()
+        datos.pop(16)
+        datos.pop(14)
+        datos.pop(11)
+        datos.pop(6)
+        datos.pop(3)
+        datosFiltradosSolo.append(datos)
+
+# Creo una nueva cabecera para la información procesada
+cabeceraNueva = ['Codigo', 'Hijos', 'Sexo Jefe', 'Sexo Conyuge', 'Tipo Union', 'Edad Jefe',
+                 'Edad Conyuge', 'Region', 'Cantidad de personas', 'Estrato vivienda', 'Trabajo Jefe',
+                 'Trabajo conyuge', 'Ingresos totales', 'Uso tecnologia Jefe', 'Uso tecnologia conyuge',
+                 'Edu Jefe', 'Edu Conyuge', 'Afiliacion salud', 'N cuartos', 'N cuartos dormir',
+                 'Valor Electricidad', 'Valor Combustible', 'N usos Lavadora']
+
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open(
@@ -360,7 +380,6 @@ csvwriter.writerows(datosFiltrados)
 
 # Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
 archivoNuevo.close()
-
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open(
@@ -382,6 +401,12 @@ archivoNuevo.close()
 # Luego de guardar todos los datos en el archivo cerramos y guardamos el archivo
 archivoNuevo.close()
 
+# Creo una nueva cabecera para la información procesada
+cabeceraNueva = ['Codigo', 'Hijos', 'Sexo Jefe', 'Tipo Union', 'Edad Jefe',
+                 'Region', 'Cantidad de personas', 'Estrato vivienda', 'Trabajo Jefe',
+                 'Ingresos totales', 'Uso tecnologia Jefe',
+                 'Edu Jefe', 'Afiliacion salud', 'N cuartos', 'N cuartos dormir',
+                 'Valor Electricidad', 'Valor Combustible', 'N usos Lavadora']
 
 # Creamos un archivo nuevo donde almacenamos el resultado
 archivoNuevo = open(
