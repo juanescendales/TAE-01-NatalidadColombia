@@ -36,18 +36,18 @@ apply(NAs_soltero, 2, sum)
 
 ```{r}
 variables_categoricas_p <- datos_pareja %>% 
-  select(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Estrato.vivienda,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Afiliacion.salud,N.usos.Lavadora) %>% 
+  select(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Afiliacion.salud) %>% 
   mutate_if(is.numeric,as.factor)
 
 variables_categoricas_s <- datos_soltero %>% 
-  select(Sexo.Jefe,Region,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe,Afiliacion.salud,N.usos.Lavadora) %>% 
+  select(Sexo.Jefe,Region,Tipo.Union,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe,Afiliacion.salud) %>% 
   mutate_if(is.numeric,as.factor)
 
 variables_numericas_p <- datos_pareja %>% 
-  select(-c(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Estrato.vivienda,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Afiliacion.salud,N.usos.Lavadora))
+  select(-c(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Afiliacion.salud))
 
 variables_numericas_s <- datos_soltero %>% 
-  select(-c(Sexo.Jefe,Region,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe,Afiliacion.salud,N.usos.Lavadora))
+  select(-c(Sexo.Jefe,Region,Tipo.Union,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe,Afiliacion.salud))
 
 datos_pareja <- cbind(variables_numericas_p,variables_categoricas_p)
 datos_soltero <- cbind(variables_numericas_s,variables_categoricas_s)
@@ -86,6 +86,8 @@ ggplot(datos_soltero,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(
 ggplot(datos_pareja,aes(x=factor(Hijos),y=Edad.Jefe))+geom_boxplot()+labs(title ="Edad del jefe del hogar segun numero de hijos" ,subtitle ="Parejas" )
 ggplot(datos_pareja,aes(x=factor(Hijos),y=Edad.Conyuge))+geom_boxplot()+labs(title ="Edad del conyuge del hogar segun numero de hijos" ,subtitle ="Parejas" )
 
+ggplot(datos_soltero,aes(x=factor(Hijos),y=Edad.Jefe))+geom_boxplot()+labs(title ="Edad del conyuge del hogar segun numero de hijos" ,subtitle ="Solteros" )
+
 ```
 
 #### Ingresos Totales
@@ -94,6 +96,52 @@ ggplot(datos_pareja,aes(x=factor(Hijos),y=Edad.Conyuge))+geom_boxplot()+labs(tit
 ggplot(datos_pareja,aes(x=factor(Hijos),y=Ingresos.totales))+geom_boxplot()+ylim(c(0,1000000))+labs(title ="Ingresos totales del hogar segun numero de hijos" ,subtitle ="Parejas" )
 ggplot(datos_soltero,aes(x=factor(Hijos),y=Ingresos.totales))+geom_boxplot()+ylim(c(0,1000000))+labs(title ="Ingresos totales del hogar segun numero de hijos" ,subtitle ="Solteros" )
 ```
+
+### Cantidad de personas
+
+```{r}
+ggplot(datos_pareja,aes(x=factor(Cantidad.de.personas),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la cantidad de personas en el hogar " ,subtitle ="Parejas" )
+ggplot(datos_soltero,aes(x=factor(Cantidad.de.personas),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la cantidad de personas en el hogar " ,subtitle ="Solteros" )
+```
+
+### Estrato de vivienda
+
+```{r}
+ggplot(datos_pareja,aes(x=factor(Estrato.vivienda),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun estrato de la vivienda " ,subtitle ="Parejas" )
+
+ggplot(datos_soltero,aes(x=factor(Estrato.vivienda),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun  estrato de la vivienda " ,subtitle ="Solteros" )
+```
+
+### N.cuartos
+```{r}
+ggplot(datos_pareja,aes(x=factor(N.cuartos),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el numero de cuartos en el hogar " ,subtitle ="Parejas" )
+
+ggplot(datos_soltero,aes(x=factor(N.cuartos),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun  el numero de cuartos en el hogar " ,subtitle ="Solteros" )
+```
+
+### N.cuartos.dormir
+```{r}
+ggplot(datos_pareja,aes(x=factor(N.cuartos.dormir),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el numero de cuartos donde duermen en el hogar " ,subtitle ="Parejas" )
+
+ggplot(datos_soltero,aes(x=factor(N.cuartos.dormir),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun  el numero de cuartos donde duermen en el hogar " ,subtitle ="Solteros" )
+```
+
+### Valor.Electricidad
+```{r}
+ggplot(datos_pareja,aes(x=factor(Hijos),y=Valor.Electricidad))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el valor pagado por electricidad " ,subtitle ="Parejas" )
+
+ggplot(datos_soltero,aes(x=factor(Hijos),y=Valor.Electricidad))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun  el valor pagado por electricidad " ,subtitle ="Solteros" )
+```
+
+### N.usos.Lavadora
+```{r}
+ggplot(datos_pareja,aes(x=factor(N.usos.Lavadora),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el numero de usos de la lavadora " ,subtitle ="Parejas" )
+
+ggplot(datos_soltero,aes(x=factor(N.usos.Lavadora),y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun  el numero de usos de la lavadora " ,subtitle ="Solteros" )
+```
+
+
+
 ### Variables categoricas
 
 #### Sexo del jefe y/o conyuge
@@ -137,12 +185,6 @@ ggplot(datos_pareja,aes(x=Edu.Conyuge,y=Hijos))+geom_boxplot()+labs(title ="Nume
 ggplot(datos_soltero,aes(x=Edu.Jefe,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la educación del jefe del hogar " ,subtitle ="Solteros" )
 ```
 
-#### Estrato Vivienda
-```{r}
-ggplot(datos_pareja,aes(x=Estrato.vivienda,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el estrato de la vivienda " ,subtitle ="Parejas" )
-
-```
-
 #### Uso de tecnologia jefe y/o conyuge
 ```{r}
 ggplot(datos_pareja,aes(x=Uso.tecnologia.Jefe,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el uso de tecnologia del jefe del hogar " ,subtitle ="Parejas" )
@@ -150,6 +192,26 @@ ggplot(datos_pareja,aes(x=Uso.tecnologia.conyuge,y=Hijos))+geom_boxplot()+geom_b
 
 ggplot(datos_soltero,aes(x=Uso.tecnologia.Jefe,y=Hijos))+geom_boxplot()+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el uso de tecnologia del jefe del hogar " ,subtitle ="Solteros" )
 ```
+
+#### Afiliacion salud
+```{r}
+ggplot(datos_pareja,aes(x=Afiliacion.salud,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la afiliacion a salud" ,subtitle ="Parejas" )
+
+ggplot(datos_soltero,aes(x=Afiliacion.salud,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la afiliacion a salud" ,subtitle ="Solteros" )
+
+```
+
+## Correlaciones
+
+```{r}
+library(corrplot)
+corrplot(cor(datos_pareja %>% select_if(is.numeric)), type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+
+corrplot(cor(datos_soltero %>% select_if(is.numeric)), type = "upper", order = "hclust", 
+         tl.col = "black", tl.srt = 45)
+```
+
 
 ## Conclusiones Analisis Exploratorio
 
@@ -164,9 +226,6 @@ Las variables que muy probablente sean significativas al momento de predecir el 
 ## Dummy variables
 
 ```{r}
-
-datos_pareja <- datos_pareja[,-c(1,3,4)]
-datos_soltero <- datos_soltero[,-c(1,3)]
 
 datos_modelo_p <- as.data.frame(cbind("Hijos"=datos_pareja$Hijos[!is.na(datos_pareja$Estrato.vivienda)],model.matrix(Hijos~.,datos_pareja)[,-1]))
 datos_modelo_s <-  as.data.frame(cbind("Hijos"=datos_soltero$Hijos,model.matrix(Hijos~Ingresos.totales+Sexo.Jefe+Uso.tecnologia.Jefe,datos_soltero)[,-1]))
