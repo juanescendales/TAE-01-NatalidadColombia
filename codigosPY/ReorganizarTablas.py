@@ -141,7 +141,8 @@ for cols in datacsvSHogar:
     identificadorRow = cols[0] + "-" + cols[3]
     if(datosNuevos[index][0] == identificadorRow):
         datosNuevos[index][10] = cols[62]
-        datosNuevos[index][14] = cols[58]
+        n = cols[58].split(",")
+        datosNuevos[index][14] = int(n[0])
         datosNuevos[index][20] = cols[4]
         datosNuevos[index][21] = cols[5]
     index += 1
