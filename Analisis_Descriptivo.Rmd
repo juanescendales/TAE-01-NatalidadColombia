@@ -13,14 +13,10 @@ knitr::opts_chunk$set(echo = TRUE)
 rm(list=ls())
 library(dplyr)
 library(ggplot2)
-#library(MASS)
-library(pscl)
-
 
 datos_pareja <- read.csv2("./DatosCSVProcesados/DatosParejaING.csv")
 datos_soltero <- read.csv2("./DatosCSVProcesados/DatosSolteroING.csv")
 
-datos_soltero <- datos_soltero[,-c(5,6,9,14,17,19)]
 ```
 
 # Analisis Exploratorio
@@ -40,18 +36,18 @@ apply(NAs_soltero, 2, sum)
 
 ```{r}
 variables_categoricas_p <- datos_pareja %>% 
-  select(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Energia,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Estrato.vivienda,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge) %>% 
+  select(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Estrato.vivienda,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Afiliacion.salud,N.usos.Lavadora) %>% 
   mutate_if(is.numeric,as.factor)
 
 variables_categoricas_s <- datos_soltero %>% 
-  select(Sexo.Jefe,Region,Energia,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe) %>% 
+  select(Sexo.Jefe,Region,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe,Afiliacion.salud,N.usos.Lavadora) %>% 
   mutate_if(is.numeric,as.factor)
 
 variables_numericas_p <- datos_pareja %>% 
-  select(-c(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Energia,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Estrato.vivienda,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge))
+  select(-c(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Edu.Jefe,Edu.Conyuge,Estrato.vivienda,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Afiliacion.salud,N.usos.Lavadora))
 
 variables_numericas_s <- datos_soltero %>% 
-  select(-c(Sexo.Jefe,Region,Energia,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe))
+  select(-c(Sexo.Jefe,Region,Trabajo.Jefe,Edu.Jefe,Uso.tecnologia.Jefe,Afiliacion.salud,N.usos.Lavadora))
 
 datos_pareja <- cbind(variables_numericas_p,variables_categoricas_p)
 datos_soltero <- cbind(variables_numericas_s,variables_categoricas_s)
