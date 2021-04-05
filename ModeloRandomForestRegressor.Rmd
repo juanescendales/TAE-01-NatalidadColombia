@@ -37,7 +37,7 @@ evaluate_model <-function(modelo,datos_vl){
 }
 
 rf_creacion_modelo <- function(datos_tr,datos_tr_x){
-  ctrl <- trainControl(method="cv", number=3, search="grid")
+  ctrl <- trainControl(method="cv", number=3, search="grid", verboseIter = TRUE)
   #mtry <- sqrt(ncol(datos_tr_x))
   #tunegrid <- expand.grid(.mtry=1:15)
   mtry <- ncol(datos_tr_x)/3
@@ -64,7 +64,7 @@ ridge_creacion_modelo <- function(datos_tr){
 
 
 knn_creacion_modelo <- function(datos_tr){
-  ctrl <- trainControl(method="repeatedcv",repeats = 3) #,classProbs=TRUE,summaryFunction = twoClassSummary)
+  ctrl <- trainControl(method="repeatedcv",repeats = 3, verboseIter = TRUE) #,classProbs=TRUE,summaryFunction = twoClassSummary)
   knnFit <- train(Hijos ~ ., data = datos_tr, method = "knn", trControl = ctrl, preProcess = c("center","scale"),
                   tuneGrid = data.frame(k = 1:10))
   return(knnFit)
@@ -136,6 +136,7 @@ print(knn_modelo)
 ```{r}
 saveRDS(rf_modelo,"./Modelos/rf_modelo.rds")
 saveRDS(ridge_modelo,"./Modelos/ridge_modelo.rds")
+saveRDS(knn_modelo,"./Modelos/knn_modelo.rds")
 ```
 
 
