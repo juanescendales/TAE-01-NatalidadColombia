@@ -163,12 +163,6 @@ ggplot(datos_pareja,aes(x=Region,y=Hijos))+geom_boxplot()+labs(title ="Numero de
 ggplot(datos_soltero,aes(x=Region,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la region del hogar " ,subtitle ="Solteros" )
 ```
 
-#### Energia
-```{r}
-ggplot(datos_pareja,aes(x=Energia,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la energia del hogar " ,subtitle ="Parejas" )
-ggplot(datos_soltero,aes(x=Energia,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun la energia del hogar " ,subtitle ="Solteros" )
-```
-
 #### Trabajo jefe y/o conyuge
 ```{r}
 ggplot(datos_pareja,aes(x=Trabajo.Jefe,y=Hijos))+geom_boxplot()+labs(title ="Numero de hijos del hogar segun el trabajo del jefe del hogar " ,subtitle ="Parejas" )
