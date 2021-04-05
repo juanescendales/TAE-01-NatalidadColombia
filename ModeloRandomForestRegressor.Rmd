@@ -37,7 +37,7 @@ evaluate_model <-function(modelo,datos_vl){
 }
 
 rf_creacion_modelo <- function(datos_tr){
-  ctrl <- trainControl(method = "cv", number = 10)
+  ctrl <- trainControl(method = "cv", number = 5)
   rf_random <- train(Hijos ~ .,
                      data = datos_tr,
                      method = 'rf',
