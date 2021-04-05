@@ -1,0 +1,112 @@
+---
+title: "modelos_caret"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r functions, include=FALSE}
+library(caret)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+
+set.seed(42)
+
+# Utilidades
+data_split <- function(datos,split){
+  if(missing(split)){
+    split<-0.7
+  }
+  trainIndex <- createDataPartition(datos$Hijos, p=split, list=FALSE)
+  datos_tr <- datos[ trainIndex,]
+  datos_vl <- datos[-trainIndex,]
+  return(list("entrenamiento" = datos_tr, "validacion" = datos_vl))
+}
+
+confusion_matrix <- function(modelo,datos){
+  modelo_prediccion <- predict(modelo,newdata = datos )
+  print(confusionMatrix(modelo_prediccion, datos$Hijos ))
+}
+
+
+evaluate_model <-function(modelo,datos_vl){
+  predicciones <- predict(modelo,newdata = datos_vl)
+}
+
+rf_creacion_modelo <- function(datos_tr){
+  ctrl <- trainControl(method = "cv", number = 5)
+  rf_random <- train(Hijos ~ .,
+                     data = datos_tr,
+                     method = 'rf',
+                     tuneLength  = 10, 
+                     trControl = ctrl)
+
+}
+
+```
+
+#Creacion del modelo seleccionado : Random Forest Regressor
+## Lectura de los datos
+
+
+```{r}
+datos_completos <- read.csv2("./DatosCSVProcesados/DatosCompletosING.csv")
+datos_completos$Codigo <- NULL
+summary(datos_completos)
+
+```
+
+```{r}
+variables_categoricas <- datos_completos %>% 
+  select(Sexo.Jefe,Tipo.Union,Trabajo.Jefe,Uso.tecnologia.Jefe,Edu.Jefe) %>% 
+  mutate_if(is.numeric,as.factor)
+
+variables_numericas <- datos_completos %>% 
+  select(c(Hijos,Edad.Jefe,Cantidad.de.personas,Ingresos.totales,Valor.Electricidad))
+
+
+summary(variables_categoricas)
+summary(variables_numericas)
+```
+
+
+### Datos de validacion y de entrenamiento
+```{r}
+datos_completos_codificados <- as.data.frame(cbind(variables_numericas,variables_categoricas))
+summary(datos_completos_codificados)
+
+
+particion <- data_split(datos_completos_codificados)
+datos_tr <- particion$entrenamiento
+datos_tr_x <- subset(datos_tr, select = -c(Hijos))
+datos_vl <- particion$validacion
+```
+
+
+
+## Creacion del modelo RF
+
+```{r}
+rf_modelo<-rf_creacion_modelo(datos_tr)
+print(rf_best_variables_completo)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+saveRDS(rf_modelo,"./Modelos/rf_modelo.rds")
+```
+
+
