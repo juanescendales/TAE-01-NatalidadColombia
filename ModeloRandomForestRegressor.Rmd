@@ -36,15 +36,40 @@ evaluate_model <-function(modelo,datos_vl){
   predicciones <- predict(modelo,newdata = datos_vl)
 }
 
-rf_creacion_modelo <- function(datos_tr){
-  ctrl <- trainControl(method = "cv", number = 5)
-  rf_random <- train(Hijos ~ .,
+rf_creacion_modelo <- function(datos_tr,datos_tr_x){
+  ctrl <- trainControl(method="cv", number=3, search="grid")
+  #mtry <- sqrt(ncol(datos_tr_x))
+  #tunegrid <- expand.grid(.mtry=1:15)
+  mtry <- ncol(datos_tr_x)/3
+  tunegrid <- expand.grid(.mtry=mtry)
+  rf_model <- train(Hijos ~ .,
                      data = datos_tr,
                      method = 'rf',
-                     tuneLength  = 10, 
+                     tuneGrid  = tunegrid, 
                      trControl = ctrl)
+  return(rf_model)
 
 }
+
+ridge_creacion_modelo <- function(datos_tr){
+  parameters <- c(seq(0.01, 0.1, 0.01), seq(0.1, 2, by =0.1) , seq(2, 5, 0.5) )
+  ridge<-train(Hijos ~ .,
+                data = datos_tr,
+                method = 'glmnet', 
+                tuneGrid = expand.grid(alpha = 0, lambda = parameters),
+                metric =  "Rsquared"
+           )
+  return(ridge)
+}
+
+
+knn_creacion_modelo <- function(datos_tr){
+  ctrl <- trainControl(method="repeatedcv",repeats = 3) #,classProbs=TRUE,summaryFunction = twoClassSummary)
+  knnFit <- train(Hijos ~ ., data = datos_tr, method = "knn", trControl = ctrl, preProcess = c("center","scale"),
+                  tuneGrid = data.frame(k = 1:10))
+  return(knnFit)
+}
+
 
 ```
 
@@ -90,23 +115,27 @@ datos_vl <- particion$validacion
 ## Creacion del modelo RF
 
 ```{r}
-rf_modelo<-rf_creacion_modelo(datos_tr)
-print(rf_best_variables_completo)
+rf_modelo<-rf_creacion_modelo(datos_tr,datos_tr_x)
+print(rf_modelo)
 ```
 
+## Creacion del modelo Ridge
 
 
-
-
-
-
-
-
-
+```{r}
+ridge_modelo<-ridge_creacion_modelo(datos_tr)
+print(ridge_modelo)
+```
+## Modelo KNN
+```{r}
+knn_modelo<-knn_creacion_modelo(datos_tr)
+print(knn_modelo)
+```
 
 
 ```{r}
 saveRDS(rf_modelo,"./Modelos/rf_modelo.rds")
+saveRDS(ridge_modelo,"./Modelos/ridge_modelo.rds")
 ```
 
 
