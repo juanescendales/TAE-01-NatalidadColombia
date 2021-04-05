@@ -14,16 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 
-```{r cars}
-#summary(cars)
-```
-
-
-```{r pressure, echo=FALSE}
-#plot(pressure)
-```
-
-
 # Intoducción
 
 El número de hijos de un hogar puede ser determinante al momento de ofrecer un servicio financiero, por ejemplo, las empresas que prestan servicios pensionales en Colombia consideran el número de hijos al momento de ofrecer el monto total de una pensión, pues, al momento de la persona morir, se espera que la pensión pueda sostener a los hijos del beneficiado hasta que se cumplan ciertos requisitos. Un número mayor de hijos implica para el fondo de pensiones, mayores gastos a largo plazo. De igual manera, en las entidades bancarias, al momento de analizar los factores de riesgo para la entrega de un préstamo, también se tiene en cuenta el número de hijos en el hogar, puesto que una persona que tenga muchos más hijos tiende a gastar más para poder cubrir las necesidades de estos, lo que puede desembocar que en algún momento le sea mucho más difícil pagar el préstamo que se le ofrece en comparación con otra persona que tiene menos hijos o que no los tiene.
@@ -104,7 +94,356 @@ Si responde con la oppción 1 o 2, se asume que este es otro hijo y se le adicio
 
 ## Variables de entrada
 
-Como se ha mencionado anteriormente, en Colombia no existe una visión uniforme del concepto de familia, puesto que este puede variar tanto por la posición geográfica del hogar, como por aspectos económicos y socioculturales, entre los cuales destaca la percepción y autopercepción del papel que tiene la mujer dentro de la familia y de la sociedad (Pachón, 2004). La visión de familia que se tenga en un hogar influye directamente en el número de hijos que se espera de ella
+Como se ha mencionado anteriormente, en Colombia no existe una visión uniforme del concepto de familia, puesto que este puede variar tanto por la posición geográfica del hogar, como por aspectos económicos y socioculturales, entre los cuales destaca la percepción y autopercepción del papel que tiene la mujer dentro de la familia y de la sociedad (Pachón, 2004). La visión de familia y las condiciones socioeconómicas de un hogar influyen directamente en el número de hijos que se puede esperar de ella. Forero y Gamboa (2009) en su estudio acerca del número de hijos no planeados por mujer en Colombia, destaca que factores como el nivel de educación de la mujer, su edad, residencia, estrato socioeconómico, estado marital y su conocimiento y uso de los métodos anticonceptivos, son los factores diferenciadores entre el número de hijos no planificados de una mujer.
+
+Por otra parte, López, Silva y Sarmiento (2010) en su estudio sobre el uso de los servicios maternos en Colombia también destacan el nivel de riqueza, la participación de la mujer en la toma de decisiones del hogar, además del nivel educativo de la pareja, en caso de que la haya, son otros factores importantes para considerar al caracterizar los hogares y el tipo de familias.
+
+Otros estudios similares (Alvis et al., 2010; Torres y Vergara, 2012) también destacan la participación tanto de la mujer, como de su pareja en el mercado laboral, y resaltan la importancia del nivel educativo, la edad y la posición socioeconómica como aspectos que influyen en la planificación familiar, y, por lo tanto, en el número de hijos por hogar. En total, podemos resumir las variables consideradas en estos estudios en la siguiente lista:
+
+* Nivel educativo de la mujer y su pareja
+* Edad de la mujer y su pareja
+* Residencia del hogar
+* Estrato socioeconómico del hogar
+* Estado marital del o los jefes de hogar
+* Conocimiento y uso de anticonceptivos
+* Riqueza
+* Participación de la mujer en las decisiones del hogar
+* Trabajo de la mujer y su pareja
+
+Se realizó una exploración de las preguntas y variables de la encuesta Nacional de Calidad de Vida del 2019 para relacionar y seleccionar las que se relacionen con las variables expuestas por la literatura. Los resultados los observamos en la siguiente tabla:
+
+\#|Código|Tabla|Pregunta|Tipo|Relación con
+-|------|-----|--------|----|------------
+1|P6051|Características y composición del hogar|¿Cuál es el parentesco con el jefe o la jefa de este hogar?|Categórica|Participación de la mujer en las decisiones del hogar
+2|P6020|Características y composición del hogar|Sexo|Categórica|Participación de la mujer en las decisiones del hogar
+3|P6040|Características y composición del hogar|¿Cuántos años cumplidos tiene?|Numérica discreta|Edad de la mujer y su pareja
+4|P5502|Características y composición del hogar|(Respecto al estado marital)Actualmente…:|Categórica|Estado marital del o los jefes de hogar
+5|P6240|Fuerza de trabajo|¿en que actividad ocupó la mayor parte del tiempo la semana pasada?|Categórica|Trabajo de la mujer y su pareja
+6|I_HOGAR|Servicios del hogar|Ingreso mensual total del hogar|Numérica continua|Riqueza
+7|P1084|Tecnologías de información y comunicación|¿Con qué frecuencia utiliza internet (en cualquier lugar y desde cualquier dispositivo)?|Categórica|Conocimiento y uso de anticonceptivos
+8|REGION|Datos de la vivienda|Región|Categórica|Residencia del hogar
+9|P8520S1A1|Datos de la vivienda|Estrato|Categórica|Estrato socioeconómico del hogar
+10|P8587|Educación|¿cuál es el nivel educativo más alto alcanzado y el último año o grado aprobado en este nivel?|Categórica|Nivel educativo de la mujer y su pareja
+
+
+
+Además, también se incluyen las siguientes variables que a consideranción de los investigadores, pueden dar pista de la cantidad de hijos de un hogar, debido a que pueden dar cuenta de cuántas personas la componen, como es el caso de la afilización a salud, pues las familias numerosas pueden tender al régimen subsidiado por ser más económico, el conteo de salas y cuartos, así como la cantidad de personas en el hogar, y el uso de la lavadora, y la cuenta de la energía eléctrica, que puede aumentar mientras más personas compongan el núcleo familiar. Las variables seleccionadas las encontramos en la siguiente tabla:
+
+\#|Código|Tabla|Pregunta|Tipo
+-|------|-----|--------|----
+11|P6090|Salud|¿ Está afiliado(a) (cotizante o beneficiario(a)) a alguna entidad de seguridad social en salud? (Entidad Promotora de Salud - EPS o Entidad Promotora de Salud Subsidiada -EPS-S )|Categórica
+12|P5000|Servicios del hogar|Incluyendo sala-comedor ¿de cuántos cuartos en total dispone este hogar?|Numérica discreta
+13|P5010|Servicios del hogar|¿en cuántos de esos cuartos (P5000) duermen las personas de este hogar?|Numérica discreta
+14|CANT_PERSONAS_HOGAR|Servicios del hogar|Cantidad de personas en el hogar|Numérica continua
+15|P5510|Uso de energéticos en el hogar|En promedio, ¿cuántas cargas de ropa lava en su lavadora a la semana?|Categórica
+16|P5018|Uso de energéticos en el hogar|¿Cuanto pagaron EL MES PASADO o la última vez por la electricidad consumida?|Continua
+17|P5018S1|Uso de energéticos en el hogar|¿a cuántos meses corresponde ese pago (P5018)?|Numérica discreta
+
+De ahora en adelante, para referirse a las preguntas se hará referencia a la numeración establecida en las tablas anteriores
+
+### Reinterpretación de las variables de entrada
+
+La contrucción de la base de datos propia para el modelamiento y entrenamiento del modelo predictivo se realizó explorando y reinterpretando algunas de las variables escogidas, para finalmente obtener un conjunto de datos más limpio y fácil de analizar. Para esto se hizo uso de *scripts* de autoria propia escritos en **Python**, los cuales se pueden encontrar en el Repositorio online del proyecto, en la carpeta *codigosPY* <https://github.com/juanescendales/TAE-01-NatalidadColombia/tree/main/codigosPY>
+En esta carpeta encontramos el archivo llamado *ReorganizarTablas.py* que se encarga de hacer un llamado a los demás *scripts* de la carpeta, los cuales cada uno se encarga de hacer la extracción de datos de una tabla en particular, siguiendo los procedimientos explicados en los siguientes puntos:
+
+#### 1. ¿Cuál es el parentesco con el jefe o la jefa de este hogar? (P6051)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado
+---------|-----------
+1|Jefe(a) del hogar
+2|Pareja, esposo(a), conyuge, comañero(a)
+3|Hijo(a), hijastro(a)
+4|Nieto(a)
+5|Padre, madre, padrastro, madrastra
+6|Suegro o suegra
+7|Hermano(a), hermanastro(a)
+8|Yerno, nuera
+9|Otro(a) pariente del (de la) jefe(a)
+10|Empleado(a) del servicio doméstico
+11|Parientes del servicio doméstico
+12|Trabajador
+13|Pensionista
+14|Otro(a) no pariente
+
+Esta pregunta identifica tanto al Jefe de hogar, que siempre existe para cada hogar, como a la pareja del jefe de hogar, en caso de que esta exista, los cuales se encuentran con el valor respuesta de 1 y 2 respectivamente. A excepción de los que respondan 3, que también son usados en la variable de salida, las otras respuestas no se tendrán en cuenta
+
+#### 2. Sexo (P6020)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado
+---------|-----------
+1|Hombre
+2|Mujer
+
+Esta variable, en conjunto con la pregunta 1, permite inferir el sexo tanto del Jefe de hogar, como de su pareja en caso de que exista, para crear dos variables llamadas **Sexo.Jefe** y **Sexo.Conyuge** las cuales tendrán las mismas opciones de respuesta a esta pregunta, y NA en caso de que no exista
+
+#### 3. ¿Cuántos años cumplidos tiene? (P6040)
+
+Esta variable, expresada en años, en conjunto con la pregunta 1, permite inferir la edad tanto del Jefe de hogar, como de su pareja en caso de que exista, para crear dos variables que llamadas **Edad.Jefe** y **Edad.Conyuge** las cuales tendrán el mismo valor literal que esta pregunta, o un NA en caso de que no exista.
+
+#### 4. (Respecto al estado marital)Actualmente…: (P5502)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado
+---------|-----------
+1|No está casado(a) y vive en pareja hace menos de dos años
+2|No está casado(a) y vive en pareja hace dos años o más
+3|Está viudo(a)
+4|Está separado(a) o divorciado(a)
+5|Está soltero(a)
+6|Está casado(a)
+
+Al identificar al jefe del hogar con la pregunta 1, también se puede identificar su estado civil o marital, y se lo asignamos al hogar correspondiente con los mismos valores y significados bajo la variable **Tipo.Union**
+
+#### 5. ¿en que actividad ocupó la mayor parte del tiempo la semana pasada? (P6240)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado
+---------|-----------
+1|Trabajando
+2|Buscando trabajo
+3|Estudiando
+4|Oficios del hogar
+5|Incapacitado permanentemente para trabajar
+6|Otra actividad
+
+Esta pregunta permite inferir el tipo de actividad laboral tanto del Jefe de hogar como de su conyuge, haciendo uso de las mismas categorías y significados dentro de las variables **Trabajo.Jefe** y **Trabajo.conyuge**
+
+#### 6. Ingreso mensual total del hogar (I_HOGAR)
+
+A cada hogar se le asigna el valor de esta variable, que está expresada en Pesos Colobmianos (COP) y se almacena dentro de la variable **Ingresos.totales**. En caso de que el valor sea nulo o igual a 0, para evitar el ruido, se le asigna un valor equivalente a la media de los valores no nulos, mas un número aleatorio que se encuentre entre la desviación estándar negativa y la desviación estándar positiva.
+
+#### 7. ¿Con qué frecuencia utiliza internet (en cualquier lugar y desde cualquier dispositivo)? (P1084)
+
+Opciones de respuesta a la pregunta y reinterpretación
+
+Respuesta|Significado|Reiterpretación|Nuevo significado
+--|-----------|--|--------
+1|Todos los días de la semana|2|Conexión frecuente
+2|Al menos una vez a la semana, pero no cada día|2|Conexión frecuente
+3|Al menos una vez al mes, pero no cada semana|1|Conexión ocacional
+4|Al menos una vez al año, pero no cada mes|1|Conexión ocacional
+5|No utiliza internet|0|No se conecta
+
+Con ayuda de la pregunta 1, se puede identificar qué tan frecuente es el uso de internet, tanto por parte del Jefe de hogar, como de su cónyuge si este existe, reinterpretando sus valores y significados como se muestra en la tabla anterior, y los valores correspondientes se almacenan en las variables **Uso.tecnologia.jefe** y **Uso.tecnologia.conyuge**
+
+#### 8. Región (REGION)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado
+--|-----------
+1|Caribe
+2|Oriental
+3|Central
+4|Pacífica(sin valle)
+5|Bogotá
+6|Antioquia
+7|Valle del cauca
+8|San Andrés
+9|Orinoquía - Amazonía
+
+Esta pregunta ubica a cada hogar en una de las 9 regiones geográficas del país como se indica en la tabla anterior. La respuesta de cada hogar a esta respuesta se almacena en la variable **Region**, sin modificar su interpretación original
+
+#### 9. Estrato (P8520S1A1)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado
+--|-----------
+1|Bajo - Bajo
+2|Bajo
+3|Medio - Bajo
+4|Medio
+5|Medio - Alto
+6|Alto
+8|Planta eléctrica
+9|No conoce el estrato o no cuenta con recibo de pago.
+0|Recibos sin estrato o el servicio es pirata
+
+Originalmente, la pregunta va dirigida a responder el estrato con el que se paga la factura eléctrica, por eso, además de los típicos estrátos del 1 al 6, nos encontramos con numeración de 8 y 0, que se relacionan más al tipo de acceso a la energía con el que cuentan, que con su estrato socioeconómico. A pesar de esto, estas dos categorías se dejaron intactas, pues, a pesar de que no son los valores estándar para los estratos en Colombia, en si mismo no se pueden clasificar dentro de otro estrato con la información que se posee, además, diferenciar a los hogares con estas características particulares puede ser de ayuda en el momento de la construcción del modelo. Por otra parte, los hogares cuyos valores son 9 o que no tienen valor en esta pregunta, que son aproximadamente 7062 hogares, serán descartados de la base de datos final, puesto que no hay forma de clasificarlos sin ambigüedad. Los valores de esta variable quedan almacenados en la columna **Estrato.vivienda**.
+
+#### 10. ¿cuál es el nivel educativo más alto alcanzado y el último año o grado aprobado en este nivel? (P8587)
+
+Opciones de respuesta a la pregunta y reinterpretación
+
+Respuesta|Significado|Reiterpretación|Nuevo significado
+--|-----------|--|--------
+1|Ninguno|0|Ninguno
+2|Preescolar|1|Educación basica
+3|Básica Primaria (1º - 5º)|1|Educación basica
+4|Básica secundaria (6º--9º)|1|Educación basica
+5|Media (10º--13º)|1|Educación basica
+6|Técnico sin título|2|Educación profesional no completa
+7|Técnico con título|3|Educación profesional
+8|Tecnológico sin título|2|Educación profesional no completa
+9|Tecnológico con título|3|Educación profesional
+10|Universitario sin titulo|2|Educación profesional no completa
+11|Universitario con titulo|3|Educación profesional
+12|Postgrado sin titulo|3|Educación profesional
+13|Postgrado con titulo|3|Educación profesional
+
+Esta variable permite identificar el máximo nivel de educación, en conjunto con la pregunta 1, del Jefe de Hogar y de su Cónyuge en caso de que exista. La variable se reinterpreta agrupando las 13 categorías iniciales en 4, como se muestra en la tabla anterior, y se almacena en la columnas **Edu.Jefe** y **Edu.Conyuge**.
+
+#### 11.¿ Está afiliado(a) (cotizante o beneficiario(a)) a alguna entidad de seguridad social en salud? (Entidad Promotora de Salud - EPS o Entidad Promotora de Salud Subsidiada -EPS-S )	(P6090)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado
+--|-----------
+1|Sí
+2|No
+9|No sabe, no informa
+
+Las respuestas de esta pregunta se almacenan con los mismos valores y significados en la columna **Afiliacion.salud**. Posteriormente, se eliminan los registros de los hogares que dan como respuesta a esta pregunta con un 9, los cuales son 630 datos en total.
+
+#### 12. Incluyendo sala-comedor ¿de cuántos cuartos en total dispone este hogar?	(P5000)
+
+Esta variable, medida en número de cuartos, se guarda con su valor original correspondiente a cada hogar, dentro de la columna **N.cuartos**.
+
+#### 13. ¿en cuántos de esos cuartos (Pregunta 12) duermen las personas de este hogar? (P5010	)
+
+Esta variable, medida en número de cuartos, se guarda con su valor original correspondiente a cada hogar, dentro de la columna **N.cuartos.dormir**.
+
+#### 14. Cantidad de personas en el hogar	(CANT_PERSONAS_HOGAR)
+
+Esta variable, medida en número de personas, se guarda con su valor original correspondiente a cada hogar, dentro de la columna **cantidad.de.personas**.
+
+#### 15. En promedio, ¿cuántas cargas de ropa lava en su lavadora a la semana? (P5510)
+
+Opciones de respuesta a la pregunta
+
+Respuesta|Significado|Reiterpretación|Nuevo significado
+--|-----------|--|--------
+NA|No usa o no tiene lavadora|0|No usa o no tiene lavadora
+1|Una carga o menos|1|Una carga o menos
+2|2 a 4 cargas|2|2 a 4 cargas
+3|5 a 9 cargas|3|5 a 9 cargas
+4|10 a 15 cargas|4|10 a 15 cargas
+5|Más de 15 cargas|5|Más de 15 cargas
+
+La reinterpretación de esta variable solo consta de redefinir los valores NA, en 0, lo que significa que en el hogar no se tiene o no se hace uso de la lavadora, las otras opciones de respuesta se mantienen intactas. Luego, los resultados para cada hogar son almacenados en la columna **N.usos.lavadora**.
+
+#### 16. ¿Cuanto pagaron EL MES PASADO o la última vez por la electricidad consumida?	(P5018) y 17. ¿a cuántos meses corresponde ese pago (Pregunta 16)?	(P5018S1)
+
+La variable 16, medida en Pesos Colombianos (COP) y la 17, medida en Meses, se complementan para calcular el pago mensual que se hace, por hogar, de la electricidad consumida, dividiendo el valor pagado el último mes sobre la cantidad de meses a la que corresponde. En caso de que esta operación no se pueda ejecutar, se deja en 0, y posteriormente se les calcula un valor con base en la suma de la media mas un número random entre la desviación estándar negativa y la desviación estándar positiva.Esto para evitar ruido. Finalmente, esta variable calculada se almacena en la columna **Valor.Electricidad**, la cual se mide en COP/meses.
+
+
+### Conjunto de datos filtrado
+
+Nombre de variable|Tipo|Explicación
+---|---|--------------------------
+Código|Categorica|Identificador único de un hogar
+Hijos|Numérica discreta|Número de hijos del hogar
+Sexo.Jefe|Categórica|Sexo del jefe de hogar
+Sexo.Conyuge|Categórica|Sexo del conyuge del jefe de hogar
+Tipo.Union|Categórica|Estado civil del jefe de hogar
+Edad.Jefe|Continua|Años cumplidos del jefe de hogar
+Edad.Conyuge|Continua|Años cumplidos del conyuge del jefe de hogar
+Region|Categórica|REgión de Colombia en la cual se ubica la vivienda del hogar
+Cantidad.de.personas|Discreta|Total personas que viven en el hogar
+Estrato.vivienda|Categórica|Estrato socioeconómico indicado en la factura de servicios en la que se cobra la energía
+Trabajo.Jefe|Categórica|Actividad que realiza el jefe de hogar
+Trabajo.conyuge|Categórica|Actividad que realiza el conyuge del jefe de hogar
+Ingresos.totales|Continua|Ingresos totales del hogar en COP
+Uso.tecnologia.Jefe|Categórica|Frecuencia de conexión a internet del jefe de hogar
+Uso.tecnologia.conyuge|Categórica|Frecuencia de conexión a internet del conyuge del jefe de hogar
+Edu.Jefe|categórica|Máximo nivel de educación alcanzado por el jefe de hogar
+Edu.Conyuge|Categórica|Máximo nivel de educación alcanzado por el conyuge del jefe de hogar
+Afiliacion.salud|Categórica|Responde si está afiliado a la salud o no
+N.cuartos|Numérica discreta|Número de cuartos de la vivienda del hogar
+N.cuartos.dormir|Numérica discreta|Número de cuartos de la vivienda del hogar usados como habitaciones para dormir
+Valor.Electricidad|Continua|Valor en COP/mes del recibo por el uso de la electricidad en el hogar
+N.usos.Lavadora|Categórica|Número de cargas de ropa que se lavan haciendo uso de la lavadora por semana en el hogar
+
+```{r Imports echo=FALSE}
+library(dplyr)
+library(knitr)
+```
+
+
+
+```{r Lactura de datos}
+#Traemos y leemos los datos del conjunto de datos
+datos_originales <- read.csv('./DatosCSVProcesados/DatosCompletosING.csv', sep = ';', encoding = "UTF-8")
+# for (col in colnames(datos_originales)){
+#   print(type(datos_originales[[col]]))
+#   #Encoding(datos_originales[[col]]) <- "UTF-8"
+# }
+
+#print(datos_originales)
+summary(datos_originales[-1])
+kable(summary(datos_originales[-1]))
+
+#Definimos un vector con los nombres de las variables categóricas
+variables_categoricas <- c('Sexo.Jefe',
+                           'Sexo.Conyuge',
+                           'Tipo.Union',
+                           'Region',
+                           'Estrato.vivienda',
+                           'Trabajo.Jefe',
+                           'Trabajo.conyuge',
+                           'Uso.tecnologia.Jefe',
+                           'Uso.tecnologia.conyuge',
+                           'Edu.Jefe',
+                           'Edu.Conyuge',
+                           'Afiliacion.salud',
+                           'N.usos.Lavadora'
+                           )
+
+#Creamos un data frame con las variables categóricas
+datos_categoricos <- datos_originales %>% 
+  select(all_of(variables_categoricas)) %>% 
+  mutate_if(is.numeric,as.factor)
+
+#Creamos un data frame excluyendo las variables categóricas
+datos_numericos <- datos_originales %>% 
+  select(-all_of(variables_categoricas))
+
+#Juntamos ambos data frames 
+datos_tipados <- cbind(datos_numericos,datos_categoricos)
+
+#kable(summary(datos_numericos))
+
+```
+
+## Análisis descriptivo de las variables
+
+```{r Revisión de NA's}
+NAs <- as.data.frame(apply(datos_originales, 2, is.na))
+
+NAs <- NAs %>% 
+  rename(
+    Sexo_Jefe = Sexo.Jefe,
+    Sexo_Conyuge = Sexo.Conyuge,
+    Tipo_Union = Tipo.Union,
+    Edad_Jefe = Edad.Jefe,
+    Edad_Conyuge = Edad.Conyuge,
+    Cantidad_de_personas = Cantidad.de.personas,
+    Estrato_vivienda = Estrato.vivienda,
+    Trabajo_Jefe = Trabajo.Jefe,
+    Trabajo_conyuge = Trabajo.conyuge,
+    Ingresos_totales = Ingresos.totales,
+    Uso_tecnologia_Jefe = Uso.tecnologia.Jefe,
+    Uso_tecnologia_conyuge = Uso.tecnologia.conyuge,
+    Edu_Jefe = Edu.Jefe,
+    Edu_Conyuge = Edu.Conyuge,
+    Afiliacion_salud = Afiliacion.salud,
+    N_cuartos = N.cuartos,
+    N_cuartos_dormir = N.cuartos.dormir,
+    Valor_Electricidad = Valor.Electricidad,
+    N_usos_Lavadora = N.usos.Lavadora
+    )
+
+tabla_NAs<-apply(NAs, 2, sum)
+kable(tabla_NAs)
+```
+
 
 ```{r Correlación entre variables numéricas}
 
@@ -116,35 +455,40 @@ Como se ha mencionado anteriormente, en Colombia no existe una visión uniforme 
 # library(corrplot)
 # library(PerformanceAnalytics)
 # 
-datos <- read.csv('./DatosCSVProcesados/DatosCompletosING.csv', sep = ';')
+# datos <- read.csv('./DatosCSVProcesados/DatosCompletosING.csv', sep = ';')
+# # 
+# # 
+# datos$Codigo <- as.factor(datos$Codigo)
+# datos$Sexo.Jefe <- as.factor(datos$Sexo.Jefe)
+# datos$Sexo.Conyuge <- as.factor(datos$Sexo.Conyuge)
+# datos$Tipo.Union <- as.factor(datos$Tipo.Union)
+# datos$Region <- as.factor(datos$Region)
+# datos$Trabajo.Jefe <- as.factor(datos$Trabajo.Jefe)
+# datos$Trabajo.conyuge <- as.factor(datos$Trabajo.conyuge)
+# datos$Uso.tecnologia.Jefe <- as.factor(datos$Uso.tecnologia.Jefe)
+# datos$Uso.tecnologia.conyuge <- as.factor(datos$Uso.tecnologia.conyuge)
+# datos$Edu.Jefe <- as.factor(datos$Edu.Jefe)
+# datos$Edu.Conyuge <- as.factor(datos$Edu.Conyuge)
+# datos$Afiliacion.salud <- as.factor(datos$Afiliacion.salud)
+# datos$N.usos.Lavadora <- as.factor(datos$N.usos.Lavadora)
+# # 
+# # 
+# # 
+# datos_numericos <- datos%>%select(where(is.numeric))
 # 
+# datos_numericos_sin_na <- datos_numericos%>%select(-Edad.Conyuge)
 # 
-datos$Codigo <- as.factor(datos$Codigo)
-datos$Sexo.Jefe <- as.factor(datos$Sexo.Jefe)
-datos$Sexo.Conyuge <- as.factor(datos$Sexo.Conyuge)
-datos$Tipo.Union <- as.factor(datos$Tipo.Union)
-datos$Region <- as.factor(datos$Region)
-datos$Trabajo.Jefe <- as.factor(datos$Trabajo.Jefe)
-datos$Trabajo.conyuge <- as.factor(datos$Trabajo.conyuge)
-datos$Uso.tecnologia.Jefe <- as.factor(datos$Uso.tecnologia.Jefe)
-datos$Uso.tecnologia.conyuge <- as.factor(datos$Uso.tecnologia.conyuge)
-datos$Edu.Jefe <- as.factor(datos$Edu.Jefe)
-datos$Edu.Conyuge <- as.factor(datos$Edu.Conyuge)
-datos$Afiliacion.salud <- as.factor(datos$Afiliacion.salud)
-datos$N.usos.Lavadora <- as.factor(datos$N.usos.Lavadora)
+# #chart.Correlation(datos_numericos, histogram = F, pch = 19)
 # 
-# 
-# 
-datos_numericos <- datos%>%select(where(is.numeric))
-
-datos_numericos_sin_na <- datos_numericos%>%select(-Edad.Conyuge)
-
-#chart.Correlation(datos_numericos, histogram = F, pch = 19)
-
-corrplot(cor(datos_numericos_sin_na), type = "upper", order = "hclust", 
-         tl.col = "black", tl.srt = 45)
+# corrplot(cor(datos_numericos_sin_na), type = "upper", order = "hclust", 
+#          tl.col = "black", tl.srt = 45)
 
 ```
+
+# Resultados
+
+# Conclusiones
+
 # Bibliografía
 
 Alvis-Guzmán, N., Yánez-Contreras, M., Quejada-Pérez, R., Acevedo-González, K., & Del Río-Carrasquilla, F. (2010). Fecundidad y participación de la mujer en el mercado laboral en la Costa Caribe y en Colombia. Revista Gerencia y Políticas de Salud, 9(19), 90-107. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S1657-70272010000200007&lng=en&tlng=es.>

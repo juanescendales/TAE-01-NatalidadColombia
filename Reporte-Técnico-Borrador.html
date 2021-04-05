@@ -346,7 +346,7 @@ pre code {
 <p>Para generar un modelo que pueda predecir el número de hijos de los hogares colombianos es fundamenteal, filtrar de entre las posibles 715 opciones, el menor número posible de variables que se relacionen con el tema y que nos puedan llevar a una respuesta satisfactoria, para analizarlos y con en base a ellos construir un modelo. El conjunto de datos que tenemos para lograrlo tiene la particularidad de que la variable de salida que estamos buscando no se encuentra de forma explícita en ninguna de las tablas, pero hay diferentes formas de inferirla a partir de los datos que si se tienen, por lo que también hay que definirla.</p>
 <div id="variable-de-salida-número-de-hijos-por-hogar" class="section level2">
 <h2>Variable de salida (Número de hijos por hogar)</h2>
-<p>La variable de salida del modelo debe ser el número de hijos por hogar. Para calcularla, se ha tomado la pregunta <strong>P6051</strong> <em>¿Cuál es el parentezco de … con el jefe o la jefa de este hogar?</em> de la tabla <em>Características y composición del hogar</em>, la cual tiene una serie de respuestas categóricas que se muestran en la siguiente tabla</p>
+<p>La variable de salida del modelo debe ser el número de hijos por hogar. Para calcularla, se ha tomado la pregunta <strong>P6051</strong> <em>¿Cuál es el parentesco de … con el jefe o la jefa de este hogar?</em> de la tabla <em>Características y composición del hogar</em>, la cual tiene una serie de respuestas categóricas que se muestran en la siguiente tabla</p>
 <table>
 <thead>
 <tr class="header">
@@ -413,10 +413,752 @@ pre code {
 </tr>
 </tbody>
 </table>
-<p>Por simplicidad,</p>
+<p>Por simplicidad, solo observaremos los hijos que tenga el núcleo familiar principal del hogar, es decir, los hijos directos del Jefe(a) de hogar, cuya respuesta a esta pregunta debe ser 3. A estos se les hace un conteo agrupado por hogar. Además, si el jefe de hogar o su conyuge responde a la pregunta <strong>P5694</strong> de la tabla <em>Salud</em>, la cual dice <em>Si está embarazada actualmente, ¿asiste a control prenatal?</em>, cuyas opciones de respuesta son:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Si</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>No está embarazada</td>
+</tr>
+</tbody>
+</table>
+<p>Si responde con la oppción 1 o 2, se asume que este es otro hijo y se le adiciona a la agrupación hecha a partir de la primera pregunta, sin considerar un posible nacimiento múltiple o una interrupción del embarazo.</p>
 </div>
 <div id="variables-de-entrada" class="section level2">
 <h2>Variables de entrada</h2>
+<p>Como se ha mencionado anteriormente, en Colombia no existe una visión uniforme del concepto de familia, puesto que este puede variar tanto por la posición geográfica del hogar, como por aspectos económicos y socioculturales, entre los cuales destaca la percepción y autopercepción del papel que tiene la mujer dentro de la familia y de la sociedad (Pachón, 2004). La visión de familia y las condiciones socioeconómicas de un hogar influyen directamente en el número de hijos que se puede esperar de ella. Forero y Gamboa (2009) en su estudio acerca del número de hijos no planeados por mujer en Colombia, destaca que factores como el nivel de educación de la mujer, su edad, residencia, estrato socioeconómico, estado marital y su conocimiento y uso de los métodos anticonceptivos, son los factores diferenciadores entre el número de hijos no planificados de una mujer.</p>
+<p>Por otra parte, López, Silva y Sarmiento (2010) en su estudio sobre el uso de los servicios maternos en Colombia también destacan el nivel de riqueza, la participación de la mujer en la toma de decisiones del hogar, además del nivel educativo de la pareja, en caso de que la haya, son otros factores importantes para considerar al caracterizar los hogares y el tipo de familias.</p>
+<p>Otros estudios similares (Alvis et al., 2010; Torres y Vergara, 2012) también destacan la participación tanto de la mujer, como de su pareja en el mercado laboral, y resaltan la importancia del nivel educativo, la edad y la posición socioeconómica como aspectos que influyen en la planificación familiar, y, por lo tanto, en el número de hijos por hogar. En total, podemos resumir las variables consideradas en estos estudios en la siguiente lista:</p>
+<ul>
+<li>Nivel educativo de la mujer y su pareja</li>
+<li>Edad de la mujer y su pareja</li>
+<li>Residencia del hogar</li>
+<li>Estrato socioeconómico del hogar</li>
+<li>Estado marital del o los jefes de hogar</li>
+<li>Conocimiento y uso de anticonceptivos</li>
+<li>Riqueza</li>
+<li>Participación de la mujer en las decisiones del hogar</li>
+<li>Trabajo de la mujer y su pareja</li>
+</ul>
+<p>Se realizó una exploración de las preguntas y variables de la encuesta Nacional de Calidad de Vida del 2019 para relacionar y seleccionar las que se relacionen con las variables expuestas por la literatura. Los resultados los observamos en la siguiente tabla:</p>
+<table>
+<colgroup>
+<col width="2%" />
+<col width="16%" />
+<col width="13%" />
+<col width="22%" />
+<col width="11%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Código</th>
+<th>Tabla</th>
+<th>Pregunta</th>
+<th>Tipo</th>
+<th>Relación con</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>P6051</td>
+<td>Características y composición del hogar</td>
+<td>¿Cuál es el parentesco con el jefe o la jefa de este hogar?</td>
+<td>Categórica</td>
+<td>Participación de la mujer en las decisiones del hogar</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>P6020</td>
+<td>Características y composición del hogar</td>
+<td>Sexo</td>
+<td>Categórica</td>
+<td>Participación de la mujer en las decisiones del hogar</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>P6040</td>
+<td>Características y composición del hogar</td>
+<td>¿Cuántos años cumplidos tiene?</td>
+<td>Numérica discreta</td>
+<td>Edad de la mujer y su pareja</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>P5502</td>
+<td>Características y composición del hogar</td>
+<td>(Respecto al estado marital)Actualmente…:</td>
+<td>Categórica</td>
+<td>Estado marital del o los jefes de hogar</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>P6240</td>
+<td>Fuerza de trabajo</td>
+<td>¿en que actividad ocupó la mayor parte del tiempo la semana pasada?</td>
+<td>Categórica</td>
+<td>Trabajo de la mujer y su pareja</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>I_HOGAR</td>
+<td>Servicios del hogar</td>
+<td>Ingreso mensual total del hogar</td>
+<td>Numérica continua</td>
+<td>Riqueza</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>P1084</td>
+<td>Tecnologías de información y comunicación</td>
+<td>¿Con qué frecuencia utiliza internet (en cualquier lugar y desde cualquier dispositivo)?</td>
+<td>Categórica</td>
+<td>Conocimiento y uso de anticonceptivos</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>REGION</td>
+<td>Datos de la vivienda</td>
+<td>Región</td>
+<td>Categórica</td>
+<td>Residencia del hogar</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>P8520S1A1</td>
+<td>Datos de la vivienda</td>
+<td>Estrato</td>
+<td>Categórica</td>
+<td>Estrato socioeconómico del hogar</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>P8587</td>
+<td>Educación</td>
+<td>¿cuál es el nivel educativo más alto alcanzado y el último año o grado aprobado en este nivel?</td>
+<td>Categórica</td>
+<td>Nivel educativo de la mujer y su pareja</td>
+</tr>
+</tbody>
+</table>
+<p>Además, también se incluyen las siguientes variables que a consideranción de los investigadores, pueden dar pista de la cantidad de hijos de un hogar, debido a que pueden dar cuenta de cuántas personas la componen, como es el caso de la afilización a salud, pues las familias numerosas pueden tender al régimen subsidiado por ser más económico, el conteo de salas y cuartos, así como la cantidad de personas en el hogar, y el uso de la lavadora, y la cuenta de la energía eléctrica, que puede aumentar mientras más personas compongan el núcleo familiar. Las variables seleccionadas las encontramos en la siguiente tabla:</p>
+<table style="width:100%;">
+<colgroup>
+<col width="4%" />
+<col width="25%" />
+<col width="20%" />
+<col width="33%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Código</th>
+<th>Tabla</th>
+<th>Pregunta</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>11</td>
+<td>P6090</td>
+<td>Salud</td>
+<td>¿ Está afiliado(a) (cotizante o beneficiario(a)) a alguna entidad de seguridad social en salud? (Entidad Promotora de Salud - EPS o Entidad Promotora de Salud Subsidiada -EPS-S )</td>
+<td>Categórica</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>P5000</td>
+<td>Servicios del hogar</td>
+<td>Incluyendo sala-comedor ¿de cuántos cuartos en total dispone este hogar?</td>
+<td>Numérica discreta</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>P5010</td>
+<td>Servicios del hogar</td>
+<td>¿en cuántos de esos cuartos (P5000) duermen las personas de este hogar?</td>
+<td>Numérica discreta</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>CANT_PERSONAS_HOGAR</td>
+<td>Servicios del hogar</td>
+<td>Cantidad de personas en el hogar</td>
+<td>Numérica continua</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>P5510</td>
+<td>Uso de energéticos en el hogar</td>
+<td>En promedio, ¿cuántas cargas de ropa lava en su lavadora a la semana?</td>
+<td>Categórica</td>
+</tr>
+<tr class="even">
+<td>16</td>
+<td>P5018</td>
+<td>Uso de energéticos en el hogar</td>
+<td>¿Cuanto pagaron EL MES PASADO o la última vez por la electricidad consumida?</td>
+<td>Continua</td>
+</tr>
+<tr class="odd">
+<td>17</td>
+<td>P5018S1</td>
+<td>Uso de energéticos en el hogar</td>
+<td>¿a cuántos meses corresponde ese pago (P5018)?</td>
+<td>Numérica discreta</td>
+</tr>
+</tbody>
+</table>
+<p>De ahora en adelante, para referirse a las preguntas se hará referencia a la numeración establecida en las tablas anteriores</p>
+<div id="reinterpretación-de-las-variables-de-entrada" class="section level3">
+<h3>Reinterpretación de las variables de entrada</h3>
+<p>La contrucción de la base de datos propia para el modelamiento y entrenamiento del modelo predictivo se realizó explorando y reinterpretando algunas de las variables escogidas, para finalmente obtener un conjunto de datos más limpio y fácil de analizar. Para esto se hizo uso de <em>scripts</em> de autoria propia escritos en <strong>Python</strong>, los cuales se pueden encontrar en el Repositorio online del proyecto, en la carpeta <em>codigosPY</em> <a href="https://github.com/juanescendales/TAE-01-NatalidadColombia/tree/main/codigosPY" class="uri">https://github.com/juanescendales/TAE-01-NatalidadColombia/tree/main/codigosPY</a> En esta carpeta encontramos el archivo llamado <em>ReorganizarTablas.py</em> que se encarga de hacer un llamado a los demás <em>scripts</em> de la carpeta, los cuales cada uno se encarga de hacer la extracción de datos de una tabla en particular, siguiendo los procedimientos explicados en los siguientes puntos:</p>
+<div id="cuál-es-el-parentesco-con-el-jefe-o-la-jefa-de-este-hogar-p6051" class="section level4">
+<h4>1. ¿Cuál es el parentesco con el jefe o la jefa de este hogar? (P6051)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Jefe(a) del hogar</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Pareja, esposo(a), conyuge, comañero(a)</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Hijo(a), hijastro(a)</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Nieto(a)</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Padre, madre, padrastro, madrastra</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Suegro o suegra</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Hermano(a), hermanastro(a)</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Yerno, nuera</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Otro(a) pariente del (de la) jefe(a)</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Empleado(a) del servicio doméstico</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>Parientes del servicio doméstico</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>Trabajador</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>Pensionista</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>Otro(a) no pariente</td>
+</tr>
+</tbody>
+</table>
+<p>Esta pregunta identifica tanto al Jefe de hogar, que siempre existe para cada hogar, como a la pareja del jefe de hogar, en caso de que esta exista, los cuales se encuentran con el valor respuesta de 1 y 2 respectivamente. A excepción de los que respondan 3, que también son usados en la variable de salida, las otras respuestas no se tendrán en cuenta</p>
+</div>
+<div id="sexo-p6020" class="section level4">
+<h4>2. Sexo (P6020)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Hombre</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Mujer</td>
+</tr>
+</tbody>
+</table>
+<p>Esta variable, en conjunto con la pregunta 1, permite inferir el sexo tanto del Jefe de hogar, como de su pareja en caso de que exista, para crear dos variables llamadas <strong>Sexo.Jefe</strong> y <strong>Sexo.Conyuge</strong> las cuales tendrán las mismas opciones de respuesta a esta pregunta, y NA en caso de que no exista</p>
+</div>
+<div id="cuántos-años-cumplidos-tiene-p6040" class="section level4">
+<h4>3. ¿Cuántos años cumplidos tiene? (P6040)</h4>
+<p>Esta variable, expresada en años, en conjunto con la pregunta 1, permite inferir la edad tanto del Jefe de hogar, como de su pareja en caso de que exista, para crear dos variables que llamadas <strong>Edad.Jefe</strong> y <strong>Edad.Conyuge</strong> las cuales tendrán el mismo valor literal que esta pregunta, o un NA en caso de que no exista.</p>
+</div>
+<div id="respecto-al-estado-maritalactualmente-p5502" class="section level4">
+<h4>4. (Respecto al estado marital)Actualmente…: (P5502)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>No está casado(a) y vive en pareja hace menos de dos años</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>No está casado(a) y vive en pareja hace dos años o más</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Está viudo(a)</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Está separado(a) o divorciado(a)</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Está soltero(a)</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Está casado(a)</td>
+</tr>
+</tbody>
+</table>
+<p>Al identificar al jefe del hogar con la pregunta 1, también se puede identificar su estado civil o marital, y se lo asignamos al hogar correspondiente con los mismos valores y significados bajo la variable <strong>Tipo.Union</strong></p>
+</div>
+<div id="en-que-actividad-ocupó-la-mayor-parte-del-tiempo-la-semana-pasada-p6240" class="section level4">
+<h4>5. ¿en que actividad ocupó la mayor parte del tiempo la semana pasada? (P6240)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Trabajando</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Buscando trabajo</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Estudiando</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Oficios del hogar</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Incapacitado permanentemente para trabajar</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Otra actividad</td>
+</tr>
+</tbody>
+</table>
+<p>Esta pregunta permite inferir el tipo de actividad laboral tanto del Jefe de hogar como de su conyuge, haciendo uso de las mismas categorías y significados dentro de las variables <strong>Trabajo.Jefe</strong> y <strong>Trabajo.conyuge</strong></p>
+</div>
+<div id="ingreso-mensual-total-del-hogar-i_hogar" class="section level4">
+<h4>6. Ingreso mensual total del hogar (I_HOGAR)</h4>
+<p>A cada hogar se le asigna el valor de esta variable, que está expresada en Pesos Colobmianos (COP) y se almacena dentro de la variable <strong>Ingresos.totales</strong>. En caso de que el valor sea nulo o igual a 0, para evitar el ruido, se le asigna un valor equivalente a la media de los valores no nulos, mas un número aleatorio que se encuentre entre la desviación estándar negativa y la desviación estándar positiva.</p>
+</div>
+<div id="con-qué-frecuencia-utiliza-internet-en-cualquier-lugar-y-desde-cualquier-dispositivo-p1084" class="section level4">
+<h4>7. ¿Con qué frecuencia utiliza internet (en cualquier lugar y desde cualquier dispositivo)? (P1084)</h4>
+<p>Opciones de respuesta a la pregunta y reinterpretación</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+<th>Reiterpretación</th>
+<th>Nuevo significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Todos los días de la semana</td>
+<td>2</td>
+<td>Conexión frecuente</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Al menos una vez a la semana, pero no cada día</td>
+<td>2</td>
+<td>Conexión frecuente</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Al menos una vez al mes, pero no cada semana</td>
+<td>1</td>
+<td>Conexión ocacional</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Al menos una vez al año, pero no cada mes</td>
+<td>1</td>
+<td>Conexión ocacional</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>No utiliza internet</td>
+<td>0</td>
+<td>No se conecta</td>
+</tr>
+</tbody>
+</table>
+<p>Con ayuda de la pregunta 1, se puede identificar qué tan frecuente es el uso de internet, tanto por parte del Jefe de hogar, como de su cónyuge si este existe, reinterpretando sus valores y significados como se muestra en la tabla anterior, y los valores correspondientes se almacenan en las variables <strong>Uso.tecnologia.jefe</strong> y <strong>Uso.tecnologia.conyuge</strong></p>
+</div>
+<div id="región-region" class="section level4">
+<h4>8. Región (REGION)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Caribe</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Oriental</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Central</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Pacífica(sin valle)</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Bogotá</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Antioquia</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Valle del cauca</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>San Andrés</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Orinoquía - Amazonía</td>
+</tr>
+</tbody>
+</table>
+<p>Esta pregunta ubica a cada hogar en una de las 9 regiones geográficas del país como se indica en la tabla anterior. La respuesta de cada hogar a esta respuesta se almacena en la variable <strong>Region</strong>, sin modificar su interpretación original</p>
+</div>
+<div id="estrato-p8520s1a1" class="section level4">
+<h4>9. Estrato (P8520S1A1)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Bajo - Bajo</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Bajo</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Medio - Bajo</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Medio</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Medio - Alto</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Alto</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>Planta eléctrica</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>No conoce el estrato o no cuenta con recibo de pago.</td>
+</tr>
+<tr class="odd">
+<td>0</td>
+<td>Recibos sin estrato o el servicio es pirata</td>
+</tr>
+</tbody>
+</table>
+<p>Originalmente, la pregunta va dirigida a responder el estrato con el que se paga la factura eléctrica, por eso, además de los típicos estrátos del 1 al 6, nos encontramos con numeración de 8 y 0, que se relacionan más al tipo de acceso a la energía con el que cuentan, que con su estrato socioeconómico. A pesar de esto, estas dos categorías se dejaron intactas, pues, a pesar de que no son los valores estándar para los estratos en Colombia, en si mismo no se pueden clasificar dentro de otro estrato con la información que se posee, además, diferenciar a los hogares con estas características particulares puede ser de ayuda en el momento de la construcción del modelo. Por otra parte, los hogares cuyos valores son 9 o que no tienen valor en esta pregunta, que son aproximadamente 7062 hogares, serán descartados de la base de datos final, puesto que no hay forma de clasificarlos sin ambigüedad. Los valores de esta variable quedan almacenados en la columna <strong>Estrato.vivienda</strong>.</p>
+</div>
+<div id="cuál-es-el-nivel-educativo-más-alto-alcanzado-y-el-último-año-o-grado-aprobado-en-este-nivel-p8587" class="section level4">
+<h4>10. ¿cuál es el nivel educativo más alto alcanzado y el último año o grado aprobado en este nivel? (P8587)</h4>
+<p>Opciones de respuesta a la pregunta y reinterpretación</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+<th>Reiterpretación</th>
+<th>Nuevo significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Ninguno</td>
+<td>0</td>
+<td>Ninguno</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Preescolar</td>
+<td>1</td>
+<td>Educación basica</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Básica Primaria (1º - 5º)</td>
+<td>1</td>
+<td>Educación basica</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Básica secundaria (6º–9º)</td>
+<td>1</td>
+<td>Educación basica</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Media (10º–13º)</td>
+<td>1</td>
+<td>Educación basica</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Técnico sin título</td>
+<td>2</td>
+<td>Educación profesional no completa</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Técnico con título</td>
+<td>3</td>
+<td>Educación profesional</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Tecnológico sin título</td>
+<td>2</td>
+<td>Educación profesional no completa</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Tecnológico con título</td>
+<td>3</td>
+<td>Educación profesional</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Universitario sin titulo</td>
+<td>2</td>
+<td>Educación profesional no completa</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>Universitario con titulo</td>
+<td>3</td>
+<td>Educación profesional</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>Postgrado sin titulo</td>
+<td>3</td>
+<td>Educación profesional</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>Postgrado con titulo</td>
+<td>3</td>
+<td>Educación profesional</td>
+</tr>
+</tbody>
+</table>
+<p>Esta variable permite identificar el máximo nivel de educación, en conjunto con la pregunta 1, del Jefe de Hogar y de su Cónyuge en caso de que exista. La variable se reinterpreta agrupando las 13 categorías iniciales en 4, como se muestra en la tabla anterior, y se almacena en la columnas <strong>Edu.Jefe</strong> y <strong>Edu.Conyuge</strong>.</p>
+</div>
+<div id="está-afiliadoa-cotizante-o-beneficiarioa-a-alguna-entidad-de-seguridad-social-en-salud-entidad-promotora-de-salud---eps-o-entidad-promotora-de-salud-subsidiada--eps-s-p6090" class="section level4">
+<h4>11.¿ Está afiliado(a) (cotizante o beneficiario(a)) a alguna entidad de seguridad social en salud? (Entidad Promotora de Salud - EPS o Entidad Promotora de Salud Subsidiada -EPS-S ) (P6090)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Sí</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>No sabe, no informa</td>
+</tr>
+</tbody>
+</table>
+<p>Las respuestas de esta pregunta se almacenan con los mismos valores y significados en la columna <strong>Afiliacion.salud</strong>. Posteriormente, se eliminan los registros de los hogares que dan como respuesta a esta pregunta con un 9, los cuales son 630 datos en total.</p>
+</div>
+<div id="incluyendo-sala-comedor-de-cuántos-cuartos-en-total-dispone-este-hogar-p5000" class="section level4">
+<h4>12. Incluyendo sala-comedor ¿de cuántos cuartos en total dispone este hogar? (P5000)</h4>
+<p>Esta variable, medida en número de cuartos, se guarda con su valor original correspondiente a cada hogar, dentro de la columna <strong>N.cuartos</strong>.</p>
+</div>
+<div id="en-cuántos-de-esos-cuartos-pregunta-12-duermen-las-personas-de-este-hogar-p5010" class="section level4">
+<h4>13. ¿en cuántos de esos cuartos (Pregunta 12) duermen las personas de este hogar? (P5010 )</h4>
+<p>Esta variable, medida en número de cuartos, se guarda con su valor original correspondiente a cada hogar, dentro de la columna <strong>N.cuartos.dormir</strong>.</p>
+</div>
+<div id="cantidad-de-personas-en-el-hogar-cant_personas_hogar" class="section level4">
+<h4>14. Cantidad de personas en el hogar (CANT_PERSONAS_HOGAR)</h4>
+<p>Esta variable, medida en número de personas, se guarda con su valor original correspondiente a cada hogar, dentro de la columna <strong>cantidad.de.personas</strong>.</p>
+</div>
+<div id="en-promedio-cuántas-cargas-de-ropa-lava-en-su-lavadora-a-la-semana-p5510" class="section level4">
+<h4>15. En promedio, ¿cuántas cargas de ropa lava en su lavadora a la semana? (P5510)</h4>
+<p>Opciones de respuesta a la pregunta</p>
+<table>
+<thead>
+<tr class="header">
+<th>Respuesta</th>
+<th>Significado</th>
+<th>Reiterpretación</th>
+<th>Nuevo significado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>NA</td>
+<td>No usa o no tiene lavadora</td>
+<td>0</td>
+<td>No usa o no tiene lavadora</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>Una carga o menos</td>
+<td>1</td>
+<td>Una carga o menos</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2 a 4 cargas</td>
+<td>2</td>
+<td>2 a 4 cargas</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>5 a 9 cargas</td>
+<td>3</td>
+<td>5 a 9 cargas</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>10 a 15 cargas</td>
+<td>4</td>
+<td>10 a 15 cargas</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>Más de 15 cargas</td>
+<td>5</td>
+<td>Más de 15 cargas</td>
+</tr>
+</tbody>
+</table>
+<p>La reinterpretación de esta variable solo consta de redefinir los valores NA, en 0, lo que significa que en el hogar no se tiene o no se hace uso de la lavadora, las otras opciones de respuesta se mantienen intactas. Luego, los resultados para cada hogar son almacenados en la columna <strong>N.usos.lavadora</strong>.</p>
+</div>
+<div id="cuanto-pagaron-el-mes-pasado-o-la-última-vez-por-la-electricidad-consumida-p5018-y-17.-a-cuántos-meses-corresponde-ese-pago-pregunta-16-p5018s1" class="section level4">
+<h4>16. ¿Cuanto pagaron EL MES PASADO o la última vez por la electricidad consumida? (P5018) y 17. ¿a cuántos meses corresponde ese pago (Pregunta 16)? (P5018S1)</h4>
+<p>La variable 16, medida en Pesos Colombianos (COP) y la 17, medida en Meses, se complementan para calcular el pago mensual que se hace, por hogar, de la electricidad consumida, dividiendo el valor pagado el último mes sobre la cantidad de meses a la que corresponde. En caso de que esta operación no se pueda ejecutar, se deja en 0, y posteriormente se les calcula un valor con base en la suma de la media mas un número random entre la desviación estándar negativa y la desviación estándar positiva.Esto para evitar ruido. Finalmente, esta variable calculada se almacena en la columna <strong>Valor.Electricidad</strong>, la cual se mide en COP/meses.</p>
+</div>
+</div>
+<div id="conjunto-de-datos-filtrado" class="section level3">
+<h3>Conjunto de datos filtrado</h3>
+<pre class="r"><code>datos &lt;- read.csv(&#39;./DatosCSVProcesados/DatosCompletosING.csv&#39;, sep = &#39;;&#39;)</code></pre>
+</div>
+</div>
+<div id="análisis-descriptivo-de-las-variables" class="section level2">
+<h2>Análisis descriptivo de las variables</h2>
 <pre class="r"><code># library(readxl)
 # library(dplyr)
 # library(ggplot2)
@@ -426,8 +1168,8 @@ pre code {
 # library(PerformanceAnalytics)
 # 
 # datos &lt;- read.csv(&#39;./DatosCSVProcesados/DatosCompletosING.csv&#39;, sep = &#39;;&#39;)
-# 
-# 
+# # 
+# # 
 # datos$Codigo &lt;- as.factor(datos$Codigo)
 # datos$Sexo.Jefe &lt;- as.factor(datos$Sexo.Jefe)
 # datos$Sexo.Conyuge &lt;- as.factor(datos$Sexo.Conyuge)
@@ -441,16 +1183,32 @@ pre code {
 # datos$Edu.Conyuge &lt;- as.factor(datos$Edu.Conyuge)
 # datos$Afiliacion.salud &lt;- as.factor(datos$Afiliacion.salud)
 # datos$N.usos.Lavadora &lt;- as.factor(datos$N.usos.Lavadora)
-# 
-# 
-# 
+# # 
+# # 
+# # 
 # datos_numericos &lt;- datos%&gt;%select(where(is.numeric))
-
-#chart.Correlation(datos_numericos, histogram = F, pch = 19)
-
-#corrplot(cor(datos_numericos), type = &quot;upper&quot;, order = &quot;hclust&quot;, 
-#         tl.col = &quot;black&quot;, tl.srt = 45)</code></pre>
+# 
+# datos_numericos_sin_na &lt;- datos_numericos%&gt;%select(-Edad.Conyuge)
+# 
+# #chart.Correlation(datos_numericos, histogram = F, pch = 19)
+# 
+# corrplot(cor(datos_numericos_sin_na), type = &quot;upper&quot;, order = &quot;hclust&quot;, 
+#          tl.col = &quot;black&quot;, tl.srt = 45)</code></pre>
 </div>
+</div>
+<div id="resultados" class="section level1">
+<h1>Resultados</h1>
+</div>
+<div id="conclusiones" class="section level1">
+<h1>Conclusiones</h1>
+</div>
+<div id="bibliografía" class="section level1">
+<h1>Bibliografía</h1>
+<p>Alvis-Guzmán, N., Yánez-Contreras, M., Quejada-Pérez, R., Acevedo-González, K., &amp; Del Río-Carrasquilla, F. (2010). Fecundidad y participación de la mujer en el mercado laboral en la Costa Caribe y en Colombia. Revista Gerencia y Políticas de Salud, 9(19), 90-107. Retrieved April 04, 2021, from <a href="http://www.scielo.org.co/scielo.php?script=sci_arttext&amp;pid=S1657-70272010000200007&amp;lng=en&amp;tlng=es." class="uri">http://www.scielo.org.co/scielo.php?script=sci_arttext&amp;pid=S1657-70272010000200007&amp;lng=en&amp;tlng=es.</a></p>
+<p>Forero, N., &amp; Gamboa, L. F. (2009). Family Size in Colombia: Guessing or Planning? Intended vs. Actual Family Size in Colombia. Desarrollo y Sociedad, (64), 85-118. Retrieved April 04, 2021, from <a href="http://www.scielo.org.co/scielo.php?script=sci_arttext&amp;pid=S0120-35842009000200004&amp;lng=en&amp;tlng=en." class="uri">http://www.scielo.org.co/scielo.php?script=sci_arttext&amp;pid=S0120-35842009000200004&amp;lng=en&amp;tlng=en.</a></p>
+<p>López, Á. R., Silva, A. C., &amp; Sarmiento, J. A. (2014). Autonomía femenina y factores asociados al uso de servicios maternos en Colombia (2010). Revista Latinoamericana de Ciencias Sociales, Niñez y Juventud, 12(1), 325-337. <a href="https://doi.org/10.11600/1692715x.12119081413" class="uri">https://doi.org/10.11600/1692715x.12119081413</a></p>
+<p>Pachón, X. (2004). La familia en Colombia a lo largo del siglo XX [Ebook] (1st ed., pp. 145,159). Bogotá: Universidad Nacional de Colombia. Retrieved from <a href="https://www.studocu.com/co/document/universidad-de-pamplona/sociedad-familia-y-salud/resumenes/la-familia-en-colombia-a-lo-largo-del-siglo-xx/8981874/view" class="uri">https://www.studocu.com/co/document/universidad-de-pamplona/sociedad-familia-y-salud/resumenes/la-familia-en-colombia-a-lo-largo-del-siglo-xx/8981874/view</a></p>
+<p>Torres Tabares, C. M., &amp; Vergara MUñoz, E. C. (2012). Características sociodemográficas de personas sometidas a esterilización quirúrgica (Medellín 2006-2010) (Sociodemographic characteristics of people subjected to surgica l sterilization (Medellín 2006-2010)). CES Salud Pública, 3(2), 129-140. <a href="https://doi.org/10.21615/1841" class="uri">https://doi.org/10.21615/1841</a></p>
 </div>
 
 
