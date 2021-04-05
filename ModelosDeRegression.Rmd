@@ -108,6 +108,7 @@ particion <- data_split(datos_completos_codificados)
 datos_tr <- particion$entrenamiento
 datos_tr_x <- subset(datos_tr, select = -c(Hijos))
 datos_vl <- particion$validacion
+datos_vl_x <- subset(datos_vl, select = -c(Hijos))
 ```
 
 ## Creacion de modelos
@@ -163,11 +164,23 @@ plot(knn_modelo_load,main = "K vs RMSE")
 ```
 
 ```{r}
-predicciones <- predict(knn_modelo_load,datos_vl)
+predicciones <- predict(knn_modelo_load,datos_vl_x)
 ```
 
 ```{r}
+mse <-sum((predicciones - datos_vl$Hijos)^2)/length(datos_vl$Hijos)
+rmse <-sqrt(mse)
+print(mse)
+print(rmse)
+```
+## Creacion del modelo con todos los datos
 
+```{r}
+knn_modelo_final<-knn_creacion_modelo(datos_completos_codificados,10:18)
+print(knn_modelo_final)
+```
+```{r}
+saveRDS(knn_modelo_final,"./Modelos/knn_modelo_final.rds")
 ```
 
 
