@@ -1,3 +1,11 @@
+'''
+    File name: buscadorIndiceTabla.py
+    Author: Alejandro Jimenez Franco
+    Date created: 05/04/2021
+    Date last modified: 05/04/2021
+    Python Version: 3.7
+'''
+
 import csv
 
 pathArchivo = '../DatosCSV/Uso de energeticos del hogar.csv'

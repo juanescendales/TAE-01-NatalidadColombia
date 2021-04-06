@@ -1,3 +1,11 @@
+'''
+    File name: TablaFuerzaTrabajo.py
+    Author: Alejandro Jimenez Franco
+    Date created: 05/04/2021
+    Date last modified: 05/04/2021
+    Python Version: 3.7
+'''
+
 import csv
 
 # Función para procesar los datos de los datos de Vivienda

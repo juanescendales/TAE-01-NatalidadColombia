@@ -1,8 +1,12 @@
-# Libreria csv para trabajar con archivos csv
+'''
+    File name: ReorganizarTablas.py
+    Author: Alejandro Jimenez Franco
+    Date created: 05/04/2021
+    Date last modified: 05/04/2021
+    Python Version: 3.7
+'''
+
 import csv
-import re
-import numpy
-import random
 from TablaSalud import datosSalud
 from TablaCaracCompHogar import datosCaracCompHogar
 from TablaSHogar import datosSHogar

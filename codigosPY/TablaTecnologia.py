@@ -1,3 +1,11 @@
+'''
+    File name: TablaTecnologia.py
+    Author: Alejandro Jimenez Franco
+    Date created: 05/04/2021
+    Date last modified: 05/04/2021
+    Python Version: 3.7
+'''
+
 import csv
 
 # Función para procesar los datos de Tecnologias de informacion y comunicacion
@@ -31,7 +39,7 @@ def datosTecnologia(datos):
             index += 1
 
         # Reinterpreto el uso de tecnolgia de Jefe y Conyuge
-        # 0 no uso, 1 uso poco 2 mucho uso
+        # 0 no usa internet, 1 poco uso del internet 2 usa mucho el internet
         if(datos[index][2] == cols[3]):
             if(cols[17] == '5'):
                 datos[index][15] = 0
