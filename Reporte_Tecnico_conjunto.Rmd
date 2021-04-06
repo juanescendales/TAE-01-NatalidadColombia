@@ -1,12 +1,16 @@
 ---
-title: "Test1"
-author: "Santiago Alexis Valencia Zapata"
+title: "Reporte técnico - Número de hijos en hogares colombianos"
+author: "Juan Esteban Cendales Sora\nDaniel Escobar David\nAlejandro Jiménez Franco\nJuan José Sapuyes Pino\nSantiago Alexis Valencia Zapata"
 date: "5/4/2021"
-output: html_document
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    math: katex
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F, message = F, warning = F,fig.width=4, fig.height=3.6,fig.align="center")
+knitr::opts_chunk$set(echo = T, message = F, warning = F,fig.width=4, fig.height=3.6,fig.align="center")
 ```
 
 # Intoducción
@@ -14,6 +18,10 @@ knitr::opts_chunk$set(echo = F, message = F, warning = F,fig.width=4, fig.height
 El número de hijos de un hogar puede ser determinante al momento de ofrecer un servicio financiero, por ejemplo, las empresas que prestan servicios pensionales en Colombia consideran el número de hijos al momento de ofrecer el monto total de una pensión, pues, al momento de la persona morir, se espera que la pensión pueda sostener a los hijos del beneficiado hasta que se cumplan ciertos requisitos. Un número mayor de hijos implica para el fondo de pensiones, mayores gastos a largo plazo. De igual manera, en las entidades bancarias, al momento de analizar los factores de riesgo para la entrega de un préstamo, también se tiene en cuenta el número de hijos en el hogar, puesto que una persona que tenga muchos más hijos tiende a gastar más para poder cubrir las necesidades de estos, lo que puede desembocar que en algún momento le sea mucho más difícil pagar el préstamo que se le ofrece en comparación con otra persona que tiene menos hijos o que no los tiene.
 
 Con esta motivación, el estudio aquí presentado tiene como finalidad generar un modelo predictivo para el número de hijos de los hogares colombianos, que pueda ser utilizado por empresas que ofrezcan servicios financieros, para que, puedan estimar con una alta precisión, cuál es el número de hijos que tiene un hogar, en caso de que este dato se desconozca o se tengan dudas sobre él, analizando otras características del hogar de la persona que se está analizando.
+
+# Retos
+
+# Materiales y métodos
 
 ## Base de datos inicial
 
@@ -52,11 +60,11 @@ Al observar la cantidad de datos de la base, podemos observar que se encuestaron
 * Entre Hogares y Personas: **DIRECTORIO** y **SECUENCIA_ENCUESTA** de la tabla de hogares, que en la tabla de personas equivale a **DIRECTORIO** y **SECUENCIA_P**
 * Entre personas: **DIRECTORIO**, **SECUENCIA_ENCUESTA** y **SECUENCIA_P**
 
-# Selección de variables y del tipo de modelo
+## Selección de variables y del tipo de modelo
 
 Para generar un modelo que pueda predecir el número de hijos de los hogares colombianos es fundamenteal, filtrar de entre las posibles 715 opciones, el menor número posible de variables que se relacionen con el tema y que nos puedan llevar a una respuesta satisfactoria, para analizarlos y con en base a ellos construir un modelo. El conjunto de datos que tenemos para lograrlo tiene la particularidad de que la variable de salida que estamos buscando no se encuentra de forma explícita en ninguna de las tablas, pero hay diferentes formas de inferirla a partir de los datos que si se tienen, por lo que también hay que definirla.
 
-## Variable de salida (Número de hijos por hogar)
+### Variable de salida (Número de hijos por hogar)
 
 La variable de salida del modelo debe ser el número de hijos por hogar. Para calcularla, se ha tomado la pregunta **P6051** *¿Cuál es el parentesco de ... con el jefe o la jefa de este hogar?* de la tabla *Características y composición del hogar*, la cual tiene una serie de respuestas categóricas que se muestran en la siguiente tabla
 
@@ -87,7 +95,7 @@ Respuesta|Significado
 
 Si responde con la oppción 1 o 2, se asume que este es otro hijo y se le adiciona a la agrupación hecha a partir de la primera pregunta, sin considerar un posible nacimiento múltiple o una interrupción del embarazo.
 
-## Variables de entrada
+### Variables de entrada
 
 Como se ha mencionado anteriormente, en Colombia no existe una visión uniforme del concepto de familia, puesto que este puede variar tanto por la posición geográfica del hogar, como por aspectos económicos y socioculturales, entre los cuales destaca la percepción y autopercepción del papel que tiene la mujer dentro de la familia y de la sociedad (Pachón, 2004). La visión de familia y las condiciones socioeconómicas de un hogar influyen directamente en el número de hijos que se puede esperar de ella. Forero y Gamboa (2009) en su estudio acerca del número de hijos no planeados por mujer en Colombia, destaca que factores como el nivel de educación de la mujer, su edad, residencia, estrato socioeconómico, estado marital y su conocimiento y uso de los métodos anticonceptivos, son los factores diferenciadores entre el número de hijos no planificados de una mujer.
 
@@ -136,12 +144,12 @@ Además, también se incluyen las siguientes variables que a consideranción de 
 
 De ahora en adelante, para referirse a las preguntas se hará referencia a la numeración establecida en las tablas anteriores
 
-### Reinterpretación de las variables de entrada
+#### Reinterpretación de las variables de entrada
 
 La contrucción de la base de datos propia para el modelamiento y entrenamiento del modelo predictivo se realizó explorando y reinterpretando algunas de las variables escogidas, para finalmente obtener un conjunto de datos más limpio y fácil de analizar. Para esto se hizo uso de *scripts* de autoria propia escritos en **Python**, los cuales se pueden encontrar en el Repositorio online del proyecto, en la carpeta *codigosPY* <https://github.com/juanescendales/TAE-01-NatalidadColombia/tree/main/codigosPY>
 En esta carpeta encontramos el archivo llamado *ReorganizarTablas.py* que se encarga de hacer un llamado a los demás *scripts* de la carpeta, los cuales cada uno se encarga de hacer la extracción de datos de una tabla en particular, siguiendo los procedimientos explicados en los siguientes puntos:
 
-#### 1. ¿Cuál es el parentesco con el jefe o la jefa de este hogar? (P6051)
+##### 1. ¿Cuál es el parentesco con el jefe o la jefa de este hogar? (P6051)
 
 Opciones de respuesta a la pregunta
 
@@ -164,7 +172,7 @@ Respuesta|Significado
 
 Esta pregunta identifica tanto al Jefe de hogar, que siempre existe para cada hogar, como a la pareja del jefe de hogar, en caso de que esta exista, los cuales se encuentran con el valor respuesta de 1 y 2 respectivamente. A excepción de los que respondan 3, que también son usados en la variable de salida, las otras respuestas no se tendrán en cuenta
 
-#### 2. Sexo (P6020)
+##### 2. Sexo (P6020)
 
 Opciones de respuesta a la pregunta
 
@@ -175,11 +183,11 @@ Respuesta|Significado
 
 Esta variable, en conjunto con la pregunta 1, permite inferir el sexo tanto del Jefe de hogar, como de su pareja en caso de que exista, para crear dos variables llamadas **Sexo.Jefe** y **Sexo.Conyuge** las cuales tendrán las mismas opciones de respuesta a esta pregunta, y NA en caso de que no exista
 
-#### 3. ¿Cuántos años cumplidos tiene? (P6040)
+##### 3. ¿Cuántos años cumplidos tiene? (P6040)
 
 Esta variable, expresada en años, en conjunto con la pregunta 1, permite inferir la edad tanto del Jefe de hogar, como de su pareja en caso de que exista, para crear dos variables que llamadas **Edad.Jefe** y **Edad.Conyuge** las cuales tendrán el mismo valor literal que esta pregunta, o un NA en caso de que no exista.
 
-#### 4. (Respecto al estado marital)Actualmente…: (P5502)
+##### 4. (Respecto al estado marital)Actualmente…: (P5502)
 
 Opciones de respuesta a la pregunta
 
@@ -194,7 +202,7 @@ Respuesta|Significado
 
 Al identificar al jefe del hogar con la pregunta 1, también se puede identificar su estado civil o marital, y se lo asignamos al hogar correspondiente con los mismos valores y significados bajo la variable **Tipo.Union**
 
-#### 5. ¿en que actividad ocupó la mayor parte del tiempo la semana pasada? (P6240)
+##### 5. ¿en que actividad ocupó la mayor parte del tiempo la semana pasada? (P6240)
 
 Opciones de respuesta a la pregunta
 
@@ -209,11 +217,11 @@ Respuesta|Significado
 
 Esta pregunta permite inferir el tipo de actividad laboral tanto del Jefe de hogar como de su conyuge, haciendo uso de las mismas categorías y significados dentro de las variables **Trabajo.Jefe** y **Trabajo.conyuge**
 
-#### 6. Ingreso mensual total del hogar (I_HOGAR)
+##### 6. Ingreso mensual total del hogar (I_HOGAR)
 
 A cada hogar se le asigna el valor de esta variable, que está expresada en Pesos Colobmianos (COP) y se almacena dentro de la variable **Ingresos.totales**. En caso de que el valor sea nulo o igual a 0, para evitar el ruido, se le asigna un valor equivalente a la media de los valores no nulos, mas un número aleatorio que se encuentre entre la desviación estándar negativa y la desviación estándar positiva.
 
-#### 7. ¿Con qué frecuencia utiliza internet (en cualquier lugar y desde cualquier dispositivo)? (P1084)
+##### 7. ¿Con qué frecuencia utiliza internet (en cualquier lugar y desde cualquier dispositivo)? (P1084)
 
 Opciones de respuesta a la pregunta y reinterpretación
 
@@ -227,7 +235,7 @@ Respuesta|Significado|Reiterpretación|Nuevo significado
 
 Con ayuda de la pregunta 1, se puede identificar qué tan frecuente es el uso de internet, tanto por parte del Jefe de hogar, como de su cónyuge si este existe, reinterpretando sus valores y significados como se muestra en la tabla anterior, y los valores correspondientes se almacenan en las variables **Uso.tecnologia.jefe** y **Uso.tecnologia.conyuge**
 
-#### 8. Región (REGION)
+##### 8. Región (REGION)
 
 Opciones de respuesta a la pregunta
 
@@ -245,7 +253,7 @@ Respuesta|Significado
 
 Esta pregunta ubica a cada hogar en una de las 9 regiones geográficas del país como se indica en la tabla anterior. La respuesta de cada hogar a esta respuesta se almacena en la variable **Region**, sin modificar su interpretación original
 
-#### 9. Estrato (P8520S1A1)
+##### 9. Estrato (P8520S1A1)
 
 Opciones de respuesta a la pregunta
 
@@ -263,7 +271,7 @@ Respuesta|Significado
 
 Originalmente, la pregunta va dirigida a responder el estrato con el que se paga la factura eléctrica, por eso, además de los típicos estrátos del 1 al 6, nos encontramos con numeración de 8 y 0, que se relacionan más al tipo de acceso a la energía con el que cuentan, que con su estrato socioeconómico. A pesar de esto, estas dos categorías se dejaron intactas, pues, a pesar de que no son los valores estándar para los estratos en Colombia, en si mismo no se pueden clasificar dentro de otro estrato con la información que se posee, además, diferenciar a los hogares con estas características particulares puede ser de ayuda en el momento de la construcción del modelo. Por otra parte, los hogares cuyos valores son 9 o que no tienen valor en esta pregunta, que son aproximadamente 7062 hogares, serán descartados de la base de datos final, puesto que no hay forma de clasificarlos sin ambigüedad. Los valores de esta variable quedan almacenados en la columna **Estrato.vivienda**.
 
-#### 10. ¿cuál es el nivel educativo más alto alcanzado y el último año o grado aprobado en este nivel? (P8587)
+##### 10. ¿cuál es el nivel educativo más alto alcanzado y el último año o grado aprobado en este nivel? (P8587)
 
 Opciones de respuesta a la pregunta y reinterpretación
 
@@ -285,7 +293,7 @@ Respuesta|Significado|Reiterpretación|Nuevo significado
 
 Esta variable permite identificar el máximo nivel de educación, en conjunto con la pregunta 1, del Jefe de Hogar y de su Cónyuge en caso de que exista. La variable se reinterpreta agrupando las 13 categorías iniciales en 4, como se muestra en la tabla anterior, y se almacena en la columnas **Edu.Jefe** y **Edu.Conyuge**.
 
-#### 11.¿ Está afiliado(a) (cotizante o beneficiario(a)) a alguna entidad de seguridad social en salud? (Entidad Promotora de Salud - EPS o Entidad Promotora de Salud Subsidiada -EPS-S )	(P6090)
+##### 11.¿ Está afiliado(a) (cotizante o beneficiario(a)) a alguna entidad de seguridad social en salud? (Entidad Promotora de Salud - EPS o Entidad Promotora de Salud Subsidiada -EPS-S )	(P6090)
 
 Opciones de respuesta a la pregunta
 
@@ -297,19 +305,19 @@ Respuesta|Significado
 
 Las respuestas de esta pregunta se almacenan con los mismos valores y significados en la columna **Afiliacion.salud**. Posteriormente, se eliminan los registros de los hogares que dan como respuesta a esta pregunta con un 9, los cuales son 630 datos en total.
 
-#### 12. Incluyendo sala-comedor ¿de cuántos cuartos en total dispone este hogar?	(P5000)
+##### 12. Incluyendo sala-comedor ¿de cuántos cuartos en total dispone este hogar?	(P5000)
 
 Esta variable, medida en número de cuartos, se guarda con su valor original correspondiente a cada hogar, dentro de la columna **N.cuartos**.
 
-#### 13. ¿en cuántos de esos cuartos (Pregunta 12) duermen las personas de este hogar? (P5010	)
+##### 13. ¿en cuántos de esos cuartos (Pregunta 12) duermen las personas de este hogar? (P5010	)
 
 Esta variable, medida en número de cuartos, se guarda con su valor original correspondiente a cada hogar, dentro de la columna **N.cuartos.dormir**.
 
-#### 14. Cantidad de personas en el hogar	(CANT_PERSONAS_HOGAR)
+##### 14. Cantidad de personas en el hogar	(CANT_PERSONAS_HOGAR)
 
 Esta variable, medida en número de personas, se guarda con su valor original correspondiente a cada hogar, dentro de la columna **cantidad.de.personas**.
 
-#### 15. En promedio, ¿cuántas cargas de ropa lava en su lavadora a la semana? (P5510)
+##### 15. En promedio, ¿cuántas cargas de ropa lava en su lavadora a la semana? (P5510)
 
 Opciones de respuesta a la pregunta
 
@@ -324,12 +332,12 @@ NA|No usa o no tiene lavadora|0|No usa o no tiene lavadora
 
 La reinterpretación de esta variable solo consta de redefinir los valores NA, en 0, lo que significa que en el hogar no se tiene o no se hace uso de la lavadora, las otras opciones de respuesta se mantienen intactas. Luego, los resultados para cada hogar son almacenados en la columna **N.usos.lavadora**.
 
-#### 16. ¿Cuanto pagaron EL MES PASADO o la última vez por la electricidad consumida?	(P5018) y 17. ¿a cuántos meses corresponde ese pago (Pregunta 16)?	(P5018S1)
+##### 16. ¿Cuanto pagaron EL MES PASADO o la última vez por la electricidad consumida?	(P5018) y 17. ¿a cuántos meses corresponde ese pago (Pregunta 16)?	(P5018S1)
 
 La variable 16, medida en Pesos Colombianos (COP) y la 17, medida en Meses, se complementan para calcular el pago mensual que se hace, por hogar, de la electricidad consumida, dividiendo el valor pagado el último mes sobre la cantidad de meses a la que corresponde. En caso de que esta operación no se pueda ejecutar, se deja en 0, y posteriormente se les calcula un valor con base en la suma de la media mas un número random entre la desviación estándar negativa y la desviación estándar positiva.Esto para evitar ruido. Finalmente, esta variable calculada se almacena en la columna **Valor.Electricidad**, la cual se mide en COP/meses.
 
 
-### Conjunto de datos filtrado
+#### Conjunto de datos filtrado
 
 Nombre de variable|Tipo|Explicación
 ---|---|--------------------------
@@ -357,7 +365,7 @@ Valor.Electricidad|Continua|Valor en COP/mes del recibo por el uso de la electri
 N.usos.Lavadora|Categórica|Número de cargas de ropa que se lavan haciendo uso de la lavadora por semana en el hogar
 
 ```{r Imports, message=F}
-rm(list=ls())
+#rm(list=ls())
 library(knitr)
 library(caret)
 library(tidyr)
@@ -368,25 +376,25 @@ library(corrplot)
 ```
 
 ```{r Definición de función para tablas divididas}
-# Función para crear tablas en el reporte divididas
+# Función para crear tablas en el reporte divididas en dos partes
 tabla_dividida <- function(tabla) {
   
   all <- list()
-  rows <- seq_len(nrow(tabla) %/% 2)
+  rows <- seq_len(nrow(tabla) %/% 2) #Separamos las filas en 2 partes
   rows <- list(rows,-rows)
   for (i in 1:2) {
     
-    a <- tabla[rows[[i]],]
-    names <- row.names(tabla)[rows[[i]]]
-    a <- cbind(names,a)
-    colnames(a) <- c("Varaible","Tipo")
+    a <- tabla[rows[[i]],] #Seleccionamos los datos de cada una de las partes
+    names <- row.names(tabla)[rows[[i]]] #Obtenemos los nombres
+    a <- cbind(names,a) #Juntamos los datos y los nombres 
+    colnames(a) <- c("Varaible","Tipo") #Asignamos los nombres de las columnas
     
-    all[[i]] <- a
+    all[[i]] <- a #Asignamos un conjunto de datos en la posición i
     
   }
   
   
-  kable(all)%>% kable_styling(latex_options = "hold_position")
+  kable(all)%>% kable_styling(latex_options = "hold_position") #Imprimimos la tabla
 }
 
 ```
@@ -418,7 +426,7 @@ tabla_dividida(tipo_datos)
 A continuación se recodifica cada variable en su tipo correcto. Los resultados son los siguientes:
 
 
-```{r }
+```{r Codificación de las variables}
 #Quitamos el identificador único, pues este no nos interesa
 datos_originales$Codigo <- NULL
 
@@ -457,13 +465,65 @@ names(tipo_datos) <- "Tipo"
 tabla_dividida(tipo_datos)
 
 ```
-Finalmente los datos se encuentras bien codificados.
+Finalmente los datos se encuentras bien codificados.Y podemos empezar la exploración de las variables
+
+```{r Summary de las variables}
+
+nombre_variables_numericas=c(
+  'Hijos',
+  'Edad del jefe de hogar',
+  'Edad del cónyuge del jefe de hogar',
+  'Personas del hogar',
+  'Ingresos totales del hogar (COP)',
+  'Número de cuartos',
+  'Número de cuartos usados para dormir',
+  'Valor factura electricidad (COP)'
+  
+  )
+
+nombre_variables_categoricas=c(
+  'Sexo jefe de hogar',
+  'Sexo del conyuje',
+  'Estado civil del jefe',
+  'Región dónde se ubica el hogar',
+  'Estrato de vivienda',
+  'Ocupación del jefe de hogar',
+  'Ocupación del conyuge',
+  'Uso de internet jefe de hogar',
+  'Uso de internet conyuge',
+  'Nivel de educación jefe de hogar',
+  'Nivel de educación cónyuge',
+  'Afiliación a una EPS',
+  'Usos de la lavadora'
+)
+
+#Calculamos las desviaciones estándar sin contar los NA
+desviaciones_estandar <- t(apply(datos_numericos,2,sd, na.rm=TRUE))
+colnames(desviaciones_estandar)<-nombre_variables_numericas
+desviaciones_estandar<-t(desviaciones_estandar)
+#Realizamos un summary de las variables numéricas
+descripcion_variables_numericas <- summary(datos_numericos)
+colnames(descripcion_variables_numericas)<-nombre_variables_numericas
+descripcion_variables_numericas<-t(descripcion_variables_numericas)
+#Realizamos un summary de las variables categóricas
+descripcion_variables_categoricas<-summary(datos_categoricos)
+colnames(descripcion_variables_categoricas)<-nombre_variables_categoricas
+descripcion_variables_categoricas<-t(descripcion_variables_categoricas)
+
+#A todos les aplicamos t() para que la tabla quede transpuesta y se vea mejor
+
+kable(descripcion_variables_numericas, caption='Medidas de localización variables numéricas')
+kable(desviaciones_estandar, caption = 'Desviaciones estándas variables numéricas')
+kable(descripcion_variables_categoricas, caption='Exploración inicial variables categóricas')
+
+```
+
 
 ### % NA
 
 Ahora, se procede a  encontrar el porcentaje de valores _NA_ en cada variable, ya que esto puede ser bastante significativo en procesos posteriores como el ajustar un modelo o seleccionar variables de importancias. La tabla resultante es la siguiente:
 
-```{r Generación tabla comparativa de NA's}
+```{r Generación tabla comparativa de NA}
 
 #Buscamos los NA's y los guardamos
 NAs <- apply(datos_tipados, 2, is.na)
@@ -491,7 +551,7 @@ datos_sin_conyuge <- datos_tipados %>%
   select(-all_of(variables_del_conyuge))
 ```
 
-# Distribución Variable Respuesta
+### Distribución Variable Respuesta
 
 Inicialmente, observamos como esta distribuida la variable respuesta ya que esto puede ser de vital importancia en los análisis posteriores.
 
@@ -500,13 +560,13 @@ Inicialmente, observamos como esta distribuida la variable respuesta ya que esto
 ggplot(datos_sin_conyuge,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(title = "Distribución De Los Hijos")+ylab("Cantidad De Hogares")
 ```
 
-La cantidad de los hijos en los hogares que más predomia es 0, es decir que no hay hijos, después de esto la cantidad de hijos en los hogares decae. A partir de esto, se infiere que es más frecuente no encontrar hijos o encontrar al menos uno, y que es menos frecuente encontrar más de uno. 
+La cantidad de los hijos en los hogares que más predomia es 0, es decir que no hay hijos, después de esto la cantidad de hijos en los hogares decae. A partir de esto, se infiere que es más frecuente no encontrar hijos o encontrar al menos uno, y que es menos frecuente encontrar más de uno. Esto también implica que los datos se encuentran desbalanceados respecto a ciertas cantidades de hijos.
 
-# Relaciones Variable Respuesta y Covariables
+### Relaciones Variable Respuesta y Covariables
 
 Ahora se procede a analizar las posibles relaciones que existan entre la variable respuesta y las covariables, esto ayudara a determinar que variables podrán contribuir a explicar la variabilidad de las variable respuesta.
 
-## Edad Del Jefe
+#### Edad Del Jefe
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Edad.Jefe, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Edad Del Jefe",subtitle = "Según Los Hijos")+ylab("Edad del jefe")+xlab("Hijos")+theme(legend.position="none")
@@ -514,7 +574,7 @@ ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Edad.Jefe, fill=factor(Hijos)))+g
 
 Cuando en el hogar no hay hijos o hay a lo más 1, la edad del jefe del hogar parece variar bastante, mientras que para los hogares donde hay más de 1 hijos, en general, la edades no presentan mayores variaciones. De lo anterior se puede decir, que la edad del jefe puede influir al momento de determinar la cantidad de hijos que se encuentra en el hogar.
 
-## Cantidad De Personas
+#### Cantidad De Personas
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Cantidad.de.personas, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Personas En El Hogar",subtitle = "Según Los Hijos")+ylab("Cantidad De Personas En El Hogar")+xlab("Hijos")+theme(legend.position="none")
@@ -522,22 +582,22 @@ ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Cantidad.de.personas, fill=factor
 
 En general es de esperar que entre mayor sea la cantidad de personas en el hogar, mayor sea el numero de hijos en esta. De este modo, parece que la cantidad de personas en el hogar influye positivamente en el numero de hijos.
 
-## Estrato De La Vivienda
+#### Estrato De La Vivienda
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(Estrato.vivienda),y=Hijos, fill=factor(Estrato.vivienda)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Estrato De La Vivienda")+ylab("Cantidad De Hijos En El Hogar")+xlab("Estrato Vivienda")+theme(legend.position="none")
 ```
 En general no parece que el estrado de la vivienda influya mucho en la cantidad de hijos que se pueda encontrar en un hogar, sin embargo, en los hogares de estrato 4 y 5 parece encontrarse una cantidad menor a la de los hogares de los demás estratos. Por lo anterior no podemos decir completamente que el estrato de la vivienda sea influyente en el numero de hijos del hogar.
 
-## Ingresos Totales
+#### Ingresos Totales
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Ingresos.totales, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Ingreso Total De La Vivienda")+ylab("Ingresos Totales En El Hogar")+xlab("Hijos")+theme(legend.position="none")+ylim(c(0,2000000))
 ```
 
-Los ingresos totales de los hogares parecen variar mucho y sin embargo no parecen cambiar mucho a medida que se tengan más o menos hijos en el hogar. Por lo anterior, los ingresos totales del hogar no influyen de manera de directa en la cantidad de hijos que se pueda encontrar en el.
+Los ingresos totales de los hogares parecen variar mucho, aunque sus valores se solapan bastante, es posible que los ingresos, puedan influir de manera directa en la cantidad de hijos que se puedan encontrar en él.
 
-## Numero De Cuartos
+#### Numero De Cuartos
 
 ```{r,ig.width=4, fig.height=3.3}
 ggplot(datos_sin_conyuge,aes(x=factor(N.cuartos),y=Hijos, fill=factor(N.cuartos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Cuartos De La Vivienda")+ylab("Cantidad De Hijos En El Hogar")+xlab("Numero De Cuartos")+theme(legend.position="none")
@@ -545,7 +605,7 @@ ggplot(datos_sin_conyuge,aes(x=factor(N.cuartos),y=Hijos, fill=factor(N.cuartos)
 
 No necesariamente si hay más cuartos en un hogar se van a encontrar más hijos en este, pero posiblemente si exista algún tipo de variación. Por lo tanto no podemos asegurar con certeza que en numero de cuartos en el hogar influya en el numero de hijos que se encuentren en el.
 
-## Numero De Cuartos
+#### Numero De Cuartos
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(N.cuartos.dormir),y=Hijos, fill=factor(N.cuartos.dormir)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Cuartos Donde Se Duerme")+ylab("Cantidad De Hijos En El Hogar")+xlab("Numero De Cuartos Donde Se Duerme")+theme(legend.position="none")
@@ -553,7 +613,7 @@ ggplot(datos_sin_conyuge,aes(x=factor(N.cuartos.dormir),y=Hijos, fill=factor(N.c
 
 Sutilmente se muestra un patron, aunque no muy fuerte, de que a medida en que el numero de cuartos donde se duerme en el hogar aumenta, tambien lo hace la cantidad de hijos que se encuentran en el. De este modo se infiere que muy probablemnte el numero de cuartos donde se duerme en el hogar ayude a explicar la variabilidad de la cantidad de hijos que se encuentren en el.
 
-## Valor Electricidad
+#### Valor Electricidad
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Valor.Electricidad, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Valor De Electricidad Que Se Paga")+ylab("Valor De Electricidad Que Se Paga")+xlab("Hijos")+theme(legend.position="none")+ylim(c(0,250000))
@@ -561,7 +621,7 @@ ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Valor.Electricidad, fill=factor(H
 
 No se observan patrones ni negativos ni positivos en relación al cambio de los hijos que se encuentren en el hogar. De este modo el valor que se paga de electricidad no influye directamente con el numero de hijos que se encuentre en el hogar.
 
-## Numero Usos Lavadora
+#### Numero Usos Lavadora
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=N.usos.Lavadora, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Usos De La Lavadora")+ylab("Numero De Usos De La Lavadora")+xlab("Hijos")+theme(legend.position="none")
@@ -569,15 +629,16 @@ ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=N.usos.Lavadora, fill=factor(Hijo
 En general no se observan patrones muy claros en que existan algun tipo de relación entre las variables. Por lo tanto, decimos que el numero de usos de la lavadora no influye en la cantidad de hijos que se puedan encontrar en un hogar.
 
 
-## Correlaciones
+### Correlaciones
 
 ```{r,fig.width=5, fig.height=5}
+#Generamos un gráfico de correlaciones entre las variables sin conyuge, filtrando las que sean numéricas
 corrplot(cor(datos_sin_conyuge %>% select_if(is.numeric)), type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
 ```
 
 Las variables que tiene relaciones lineales más fuertes con la variable _Hijos_, son: _Cantidad.de.personas_, _N.cuartos.dormir_ y _Edad.Jefe_. Por lo anterior estas 3 variable son candidatas a ser consideradas dentro de un modelo incial.
 
-## Sexo Del Jefe
+#### Sexo Del Jefe
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Sexo.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Sexo Del Jefe")+ylab("Cantidad De Hogares")+xlab("Hijos")
@@ -585,69 +646,187 @@ ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Sexo.Jefe))+geom_bar()+labs(t
 
 Sutilmente se observa una diferencia entre los hijos del hogar cuando el jefe del hogar en hombre o mujer. Por lo anterior podemos decir que el sexo del jefe del hogar puede ayudar a explicar la variabilidad del numero de hijos en un hogar.
 
-## Tipo De Union
+#### Tipo De Union
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=Tipo.Union,y=Hijos, fill=Tipo.Union))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según Tipo De Union")+ylab("Cantidad De Hijos")+xlab("Tipo De Union")+theme(legend.position="none")
 ```
 A priori parece que según el tipo de unión la cantidad de de hijos que se encuentre en el hogar puede variar. Dicho esto, es posible que el tipo de unión sea una variable que no ayude a explicar la cantidad de hijos en un hogar.
 
-## Region
+#### Region
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=Region,y=Hijos, fill=Region))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Region Del Hogar")+ylab("Cantidad De Hijos")+xlab("Region")+theme(legend.position="none")
 ```
 Se observa claramente que la cantidad de hijos en el hogar es independiente de la region en la cual se encuentre la vivienda. Se concluye que la region no es una variable que influya en la cantidad de hijos que se encuentren en un hogar.
 
-## Trabajo Jefe
+#### Trabajo Jefe
 
 ```{r}
 ggplot(datos_sin_conyuge,aes(x=Trabajo.Jefe,y=Hijos, fill=Trabajo.Jefe))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Trabajon Del Jefe Del Hogar")+ylab("Cantidad De Hijos")+xlab("Tipo De Trabajo")+theme(legend.position="none")
 ```
 No parece haber una relación muy clara entre el tipo de trabajo del jefe del hogar y la cantidad de hijos que se encuentren en el hogar. Por lo anterior, no es recomendable suguerir que el tipo de trabajo del jefe de hogar influya en la cantidad de hijos en el.
 
-## Uso De Tecnologia
+#### Uso De Tecnologia
 
 ```{r}
-ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Uso.tecnologia.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Uso De Tecnologia")+ylab("Cantidad De Hijos")+xlab("Hijos")
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Uso.tecnologia.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Uso De Tecnologia")+ylab("Cantidad De Hogares")+xlab("Hijos")
 ```
 
 Claramente se observa que el numero de hijos cambia dependiendo el uso de tecnologia que tenga el jefe del hogar. Por lo tanto, es muy probable que la variable _Uso.tecnologia.Jefe_ ayude a explicar la variabilidad de la cantidad de hijos en un hogar.
 
 
-## Educación Jefe
+#### Educación Jefe
 
 ```{r}
-ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Edu.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Educación Del Jefe")+ylab("Cantidad De Hijos")+xlab("Hijos")
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Edu.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Educación Del Jefe")+ylab("Cantidad De Hogares")+xlab("Hijos")
 ```
 Es notable el cambio en la cantidad de hogares en los que se encuentran ciertas cantidades del hijos según la educación que tenga el jefe del hogar. Dicho esto, es importante considera la variable _Edu.Jefe_ para poder explicar el numero de hijos que se encuentren en el hogar.
 
-## Afiliación Salud
+#### Afiliación Salud
 
 ```{r}
-ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Afiliacion.salud))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Afiliación A Salud")+ylab("Cantidad De Hijos")+xlab("Hijos")
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Afiliacion.salud))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Afiliación A Salud")+ylab("Cantidad De Hogares")+xlab("Hijos")
 ```
 No se observa que la afiliación a salud determine o segmente fuertemente la cantidad de hijos que se encuentren en un hogar. Por lo tanto la variable _Afiliacion.salud_ no ayuda a determinar la cantidad de hijos que se encuentren en un hogar,
 
-# Concluciones Analisis Exploratorio
+### Concluciones Analisis Exploratorio
 
 Por el análisis anterior, se consideran las siguientes variables para ajustar un modelo que prediga el numero de hijos que se encuentran en un hogar:
 
-- Edad.Jefe
-- Cantidad.de.personas
-- N.cuartos.dormir
-- Valor.Electricidad
-- Tipo.Union
-- Trabajo.Jefe
-- Uso.tecnologia.Jefe
-- Sexo.Jefe
-- Edu.Jefe
+* Edad.Jefe
+* Cantidad.de.personas
+* N.cuartos.dormir
+* Ingresos.totales
+* Valor.Electricidad
+* Tipo.Union
+* Trabajo.Jefe
+* Uso.tecnologia.Jefe
+* Sexo.Jefe
+* Edu.Jefe
 
 Estas variables muy probablemente nos ayuden a ajustar un modelo predictivo que funcione correctamente.
+
+```{r Selección de datos final}
+#Definimos un vector con los nombres de las variables elegidas, incluyendo Hijos
+variables_elegidas <- c(
+  'Edad.Jefe',
+  'Cantidad.de.personas',
+  'N.cuartos.dormir',
+  'Ingresos.totales',
+  'Valor.Electricidad',
+  'Tipo.Union',
+  'Trabajo.Jefe',
+  'Uso.tecnologia.Jefe',
+  'Sexo.Jefe',
+  'Edu.Jefe',
+  'Hijos'
+  )
+
+#Generamos un nuevo dataframe con las variables finales
+datos_finales <- datos_sin_conyuge %>% 
+  select(all_of(variables_elegidas))
+```
 
 
 
 ## Elección y construcción del modelo
+
+La elección del modelo se basa en los datos finales obtenidos. Se consideran elementos como la cantidad de datos y el tipo de variable de salida, además de las limitaciones de computación del equipo investigador.
+
+```{r Tamaño de los datos}
+
+#Generamos datos para caracterizar los datos
+caracterizacion_datos <- data.frame(
+  'Cantidad de datos' = c(dim(datos_finales)[1]),
+  'Tipo de dato de salida' = c(class(datos_finales$Hijos)),
+  'max' = c(max(datos_finales$Hijos)),
+  'mix' = c(min(datos_finales$Hijos))
+)
+#Definimos los nombres del data.frame
+nombres_caracterizacion_datos <-c('Cantidad de datos','Tipo de dato de salida', 'Dato máximo de la salida', 'Dato mínimo de la salida')
+#Cambiamos los nombres y transponemos
+colnames(caracterizacion_datos)<-nombres_caracterizacion_datos
+caracterizacion_datos<-t(caracterizacion_datos)
+
+kable(caracterizacion_datos, caption = 'Información de los datos', col.names = c('Valor'))
+```
+La cantidad de datos, en términos de análisis de datos es relativamente pequeña tanto para un análisis de regresión como de clasificación, al encontrarse por debajo de los 100.000 datos. Dado que la variable de salida puede clasificarse como categórica, y que los datos seleccionados están representados de forma numérica, se considera pertinente el uso del método de los *K Vecinos más cercanos* también conocido como **KNN**
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(title = "Distribución De Los Hijos")+ylab("Cantidad De Hogares")
+```
+
+La variable de salida es de tipo numérica discreta, con un rango de entre 0 y 11. Esta variable, al ser discreta, podría considerarse como categórica, pero como observamos en el análisis descriptivo, las salidas no están equilibradas, por lo que para lograr un equilibrio relativo entre las variables, se debería agrupar las categorías de hijos más allá de 3 hijos, pues a partir de aquí, las frecuencias se reducen significativamente. Con un modelo de esta índole, por encima de 3 hijos no se puede especificar la predición, y esto puede ser una pérdida de información importante.
+
+A pesar de esto, el método KNN también puede ser usado para regresión, si tomamos la variable de salida como numérica continua. Esto soluciona el problema de desequilibrio en los datos, pero causa que la salida del modelo sea continua en los reales, pero esto se puede solucionar realizando una aproximación al entero más cercano.
+
+### Método KNN para regresión
+
+Sea $L=\{(\underline{x}_1,y_1),...,(\underline{x}_n,y_n)\}$ un conjunto de tuplas dónde $\underline{x}_i=[x_1^{(i)}...x_p^{(i)}]^T \in R^P$, las cuales son las variables de entrada, y $y_i \in D \subset R$, es la variable de salida.
+
+$\underline{x}_0$ es una nueva tupla de datos de entrada observados. Su imagen $y_0$ se puede predecir calculando el promedio de los $y_i$ de sus $K$ vecinos más cercanos, los cuales se encuentran calculando los $b_i$, que son la distancia entre $\underline{x}_0$ y el $i$-ésimo elemento. Por medio de una regla de distancia, como la euclidiana, es decir $b_i=||\underline{x}_0-\underline{x}_i||_m$, dónde $m$ es una regla, y con $m=2$ tenemos la regla euclidiana.
+
+Luego se ordenan los $b_i$ de menor a mayor
+
+$$
+b_{(1)}=\min\{b_1,...,b_n\}\\
+b_{(2)}=\min\{b_1,...,b_n\}\backslash b_{(1)}\\
+\vdots\\
+b_{(n-1)}=\min\{b_1,...,b_n\}\backslash\{b_{(1)},b_{(1)},...b_{(n-2)}\}\\ 
+b_{(n)}=\max\{b_1,...,b_n\}\\
+b_{(1)}\le b_{(2)}\le ... \le b_{(n)}
+$$
+Y definimos $L_{\underline{x}_0}^K=\{\underline{x}_i \in Z/||\underline{x}_0-\underline{x}_i||_2 \le b_{(K)}\}$ como el conjunto de vecinos más cercanos, dónde $b_{(K)}$ es la distancia entre $\underline{x}_0$ y el $K$-ésimo vecino más cercano.
+
+Finalmente, podemos obtener la observación de $\underline{x}_0$ por medio de una función $f_K(.)$ que se define como:
+
+$$
+f_K(\underline{x}_0)= \frac {1} {|L_{\underline{x}_0}^K|} \sum y_i,~~y_i/\underline{x}_i \in L_{\underline{x}_0}^K
+$$
+Que no es más que el promedio de las observaciones de los $K$ vecinos más cercanos de $\underline{x}_0$.
+
+En la fase de entrenamiento del modelo, podemos determinar qué tan bueno es un modelo, gracias al Error cuadrático medio, también conocido como MSE (Mean Square Error). El cual se define de la siguiente manera:
+
+$$
+MSE(f)= \frac {1}{n} \sum_{i=1}^n(f_k(x_i)-y_i)^2
+$$
+Esta medida es útil, pero al estar elevada al cuadrado 
+
+Al hablar de una regresión, también podemos considerar el $R^2$, el cual es un coeficiente que nos permite saber qué tan cerca de la línea calculada por el modelo de regresión, se encuentran las verdaderas imágenes de las observaciones que se ingresen. Es un número de 0 a 1 dónde 0 indica que el modelo no explica el comportamiento de los datos, y 1, que los explica de manera perfecta.
+
+#### Programación del modelo
+
+Se escribe una función para crear y entrenar un modelo KNN a partir de un conjunto de datos y un rango de vecinos K para probar
+
+```{r Función para generar un modelo KNN}
+
+#Creamos función para crear un modelo KNN
+crear_modelo_knn <- function(datos_entrenamiento, rango_k_vecinos = 1:25){
+  
+  set.seed(42)
+  
+  ctrl <- trainControl(
+    method="cv", #Entrenamiento con Cross Validation
+    number = 5, #Número de divisiones de la validación cruzada
+    #verboseIter = TRUE
+    )
+  
+  modelo_knn <- train(
+    Hijos ~ .,
+    data = datos_entrenamiento,
+    method = "knn",
+    trControl = ctrl,
+    preProcess = c("center","scale"), #Los datos se normalizan
+    tuneGrid = data.frame(k = rango_k_vecinos)
+    )
+  
+  return(modelo_knn)
+}
+
+```
+
+Definimos funciones de utilidad para separar los datos en entrenamiento y validación, generar la matriz de confusión y para evaluar el modelo
 
 ```{r Funciones para el modelo}
 
@@ -662,33 +841,95 @@ separacion_de_datos <- function(datos,split){
   return(list("entrenamiento" = datos_entrenamiento, "validacion" = datos_validacion))
 }
 
-#Creamos una función que nos imprime la matris de confusión dados el modelo y los datos
+#Creamos una función que nos imprime la matriz de confusión dados el modelo y los datos
 matriz_de_confusion <- function(modelo,datos){
   modelo_prediccion <- predict(modelo,newdata = datos )
   print(confusionMatrix(modelo_prediccion, datos$Hijos ))
 }
 
+#Función para calcular el MSE y el RMSE a partir de los datos de validación y las predicciones
+mse_y_rmse <- function(datos_validacion, predicciones){
+  
+  #Calculamos el mínimo error cuadrado (Minimum Square Error)
+  mse <-sum((predicciones - datos_validacion$Hijos)^2)/length(datos_validacion$Hijos)
+  
+  #Calculamos la raíz del mínimo error cuadrado (Root Minimum Square Error)
+  rmse <-sqrt(mse)
+  
+  resultados <- data.frame(
+    'MSE' =c(mse),
+    'RMSE' = c(rmse)
+  )
+  return(resultados)
+}
+
 #Función para evaluar el modelo dados el modelo y los datos de validación
 evaluar_modelo <-function(modelo,datos_validacion){
   predicciones <- predict(modelo,newdata = datos_validacion)
+  return(predicciones)
 }
 
 ```
 
+Hacemos uso de las funciones creadas para partir los datos en entrenamiento y validación
+
+```{r Partición de los datos Entrenamiento/Validación}
+
+#Partimos los datos con la función separacion_de_datos
+particion <- separacion_de_datos(datos_finales)
+
+#Separamos por entrenamiento
+datos_entrenamiento <- particion$entrenamiento
+datos_de_entrada_entrenamiento <- subset(datos_entrenamiento, select = -c(Hijos))
+
+#Separamos por validación
+datos_validacion <- particion$validacion
+datos_de_entrada_validacion <- subset(datos_validacion, select = -c(Hijos))
+```
+
+Finalmente entrenamos el modelo y lo exportamos en un archivo RDS para poder hacer uso de él 
+
+```{r Creando modelo KNN}
+#Entrenamos un modelo KNN con la función crear_modelo_knn
+# modelo_knn<-crear_modelo_knn(datos_entrenamiento)
+# saveRDS(modelo_knn,"./Modelos/knn_modelo.rds")
+
+#Leemos el modelo guardado
+carga_modelo_knn <- readRDS("./Modelos/knn_modelo.rds")
+```
+
+Al crear el modelo, se hizo una exploración de diferentes valores de K, entre 1 y 25, para encontrar el valor de K óptimo, comparando los diferentes resultados con respecto al RMSE obtenido
+
+```{r Gráfica KNN k vs. RMSE}
+#Buscamos el K óptimo comparándolo con el RMSE
+plot(carga_modelo_knn,main = "K vs RMSE", sub='Para encontrar el mejor K', ylab='RMSE', xlab='Número de K vecinos')
+print(carga_modelo_knn)
+```
+
+El mejor menor valor para los K vecinos del modelo es de 13
+
+
+# Resultados
+
+Para poner en contexto el modelo entrenado 
+
 ```{r Función para generar un modelo de Random Forest}
 
-#Función para crear un modelo de random forest, usando el método de "Cross-Validation"
+#Función para crear un modelo de random forest
 crear_modelo_random_forest <- function(datos_entrenamiento,datos_entrada_entrenamiento){
+  
+  set.seed(42) #Fijamos la semilla para asegurar la reproducibilidad
   
   ctrl <- trainControl(
     method="cv", #Entrenamiento con validación cruzada
-    number=3,
+    number=3, #Número de folds
     search="grid",
-    verboseIter = TRUE
+    #verboseIter = TRUE #Muestra la iteración actual por pantalla
     )
   
-  mtry <- ncol(datos_entrada_entrenamiento)/3
-  tunegrid <- expand.grid(.mtry=mtry)
+  #Número de ariables seleccionadas para el mtry
+  mtry <- ncol(datos_entrada_entrenamiento)/3  
+  tunegrid <- expand.grid(.mtry=mtry) 
   
   modelo_random_forest <- train(
     Hijos ~ .,
@@ -704,10 +945,23 @@ crear_modelo_random_forest <- function(datos_entrenamiento,datos_entrada_entrena
 
 ```
 
+```{r Creando modelo de Random Forest}
+#Entrenamos un modelo random forest con la función crea_modelo_random_forest
+# modelo_random_forest<-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)
+# saveRDS(modelo_random_forest,"./Modelos/rf_modelo.rds")
+carga_modelo_random_forest<-readRDS("./Modelos/rf_modelo.rds")
+print(carga_modelo_random_forest)
+```
+
+
+### Creacion del modelo Ridge
 
 ```{r Función para generar un modelo Ridge}
 
 crear_modelo_ridge <- function(datos_entrenamiento){
+  
+  set.seed(42) #Fijamos la semilla para asegurar la reproducibilidad
+  
   
   parameters <- c(seq(0.01, 0.1, 0.01), seq(0.1, 2, by =0.1) , seq(2, 5, 0.5) )
   
@@ -725,140 +979,44 @@ crear_modelo_ridge <- function(datos_entrenamiento){
 
 ```
 
-```{r Función para generar un modelo KNN}
-
-#Creamos función para crear un modelo KNN
-crear_modelo_knn <- function(datos_entrenamiento, rango_k_vecinos = 1:25){
-  ctrl <- trainControl(
-    method="cv", #Entrenamiento con Cross Validation
-    number = 5, 
-    verboseIter = TRUE
-    )
-  
-  modelo_knn <- train(
-    Hijos ~ .,
-    data = datos_entrenamiento,
-    method = "knn",
-    trControl = ctrl,
-    preProcess = c("center","scale"), #Los datos se normalizan
-    tuneGrid = data.frame(k = rango_k_vecinos)
-    )
-  
-  return(modelo_knn)
-}
-
-```
-
-```{r Partición de los datos Entrenamiento/Validación}
-
-#Partimos los datos con la función separacion_de_datos
-particion <- separacion_de_datos(datos_tipados)
-
-#Separamos por entrenamiento
-datos_entrenamiento <- particion$entrenamiento
-datos_de_entrada_entrenamiento <- subset(datos_entrenamiento, select = -c(Hijos))
-
-#Separamos por validación
-datos_validacion <- particion$validacion
-datos_de_entrada_validacion <- subset(datos_validacion, select = -c(Hijos))
-```
-
-```{r Creando modelo de Random Forest}
-#Entrenamos un modelo random forest con la función crea_modelo_random_forest
-modelo_random_forest<-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)
-print(modelo_random_forest)
-```
-
-
-### Creacion del modelo Ridge
-
-
 ```{r Creando modelo Ridge}
 
 #Entrenamos un modelo Ridge con la función crear_modelo_gridge
-modelo_ridge<-crear_modelo_ridge(datos_entrenamiento)
-print(modelo_ridge)
-```
-### Modelo KNN
-```{r Creando modelo KNN}
-#Entrenamos un modelo KNN con la función crear_modelo_knn
-modelo_knn<-crear_modelo_knn(datos_entrenamiento)
-print(modelo_knn)
-```
-
-## Guardado de modelos
-```{r}
-saveRDS(modelo_random_forest,"./Modelos/rf_modelo.rds")
-saveRDS(modelo_ridge,"./Modelos/ridge_modelo.rds")
-saveRDS(modelo_knn,"./Modelos/knn_modelo.rds")
-```
-
-
-## Carga de modelos
-```{r}
-carga_modelo_random_forest<-readRDS("./Modelos/rf_modelo.rds")
+# modelo_ridge<-crear_modelo_ridge(datos_entrenamiento)
+# saveRDS(modelo_ridge,"./Modelos/ridge_modelo.rds")
 carga_modelo_ridge <- readRDS("./Modelos/ridge_modelo.rds")
-carga_modelo_knn <- readRDS("./Modelos/knn_modelo.rds")
-```
-
-```{r}
-print(carga_modelo_random_forest)
 print(carga_modelo_ridge)
-print(carga_modelo_knn)
 ```
 
-## Seleccion del modelo
-Debido a su simplicidad y los buenos resultados que se obtuvieron consideramos que el modelo mas optimo para afrontar este problema es KNN por encima del Random Forest
+Para comprobar la efectividad del modelo, hacemos usode la función *evaluar_modelo* para obtener los resultados
 
-## Pruebas con KNN
-
-```{r Gráfica KNN k vs. RMSE}
-#Buscamos el K óptimo comparándolo con el RMSE
-plot(carga_modelo_knn,main = "K vs RMSE")
+```{r Evaluación de los datos de validación}
+resultados_validacion<-evaluar_modelo(carga_modelo_knn,datos_de_entrada_validacion)
 ```
 
-```{r Predicciones del modelo KNN}
-#Realizamos las predicciones del modelo KNN con los datos de validación (Sin los hijos)
-predicciones <- predict(carga_modelo_knn,datos_de_entrada_validacion)
-```
-
-```{r}
-#Calculamos el mínimo error cuadrado (Minimum Square Error)
-mse <-sum((predicciones - datos_validacion$Hijos)^2)/length(datos_validacion$Hijos)
-
-#Calculamos la raíz del mínimo error cuadrado (Root Minimum Square Error)
-rmse <-sqrt(mse)
-
-
-print(mse)
-print(rmse)
+```{r MSE y RMSE}
+metricas_de_error<-mse_y_rmse(datos_validacion,resultados_validacion)
+kable(metricas_de_error, caption='MSE y RMSE para los datos de validación')
 ```
 ## Creacion del modelo con todos los datos
 
 ```{r}
-knn_modelo_final<-crear_modelo_knn(datos_tipados,10:18)
-print(knn_modelo_final)
+# knn_modelo_final<-crear_modelo_knn(datos_finales,10:18)
+# saveRDS(knn_modelo_final,"./Modelos/knn_modelo_final.rds")
 ```
-```{r}
-saveRDS(knn_modelo_final,"./Modelos/knn_modelo_final.rds")
-```
-
-
-
-# Resultados
 
 # Conclusiones
 
 # Bibliografía
 
-Alvis-Guzmán, N., Yánez-Contreras, M., Quejada-Pérez, R., Acevedo-González, K., & Del Río-Carrasquilla, F. (2010). Fecundidad y participación de la mujer en el mercado laboral en la Costa Caribe y en Colombia. Revista Gerencia y Políticas de Salud, 9(19), 90-107. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S1657-70272010000200007&lng=en&tlng=es.>
+  Alvis-Guzmán, N., Yánez-Contreras, M., Quejada-Pérez, R., Acevedo-González, K., & Del Río-Carrasquilla, F. (2010). Fecundidad y participación de la mujer en el mercado laboral en la Costa Caribe y en Colombia. Revista Gerencia y Políticas de Salud, 9(19), 90-107. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S1657-70272010000200007&lng=en&tlng=es.>
 
-Forero, N., & Gamboa, L. F. (2009). Family Size in Colombia: Guessing or Planning? Intended vs. Actual Family Size in Colombia. Desarrollo y Sociedad, (64), 85-118. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S0120-35842009000200004&lng=en&tlng=en.>
+  Forero, N., & Gamboa, L. F. (2009). Family Size in Colombia: Guessing or Planning? Intended vs. Actual Family Size in Colombia. Desarrollo y Sociedad, (64), 85-118. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S0120-35842009000200004&lng=en&tlng=en.>
 
-López, Á. R., Silva, A. C., & Sarmiento, J. A. (2014). Autonomía femenina y factores asociados al uso de servicios maternos en Colombia (2010). Revista Latinoamericana de Ciencias Sociales, Niñez y Juventud, 12(1), 325-337. <https://doi.org/10.11600/1692715x.12119081413>
+  López, Á. R., Silva, A. C., & Sarmiento, J. A. (2014). Autonomía femenina y factores asociados al uso de servicios maternos en Colombia (2010). Revista Latinoamericana de Ciencias Sociales, Niñez y Juventud, 12(1), 325-337. <https://doi.org/10.11600/1692715x.12119081413>
 
-Pachón, X. (2004). La familia en Colombia a lo largo del siglo XX [Ebook] (1st ed., pp. 145,159). Bogotá: Universidad Nacional de Colombia. Retrieved from <https://www.studocu.com/co/document/universidad-de-pamplona/sociedad-familia-y-salud/resumenes/la-familia-en-colombia-a-lo-largo-del-siglo-xx/8981874/view>
+  Pachón, X. (2004). La familia en Colombia a lo largo del siglo XX [Ebook] (1st ed., pp. 145,159). Bogotá: Universidad Nacional de Colombia. Retrieved from <https://www.studocu.com/co/document/universidad-de-pamplona/sociedad-familia-y-salud/resumenes/la-familia-en-colombia-a-lo-largo-del-siglo-xx/8981874/view>
 
-Torres Tabares, C. M., & Vergara MUñoz, E. C. (2012). Características sociodemográficas de personas sometidas a esterilización quirúrgica (Medellín 2006-2010) (Sociodemographic characteristics of people subjected to surgica l sterilization (Medellín 2006-2010)). CES Salud Pública, 3(2), 129-140. <https://doi.org/10.21615/1841>
+  Torres Tabares, C. M., & Vergara MUñoz, E. C. (2012). Características sociodemográficas de personas sometidas a esterilización quirúrgica (Medellín 2006-2010) (Sociodemographic characteristics of people subjected to surgica l sterilization (Medellín 2006-2010)). CES Salud Pública, 3(2), 129-140. <https://doi.org/10.21615/1841>
  
  
