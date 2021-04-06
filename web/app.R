@@ -34,17 +34,18 @@ ui <- fluidPage(title = "Predicción número de hijos",
                 wellPanel(
                  fluidRow(
                    column(12,
-                    tags$p("El siguiente es una aplicación web de un modelo de predicción del numero de hijos en un hogar colombiano, 
-                    usando la más reciente encuesta de calidad de vida del DANE (ECV 2019)"),
+                    tags$p("La siguiente es una aplicación web de un modelo de predicción del numero de hijos en un hogar colombiano, 
+                    usando la más reciente encuesta de calidad de vida del DANE (ECV 2019)."),
                     tags$h4("Modo de uso:"),
-                    tags$p("Para usarla debe rellenar los campos o selectores que se observan a continuación y luego presionar el botón de enviar datos"),
-                    tags$p("Las opciones deben ser rellenadas con la información del hogar y del Jefe del hogar")
+                    tags$p("Para usarla debe rellenar los campos o caracteristicas que se observan a continuación y luego presionar el botón de enviar datos"),
+                    tags$p("Las opciones deben ser rellenadas con la información del hogar y del Jefe del hogar.")
                    )
                  ),
                 ),
                 
                 # Campos a rellenar
                 wellPanel(
+                tags$h3("Características"),
                 fluidRow(
                  column(12,
                     sliderInput(inputId = "edadJefe", width = "100%",
