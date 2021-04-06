@@ -1,7 +1,16 @@
+#
+# Rellenar
+#
+# Autor: Juan Esteban Cendales Sora
+# Técnicas en Aprendizaje Estadístico - Semestre 01 2021
+# Universidad Nacional de Colombia
+#
+
+
 library(tidyr)
 library(rlang)
 library(dplyr)
-
+library(caret)
 modelo <- readRDS("./src/modelos/knn_modelo_final.rds")
 
 validar_columnas <- function(df, columns){

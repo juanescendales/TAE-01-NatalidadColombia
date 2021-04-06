@@ -1,0 +1,12 @@
+name: test
+title: test
+username:
+account: alemando
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3915797
+bundleId: 4436396
+url: https://alemando.shinyapps.io/test/
+when: 1617695923.12908
+asMultiple: FALSE
+asStatic: FALSE
