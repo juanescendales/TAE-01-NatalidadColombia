@@ -1,0 +1,250 @@
+---
+title: "E.D.A"
+author: "Daniel Escobar David"
+date: "5/4/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, warning = F,fig.width=4, fig.height=3.6,fig.align="center")
+```
+
+```{r, message=F}
+rm(list=ls())
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(corrplot)
+datos<-read.csv2("./DatosCSVProcesados/DatosCompletosING.csv")
+```
+
+```{r}
+# Función para crear tablas en el reporte divididas
+tablita <- function(tabla) {
+  
+  all <- list()
+  rows <- seq_len(nrow(tabla) %/% 2)
+  rows <- list(rows,-rows)
+  for (i in 1:2) {
+    
+    a <- tabla[rows[[i]],]
+    names <- row.names(tabla)[rows[[i]]]
+    a <- cbind(names,a)
+    colnames(a) <- c("Varaible","Tipo")
+    
+    all[[i]] <- a
+    
+  }
+  
+  
+  kable(all)%>% kable_styling(latex_options = "hold_position")
+}
+
+```
+
+
+# Analisis Exploratorio
+
+En el siguiente informe, se realiza una exploración inicial de los datos para encontrar las pósibles relaciones que puedan existir entre la variable respuesta _Hijos_ y las demás covariables que representan las caracteristicas del hogar.
+
+## Recodificación y Contextualización De Los Datos
+
+En la construcción de la base de datos encontramos que hay multiples tipos de variables que se pueden utilizar tales como: variables numericas, variables ordinales y variables nominales.
+
+Despúes de cargada la base, se encuentra que el tipo de cada variables no necesariamente es el correcto. Esto lo podemos observar en la siguiente tabla:
+
+```{r}
+tipo_datos <- data.frame(sapply(datos,class))
+names(tipo_datos) <- "Tipo"
+tablita(tipo_datos)
+```
+
+A continuación se recodifica cada variable en su tipo correcto. Los resultados son los siguientes:
+
+```{r}
+variables_categoricas <- datos %>% 
+  select(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Edu.Jefe,Edu.Conyuge,Afiliacion.salud) %>% 
+  mutate_if(is.numeric,as.factor)
+
+variables_numericas <- datos %>% 
+  select(-c(Sexo.Jefe,Sexo.Conyuge,Tipo.Union,Region,Trabajo.Jefe,Trabajo.conyuge,Uso.tecnologia.Jefe,Uso.tecnologia.conyuge,Edu.Jefe,Edu.Conyuge,Afiliacion.salud))
+
+datos <- cbind(variables_numericas,variables_categoricas)
+
+tipo_datos <- data.frame(sapply(datos,class))
+names(tipo_datos) <- "Tipo"
+tablita(tipo_datos)
+```
+Finalmente los datos se encuentras bien codificados.
+
+## % NA
+
+Ahora, se procede a  encontrar el porcentaje de valores _NA_ en cada variable, ya que esto puede ser bastante significativo en procesos posteriores como el ajustar un modelo o seleccionar variables de importancias. La tabla resultante es la siguiente:
+
+```{r}
+NAs <- apply(datos, 2, is.na)
+suma_NAs <- data.frame(apply(NAs, 2, sum)/nrow(datos))
+names(suma_NAs) <- "% NA"
+tablita(suma_NAs*100)
+```
+Las variables que representan información del cónyuge tienen un $43.4\%$ de valores faltantes. Lo anterior se puede deber a que muy probablemente sean hogares en los que el jefe del hogar sea soltero, viudo, etc. Por tal motivo se considera que los análisis realizados posteriormente serán solo enfocados a hogares en los cuales se encuentren solo el Jefe del hogar, es decir que el jefe del hogar no viva en pareja.
+
+```{r}
+datos <- datos %>% 
+  select(-c(Edad.Conyuge,Sexo.Conyuge,Trabajo.conyuge,Uso.tecnologia.conyuge,Edu.Conyuge))
+```
+
+# Distribución Variable Respuesta
+
+Inicialmente, observamos como esta distribuida la variable respuesta ya que esto puede ser de vital importancia en los análisis posteriores.
+
+
+```{r}
+ggplot(datos,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(title = "Distribución De Los Hijos")+ylab("Cantidad De Hogaress")
+```
+
+La cantidad de los hijos en los hogares que más predomia es 0, es decir que no hay hijos, después de esto la cantidad de hijos en los hogares decae. A partir de esto, se infiere que es más frecuente no encontrar hijos o encontrar al menos uno, y que es menos frecuente encontrar más de uno. 
+
+# Relaciones Variable Respuesta y Covariables
+
+Ahora se procede a analizar las posibles relaciones que existan entre la variable respuesta y las covariables, esto ayudara a determinar que variables podrán contribuir a explicar la variabilidad de las variable respuesta.
+
+## Edad Del Jefe
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos),y=Edad.Jefe, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Edad Del Jefe",subtitle = "Según Los Hijos")+ylab("Edad del jefe")+xlab("Hijos")+theme(legend.position="none")
+```
+
+Cuando en el hogar no hay hijos o hay a lo más 1, la edad del jefe del hogar parece variar bastante, mientras que para los hogares donde hay más de 1 hijos, en general, la edades no presentan mayores variaciones. De lo anterior se puede decir, que la edad del jefe puede influir al momento de determinar la cantidad de hijos que se encuentra en el hogar.
+
+## Cantidad De Personas
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos),y=Cantidad.de.personas, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Personas En El Hogar",subtitle = "Según Los Hijos")+ylab("Cantidad De Personas En El Hogar")+xlab("Hijos")+theme(legend.position="none")
+```
+
+En general es de esperar que entre mayor sea la cantidad de personas en el hogar, mayor sea el numero de hijos en esta. De este modo, parece que la cantidad de personas en el hogar influye positivamente en el numero de hijos.
+
+## Estrato De La Vivienda
+
+```{r}
+ggplot(datos,aes(x=factor(Estrato.vivienda),y=Hijos, fill=factor(Estrato.vivienda)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Estrato De La Vivienda")+ylab("Cantidad De Hijos En El Hogar")+xlab("Estrato Vivienda")+theme(legend.position="none")
+```
+En general no parece que el estrado de la vivienda influya mucho en la cantidad de hijos que se pueda encontrar en un hogar, sin embargo, en los hogares de estrato 4 y 5 parece encontrarse una cantidad menor a la de los hogares de los demás estratos. Por lo anterior no podemos decir completamente que el estrato de la vivienda sea influyente en el numero de hijos del hogar.
+
+## Ingresos Totales
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos),y=Ingresos.totales, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Ingreso Total De La Vivienda")+ylab("Ingresos Totales En El Hogar")+xlab("Hijos")+theme(legend.position="none")+ylim(c(0,2000000))
+```
+
+Los ingresos totales de los hogares parecen variar mucho y sin embargo no parecen cambiar mucho a medida que se tengan más o menos hijos en el hogar. Por lo anterior, los ingresos totales del hogar no influyen de manera de directa en la cantidad de hijos que se pueda encontrar en el.
+
+## Numero De Cuartos
+
+```{r,ig.width=4, fig.height=3.3}
+ggplot(datos,aes(x=factor(N.cuartos),y=Hijos, fill=factor(N.cuartos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Cuartos De La Vivienda")+ylab("Cantidad De Hijos En El Hogar")+xlab("Numero De Cuartos")+theme(legend.position="none")
+```
+
+No necesariamente si hay más cuartos en un hogar se van a encontrar más hijos en este, pero posiblemente si exista algún tipo de variación. Por lo tanto no podemos asegurar con certeza que en numero de cuartos en el hogar influya en el numero de hijos que se encuentren en el.
+
+## Numero De Cuartos
+
+```{r}
+ggplot(datos,aes(x=factor(N.cuartos.dormir),y=Hijos, fill=factor(N.cuartos.dormir)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Cuartos Donde Se Duerme")+ylab("Cantidad De Hijos En El Hogar")+xlab("Numero De Cuartos Donde Se Duerme")+theme(legend.position="none")
+```
+
+Sutilmente se muestra un patron, aunque no muy fuerte, de que a medida en que el numero de cuartos donde se duerme en el hogar aumenta, tambien lo hace la cantidad de hijos que se encuentran en el. De este modo se infiere que muy probablemnte el numero de cuartos donde se duerme en el hogar ayude a explicar la variabilidad de la cantidad de hijos que se encuentren en el.
+
+## Valor Electricidad
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos),y=Valor.Electricidad, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Valor De Electricidad Que Se Paga")+ylab("Valor De Electricidad Que Se Paga")+xlab("Hijos")+theme(legend.position="none")+ylim(c(0,250000))
+```
+
+No se observan patrones ni negativos ni positivos en relación al cambio de los hijos que se encuentren en el hogar. De este modo el valor que se paga de electricidad no influye directamente con el numero de hijos que se encuentre en el hogar.
+
+## Numero Usos Lavadora
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos),y=N.usos.Lavadora, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Usos De La Lavadora")+ylab("Numero De Usos De La Lavadora")+xlab("Hijos")+theme(legend.position="none")
+```
+En general no se observan patrones muy claros en que existan algun tipo de relación entre las variables. Por lo tanto, decimos que el numero de usos de la lavadora no influye en la cantidad de hijos que se puedan encontrar en un hogar.
+
+## Correlaciones
+
+```{r,fig.width=5, fig.height=5}
+corrplot(cor(datos %>% select_if(is.numeric)), type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
+```
+
+Las variables que tiene relaciones lineales más fuertes con la variable _Hijos_, son: _Cantidad.de.personas_, _N.cuartos.dormir_ y _Edad.Jefe_. Por lo anterior estas 3 variable son candidatas a ser consideradas dentro de un modelo incial.
+
+## Sexo Del Jefe
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos), fill=Sexo.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Sexo Del Jefe")+ylab("Cantidad De Hogares")+xlab("Hijos")
+```
+
+Sutilmente se observa una diferencia entre los hijos del hogar cuando el jefe del hogar en hombre o mujer. Por lo anterior podemos decir que el sexo del jefe del hogar puede ayudar a explicar la variabilidad del numero de hijos en un hogar.
+
+## Tipo De Union
+
+```{r}
+ggplot(datos,aes(x=Tipo.Union,y=Hijos, fill=Tipo.Union))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según Tipo De Union")+ylab("Cantidad De Hijos")+xlab("Tipo De Union")+theme(legend.position="none")
+```
+A priori parece que según el tipo de unión la cantidad de de hijos que se encuentre en el hogar puede variar. Dicho esto, es posible que el tipo de unión sea una variable que no ayude a explicar la cantidad de hijos en un hogar.
+
+## Region
+
+```{r}
+ggplot(datos,aes(x=Region,y=Hijos, fill=Region))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Region Del Hogar")+ylab("Cantidad De Hijos")+xlab("Region")+theme(legend.position="none")
+```
+Se observa claramente que la cantidad de hijos en el hogar es independiente de la region en la cual se encuentre la vivienda. Se concluye que la region no es una variable que influya en la cantidad de hijos que se encuentren en un hogar.
+
+## Trabajo Jefe
+
+```{r}
+ggplot(datos,aes(x=Trabajo.Jefe,y=Hijos, fill=Trabajo.Jefe))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Trabajon Del Jefe Del Hogar")+ylab("Cantidad De Hijos")+xlab("Tipo De Trabajo")+theme(legend.position="none")
+```
+No parece haber una relación muy clara entre el tipo de trabajo del jefe del hogar y la cantidad de hijos que se encuentren en el hogar. Por lo anterior, no es recomendable suguerir que el tipo de trabajo del jefe de hogar influya en la cantidad de hijos en el.
+
+## Uso De Tecnologia
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos), fill=Uso.tecnologia.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Uso De Tecnologia")+ylab("Cantidad De Hijos")+xlab("Hijos")
+```
+
+Claramente se observa que el numero de hijos cambia dependiendo el uso de tecnologia que tenga el jefe del hogar. Por lo tanto, es muy probable que la variable _Uso.tecnologia.Jefe_ ayude a explicar la variabilidad de la cantidad de hijos en un hogar.
+
+
+## Educación Jefe
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos), fill=Edu.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Educación Del Jefe")+ylab("Cantidad De Hijos")+xlab("Hijos")
+```
+Es notable el cambio en la cantidad de hogares en los que se encuentran ciertas cantidades del hijos según la educación que tenga el jefe del hogar. Dicho esto, es importante considera la variable _Edu.Jefe_ para poder explicar el numero de hijos que se encuentren en el hogar.
+
+## Afiliación Salud
+
+```{r}
+ggplot(datos,aes(x=factor(Hijos), fill=Afiliacion.salud))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Afiliación A Salud")+ylab("Cantidad De Hijos")+xlab("Hijos")
+```
+No se observa que la afiliación a salud determine o segmente fuertemente la cantidad de hijos que se encuentren en un hogar. Por lo tanto la variable _Afiliacion.salud_ no ayuda a determinar la cantidad de hijos que se encuentren en un hogar,
+
+# Concluciones Analisis Exploratorio
+
+Por el análisis anterior, se consideran las siguientes variables para ajustar un modelo que prediga el numero de hijos que se encuentran en un hogar:
+
+- Edad.Jefe
+- Cantidad.de.personas
+- N.cuartos.dormir
+- Valor.Electricidad
+- Tipo.Union
+- Trabajo.Jefe
+- Uso.tecnologia.Jefe
+- Sexo.Jefe
+- Edu.Jefe
+
+Estas variables muy probablemente nos ayuden a ajustar un modelo predictivo que funcione correctamente.
+
