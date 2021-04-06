@@ -1,12 +1,16 @@
 ---
-title: "Test1"
-author: "Santiago Alexis Valencia Zapata"
+title: "Reporte técnico - Número de hijos en hogares colombianos"
+author: "Juan Esteban Cendales Sora\nDaniel Escobar David\nAlejandro Jiménez Franco\nJuan José Sapuyes Pino\nSantiago Alexis Valencia Zapata"
 date: "5/4/2021"
-output: html_document
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+    math: katex
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F, message = F, warning = F,fig.width=4, fig.height=3.6,fig.align="center")
+knitr::opts_chunk$set(echo = T, message = F, warning = F,fig.width=4, fig.height=3.6,fig.align="center")
 ```
 
 # Intoducción
@@ -464,6 +468,7 @@ tabla_dividida(tipo_datos)
 Finalmente los datos se encuentras bien codificados.Y podemos empezar la exploración de las variables
 
 ```{r Summary de las variables}
+
 nombre_variables_numericas=c(
   'Hijos',
   'Edad del jefe de hogar',
@@ -491,17 +496,25 @@ nombre_variables_categoricas=c(
   'Afiliación a una EPS',
   'Usos de la lavadora'
 )
+
 #Calculamos las desviaciones estándar sin contar los NA
 desviaciones_estandar <- t(apply(datos_numericos,2,sd, na.rm=TRUE))
+colnames(desviaciones_estandar)<-nombre_variables_numericas
+desviaciones_estandar<-t(desviaciones_estandar)
 #Realizamos un summary de las variables numéricas
 descripcion_variables_numericas <- summary(datos_numericos)
+colnames(descripcion_variables_numericas)<-nombre_variables_numericas
+descripcion_variables_numericas<-t(descripcion_variables_numericas)
 #Realizamos un summary de las variables categóricas
 descripcion_variables_categoricas<-summary(datos_categoricos)
+colnames(descripcion_variables_categoricas)<-nombre_variables_categoricas
+descripcion_variables_categoricas<-t(descripcion_variables_categoricas)
 
-kable(descripcion_variables_numericas, col.names = nombre_variables_numericas, caption='Medidas de localización variables numéricas')
-kable(desviaciones_estandar, col.names = nombre_variables_numericas, caption = 'Desviaciones estándas variables numéricas')
+#A todos les aplicamos t() para que la tabla quede transpuesta y se vea mejor
 
-kable(descripcion_variables_categoricas, caption='Exploración inicial variables categóricas', col.names = nombre_variables_categoricas)
+kable(descripcion_variables_numericas, caption='Medidas de localización variables numéricas')
+kable(desviaciones_estandar, caption = 'Desviaciones estándas variables numéricas')
+kable(descripcion_variables_categoricas, caption='Exploración inicial variables categóricas')
 
 ```
 
@@ -510,7 +523,7 @@ kable(descripcion_variables_categoricas, caption='Exploración inicial variables
 
 Ahora, se procede a  encontrar el porcentaje de valores _NA_ en cada variable, ya que esto puede ser bastante significativo en procesos posteriores como el ajustar un modelo o seleccionar variables de importancias. La tabla resultante es la siguiente:
 
-```{r Generación tabla comparativa de NA's}
+```{r Generación tabla comparativa de NA}
 
 #Buscamos los NA's y los guardamos
 NAs <- apply(datos_tipados, 2, is.na)
@@ -582,7 +595,7 @@ En general no parece que el estrado de la vivienda influya mucho en la cantidad 
 ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Ingresos.totales, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Ingreso Total De La Vivienda")+ylab("Ingresos Totales En El Hogar")+xlab("Hijos")+theme(legend.position="none")+ylim(c(0,2000000))
 ```
 
-Los ingresos totales de los hogares parecen variar mucho y sin embargo no parecen cambiar mucho a medida que se tengan más o menos hijos en el hogar. Por lo anterior, los ingresos totales del hogar no influyen de manera de directa en la cantidad de hijos que se pueda encontrar en el.
+Los ingresos totales de los hogares parecen variar mucho, aunque sus valores se solapan bastante, es posible que los ingresos, puedan influir de manera directa en la cantidad de hijos que se puedan encontrar en él.
 
 #### Numero De Cuartos
 
@@ -657,7 +670,7 @@ No parece haber una relación muy clara entre el tipo de trabajo del jefe del ho
 #### Uso De Tecnologia
 
 ```{r}
-ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Uso.tecnologia.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Uso De Tecnologia")+ylab("Cantidad De Hijos")+xlab("Hijos")
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Uso.tecnologia.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Uso De Tecnologia")+ylab("Cantidad De Hogares")+xlab("Hijos")
 ```
 
 Claramente se observa que el numero de hijos cambia dependiendo el uso de tecnologia que tenga el jefe del hogar. Por lo tanto, es muy probable que la variable _Uso.tecnologia.Jefe_ ayude a explicar la variabilidad de la cantidad de hijos en un hogar.
@@ -666,14 +679,14 @@ Claramente se observa que el numero de hijos cambia dependiendo el uso de tecnol
 #### Educación Jefe
 
 ```{r}
-ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Edu.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Educación Del Jefe")+ylab("Cantidad De Hijos")+xlab("Hijos")
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Edu.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Educación Del Jefe")+ylab("Cantidad De Hogares")+xlab("Hijos")
 ```
 Es notable el cambio en la cantidad de hogares en los que se encuentran ciertas cantidades del hijos según la educación que tenga el jefe del hogar. Dicho esto, es importante considera la variable _Edu.Jefe_ para poder explicar el numero de hijos que se encuentren en el hogar.
 
 #### Afiliación Salud
 
 ```{r}
-ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Afiliacion.salud))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Afiliación A Salud")+ylab("Cantidad De Hijos")+xlab("Hijos")
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Afiliacion.salud))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Afiliación A Salud")+ylab("Cantidad De Hogares")+xlab("Hijos")
 ```
 No se observa que la afiliación a salud determine o segmente fuertemente la cantidad de hijos que se encuentren en un hogar. Por lo tanto la variable _Afiliacion.salud_ no ayuda a determinar la cantidad de hijos que se encuentren en un hogar,
 
@@ -684,6 +697,7 @@ Por el análisis anterior, se consideran las siguientes variables para ajustar u
 * Edad.Jefe
 * Cantidad.de.personas
 * N.cuartos.dormir
+* Ingresos.totales
 * Valor.Electricidad
 * Tipo.Union
 * Trabajo.Jefe
@@ -699,6 +713,7 @@ variables_elegidas <- c(
   'Edad.Jefe',
   'Cantidad.de.personas',
   'N.cuartos.dormir',
+  'Ingresos.totales',
   'Valor.Electricidad',
   'Tipo.Union',
   'Trabajo.Jefe',
@@ -721,14 +736,20 @@ La elección del modelo se basa en los datos finales obtenidos. Se consideran el
 
 ```{r Tamaño de los datos}
 
+#Generamos datos para caracterizar los datos
 caracterizacion_datos <- data.frame(
   'Cantidad de datos' = c(dim(datos_finales)[1]),
   'Tipo de dato de salida' = c(class(datos_finales$Hijos)),
   'max' = c(max(datos_finales$Hijos)),
   'mix' = c(min(datos_finales$Hijos))
 )
+#Definimos los nombres del data.frame
+nombres_caracterizacion_datos <-c('Cantidad de datos','Tipo de dato de salida', 'Dato máximo de la salida', 'Dato mínimo de la salida')
+#Cambiamos los nombres y transponemos
+colnames(caracterizacion_datos)<-nombres_caracterizacion_datos
+caracterizacion_datos<-t(caracterizacion_datos)
 
-kable(caracterizacion_datos, caption = 'Información de los datos', col.names = c('Cantidad de datos','Tipo de dato de salida', 'Dato máximo de la salida', 'Dato mínimo de la salida'))
+kable(caracterizacion_datos, caption = 'Información de los datos', col.names = c('Valor'))
 ```
 La cantidad de datos, en términos de análisis de datos es relativamente pequeña tanto para un análisis de regresión como de clasificación, al encontrarse por debajo de los 100.000 datos. Dado que la variable de salida puede clasificarse como categórica, y que los datos seleccionados están representados de forma numérica, se considera pertinente el uso del método de los *K Vecinos más cercanos* también conocido como **KNN**
 
@@ -770,8 +791,42 @@ En la fase de entrenamiento del modelo, podemos determinar qué tan bueno es un 
 $$
 MSE(f)= \frac {1}{n} \sum_{i=1}^n(f_k(x_i)-y_i)^2
 $$
+Esta medida es útil, pero al estar elevada al cuadrado 
+
 Al hablar de una regresión, también podemos considerar el $R^2$, el cual es un coeficiente que nos permite saber qué tan cerca de la línea calculada por el modelo de regresión, se encuentran las verdaderas imágenes de las observaciones que se ingresen. Es un número de 0 a 1 dónde 0 indica que el modelo no explica el comportamiento de los datos, y 1, que los explica de manera perfecta.
 
+#### Programación del modelo
+
+Se escribe una función para crear y entrenar un modelo KNN a partir de un conjunto de datos y un rango de vecinos K para probar
+
+```{r Función para generar un modelo KNN}
+
+#Creamos función para crear un modelo KNN
+crear_modelo_knn <- function(datos_entrenamiento, rango_k_vecinos = 1:25){
+  
+  set.seed(42)
+  
+  ctrl <- trainControl(
+    method="cv", #Entrenamiento con Cross Validation
+    number = 5, #Número de divisiones de la validación cruzada
+    #verboseIter = TRUE
+    )
+  
+  modelo_knn <- train(
+    Hijos ~ .,
+    data = datos_entrenamiento,
+    method = "knn",
+    trControl = ctrl,
+    preProcess = c("center","scale"), #Los datos se normalizan
+    tuneGrid = data.frame(k = rango_k_vecinos)
+    )
+  
+  return(modelo_knn)
+}
+
+```
+
+Definimos funciones de utilidad para separar los datos en entrenamiento y validación, generar la matriz de confusión y para evaluar el modelo
 
 ```{r Funciones para el modelo}
 
@@ -786,25 +841,84 @@ separacion_de_datos <- function(datos,split){
   return(list("entrenamiento" = datos_entrenamiento, "validacion" = datos_validacion))
 }
 
-#Creamos una función que nos imprime la matris de confusión dados el modelo y los datos
+#Creamos una función que nos imprime la matriz de confusión dados el modelo y los datos
 matriz_de_confusion <- function(modelo,datos){
   modelo_prediccion <- predict(modelo,newdata = datos )
   print(confusionMatrix(modelo_prediccion, datos$Hijos ))
 }
 
+#Función para calcular el MSE y el RMSE a partir de los datos de validación y las predicciones
+mse_y_rmse <- function(datos_validacion, predicciones){
+  
+  #Calculamos el mínimo error cuadrado (Minimum Square Error)
+  mse <-sum((predicciones - datos_validacion$Hijos)^2)/length(datos_validacion$Hijos)
+  
+  #Calculamos la raíz del mínimo error cuadrado (Root Minimum Square Error)
+  rmse <-sqrt(mse)
+  
+  resultados <- data.frame(
+    'MSE' =c(mse),
+    'RMSE' = c(rmse)
+  )
+  return(resultados)
+}
+
 #Función para evaluar el modelo dados el modelo y los datos de validación
 evaluar_modelo <-function(modelo,datos_validacion){
   predicciones <- predict(modelo,newdata = datos_validacion)
+  return(predicciones)
 }
 
 ```
+
+Hacemos uso de las funciones creadas para partir los datos en entrenamiento y validación
+
+```{r Partición de los datos Entrenamiento/Validación}
+
+#Partimos los datos con la función separacion_de_datos
+particion <- separacion_de_datos(datos_finales)
+
+#Separamos por entrenamiento
+datos_entrenamiento <- particion$entrenamiento
+datos_de_entrada_entrenamiento <- subset(datos_entrenamiento, select = -c(Hijos))
+
+#Separamos por validación
+datos_validacion <- particion$validacion
+datos_de_entrada_validacion <- subset(datos_validacion, select = -c(Hijos))
+```
+
+Finalmente entrenamos el modelo y lo exportamos en un archivo RDS para poder hacer uso de él 
+
+```{r Creando modelo KNN}
+#Entrenamos un modelo KNN con la función crear_modelo_knn
+# modelo_knn<-crear_modelo_knn(datos_entrenamiento)
+# saveRDS(modelo_knn,"./Modelos/knn_modelo.rds")
+
+#Leemos el modelo guardado
+carga_modelo_knn <- readRDS("./Modelos/knn_modelo.rds")
+```
+
+Al crear el modelo, se hizo una exploración de diferentes valores de K, entre 1 y 25, para encontrar el valor de K óptimo, comparando los diferentes resultados con respecto al RMSE obtenido
+
+```{r Gráfica KNN k vs. RMSE}
+#Buscamos el K óptimo comparándolo con el RMSE
+plot(carga_modelo_knn,main = "K vs RMSE", sub='Para encontrar el mejor K', ylab='RMSE', xlab='Número de K vecinos')
+print(carga_modelo_knn)
+```
+
+El mejor menor valor para los K vecinos del modelo es de 13
+
+
+# Resultados
+
+Para poner en contexto el modelo entrenado 
 
 ```{r Función para generar un modelo de Random Forest}
 
 #Función para crear un modelo de random forest
 crear_modelo_random_forest <- function(datos_entrenamiento,datos_entrada_entrenamiento){
   
-  set.seed(42)
+  set.seed(42) #Fijamos la semilla para asegurar la reproducibilidad
   
   ctrl <- trainControl(
     method="cv", #Entrenamiento con validación cruzada
@@ -813,8 +927,9 @@ crear_modelo_random_forest <- function(datos_entrenamiento,datos_entrada_entrena
     #verboseIter = TRUE #Muestra la iteración actual por pantalla
     )
   
-  mtry <- ncol(datos_entrada_entrenamiento)/3 #Variables seleccionadas 
-  tunegrid <- expand.grid(.mtry=mtry)
+  #Número de ariables seleccionadas para el mtry
+  mtry <- ncol(datos_entrada_entrenamiento)/3  
+  tunegrid <- expand.grid(.mtry=mtry) 
   
   modelo_random_forest <- train(
     Hijos ~ .,
@@ -830,12 +945,23 @@ crear_modelo_random_forest <- function(datos_entrenamiento,datos_entrada_entrena
 
 ```
 
+```{r Creando modelo de Random Forest}
+#Entrenamos un modelo random forest con la función crea_modelo_random_forest
+# modelo_random_forest<-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)
+# saveRDS(modelo_random_forest,"./Modelos/rf_modelo.rds")
+carga_modelo_random_forest<-readRDS("./Modelos/rf_modelo.rds")
+print(carga_modelo_random_forest)
+```
+
+
+### Creacion del modelo Ridge
 
 ```{r Función para generar un modelo Ridge}
 
 crear_modelo_ridge <- function(datos_entrenamiento){
   
-  set.seed(42)
+  set.seed(42) #Fijamos la semilla para asegurar la reproducibilidad
+  
   
   parameters <- c(seq(0.01, 0.1, 0.01), seq(0.1, 2, by =0.1) , seq(2, 5, 0.5) )
   
@@ -853,143 +979,44 @@ crear_modelo_ridge <- function(datos_entrenamiento){
 
 ```
 
-```{r Función para generar un modelo KNN}
-
-#Creamos función para crear un modelo KNN
-crear_modelo_knn <- function(datos_entrenamiento, rango_k_vecinos = 1:25){
-  
-  set.seed(42)
-  
-  ctrl <- trainControl(
-    method="cv", #Entrenamiento con Cross Validation
-    number = 5, 
-    verboseIter = TRUE
-    )
-  
-  modelo_knn <- train(
-    Hijos ~ .,
-    data = datos_entrenamiento,
-    method = "knn",
-    trControl = ctrl,
-    preProcess = c("center","scale"), #Los datos se normalizan
-    tuneGrid = data.frame(k = rango_k_vecinos)
-    )
-  
-  return(modelo_knn)
-}
-
-```
-
-```{r Partición de los datos Entrenamiento/Validación}
-
-#Partimos los datos con la función separacion_de_datos
-particion <- separacion_de_datos(datos_finales)
-
-#Separamos por entrenamiento
-datos_entrenamiento <- particion$entrenamiento
-datos_de_entrada_entrenamiento <- subset(datos_entrenamiento, select = -c(Hijos))
-
-#Separamos por validación
-datos_validacion <- particion$validacion
-datos_de_entrada_validacion <- subset(datos_validacion, select = -c(Hijos))
-```
-
-```{r Creando modelo de Random Forest}
-#Entrenamos un modelo random forest con la función crea_modelo_random_forest
-modelo_random_forest<-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)
-print(modelo_random_forest)
-```
-
-
-### Creacion del modelo Ridge
-
-
 ```{r Creando modelo Ridge}
 
 #Entrenamos un modelo Ridge con la función crear_modelo_gridge
-modelo_ridge<-crear_modelo_ridge(datos_entrenamiento)
-print(modelo_ridge)
-```
-### Modelo KNN
-```{r Creando modelo KNN}
-#Entrenamos un modelo KNN con la función crear_modelo_knn
-modelo_knn<-crear_modelo_knn(datos_entrenamiento)
-print(modelo_knn)
-```
-
-## Guardado de modelos
-```{r}
-saveRDS(modelo_random_forest,"./Modelos/rf_modelo.rds")
-saveRDS(modelo_ridge,"./Modelos/ridge_modelo.rds")
-saveRDS(modelo_knn,"./Modelos/knn_modelo.rds")
-```
-
-
-## Carga de modelos
-```{r}
-carga_modelo_random_forest<-readRDS("./Modelos/rf_modelo.rds")
+# modelo_ridge<-crear_modelo_ridge(datos_entrenamiento)
+# saveRDS(modelo_ridge,"./Modelos/ridge_modelo.rds")
 carga_modelo_ridge <- readRDS("./Modelos/ridge_modelo.rds")
-carga_modelo_knn <- readRDS("./Modelos/knn_modelo.rds")
-```
-
-```{r}
-print(carga_modelo_random_forest)
 print(carga_modelo_ridge)
-print(carga_modelo_knn)
 ```
 
-## Seleccion del modelo
-Debido a su simplicidad y los buenos resultados que se obtuvieron consideramos que el modelo mas optimo para afrontar este problema es KNN por encima del Random Forest
+Para comprobar la efectividad del modelo, hacemos usode la función *evaluar_modelo* para obtener los resultados
 
-## Pruebas con KNN
-
-```{r Gráfica KNN k vs. RMSE}
-#Buscamos el K óptimo comparándolo con el RMSE
-plot(carga_modelo_knn,main = "K vs RMSE")
+```{r Evaluación de los datos de validación}
+resultados_validacion<-evaluar_modelo(carga_modelo_knn,datos_de_entrada_validacion)
 ```
 
-```{r Predicciones del modelo KNN}
-#Realizamos las predicciones del modelo KNN con los datos de validación (Sin los hijos)
-predicciones <- predict(carga_modelo_knn,datos_de_entrada_validacion)
-```
-
-```{r}
-#Calculamos el mínimo error cuadrado (Minimum Square Error)
-mse <-sum((predicciones - datos_validacion$Hijos)^2)/length(datos_validacion$Hijos)
-
-#Calculamos la raíz del mínimo error cuadrado (Root Minimum Square Error)
-rmse <-sqrt(mse)
-
-
-print(mse)
-print(rmse)
+```{r MSE y RMSE}
+metricas_de_error<-mse_y_rmse(datos_validacion,resultados_validacion)
+kable(metricas_de_error, caption='MSE y RMSE para los datos de validación')
 ```
 ## Creacion del modelo con todos los datos
 
 ```{r}
-knn_modelo_final<-crear_modelo_knn(datos_finales,10:18)
-print(knn_modelo_final)
+# knn_modelo_final<-crear_modelo_knn(datos_finales,10:18)
+# saveRDS(knn_modelo_final,"./Modelos/knn_modelo_final.rds")
 ```
-```{r}
-saveRDS(knn_modelo_final,"./Modelos/knn_modelo_final.rds")
-```
-
-
-
-# Resultados
 
 # Conclusiones
 
 # Bibliografía
 
-Alvis-Guzmán, N., Yánez-Contreras, M., Quejada-Pérez, R., Acevedo-González, K., & Del Río-Carrasquilla, F. (2010). Fecundidad y participación de la mujer en el mercado laboral en la Costa Caribe y en Colombia. Revista Gerencia y Políticas de Salud, 9(19), 90-107. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S1657-70272010000200007&lng=en&tlng=es.>
+  Alvis-Guzmán, N., Yánez-Contreras, M., Quejada-Pérez, R., Acevedo-González, K., & Del Río-Carrasquilla, F. (2010). Fecundidad y participación de la mujer en el mercado laboral en la Costa Caribe y en Colombia. Revista Gerencia y Políticas de Salud, 9(19), 90-107. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S1657-70272010000200007&lng=en&tlng=es.>
 
-Forero, N., & Gamboa, L. F. (2009). Family Size in Colombia: Guessing or Planning? Intended vs. Actual Family Size in Colombia. Desarrollo y Sociedad, (64), 85-118. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S0120-35842009000200004&lng=en&tlng=en.>
+  Forero, N., & Gamboa, L. F. (2009). Family Size in Colombia: Guessing or Planning? Intended vs. Actual Family Size in Colombia. Desarrollo y Sociedad, (64), 85-118. Retrieved April 04, 2021, from <http://www.scielo.org.co/scielo.php?script=sci_arttext&pid=S0120-35842009000200004&lng=en&tlng=en.>
 
-López, Á. R., Silva, A. C., & Sarmiento, J. A. (2014). Autonomía femenina y factores asociados al uso de servicios maternos en Colombia (2010). Revista Latinoamericana de Ciencias Sociales, Niñez y Juventud, 12(1), 325-337. <https://doi.org/10.11600/1692715x.12119081413>
+  López, Á. R., Silva, A. C., & Sarmiento, J. A. (2014). Autonomía femenina y factores asociados al uso de servicios maternos en Colombia (2010). Revista Latinoamericana de Ciencias Sociales, Niñez y Juventud, 12(1), 325-337. <https://doi.org/10.11600/1692715x.12119081413>
 
-Pachón, X. (2004). La familia en Colombia a lo largo del siglo XX [Ebook] (1st ed., pp. 145,159). Bogotá: Universidad Nacional de Colombia. Retrieved from <https://www.studocu.com/co/document/universidad-de-pamplona/sociedad-familia-y-salud/resumenes/la-familia-en-colombia-a-lo-largo-del-siglo-xx/8981874/view>
+  Pachón, X. (2004). La familia en Colombia a lo largo del siglo XX [Ebook] (1st ed., pp. 145,159). Bogotá: Universidad Nacional de Colombia. Retrieved from <https://www.studocu.com/co/document/universidad-de-pamplona/sociedad-familia-y-salud/resumenes/la-familia-en-colombia-a-lo-largo-del-siglo-xx/8981874/view>
 
-Torres Tabares, C. M., & Vergara MUñoz, E. C. (2012). Características sociodemográficas de personas sometidas a esterilización quirúrgica (Medellín 2006-2010) (Sociodemographic characteristics of people subjected to surgica l sterilization (Medellín 2006-2010)). CES Salud Pública, 3(2), 129-140. <https://doi.org/10.21615/1841>
+  Torres Tabares, C. M., & Vergara MUñoz, E. C. (2012). Características sociodemográficas de personas sometidas a esterilización quirúrgica (Medellín 2006-2010) (Sociodemographic characteristics of people subjected to surgica l sterilization (Medellín 2006-2010)). CES Salud Pública, 3(2), 129-140. <https://doi.org/10.21615/1841>
  
  
