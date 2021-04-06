@@ -11,9 +11,12 @@
 library(shiny)
 source("Modelo.R")
 
+# Creo la parte grafica de la pagina
 ui <- fluidPage(title = "Predicción número de hijos",
         tags$head(
+          
           tags$style(type="text/css", "body {padding-top: 70px;}"),
+          tags$style(type="text/css","#imagen img {max-width: 100%; width: 100%; height: auto}"),
           tags$style("#texto_hijos{
                                  font-size: 20px;
                                  font-style: bold;
@@ -125,6 +128,7 @@ ui <- fluidPage(title = "Predicción número de hijos",
             column(4,
                wellPanel(
                   tags$h3("Resultado"),
+                  imageOutput("imagen"),
                   hr(),
                   textOutput("texto_hijos")
                )
@@ -141,6 +145,8 @@ ui <- fluidPage(title = "Predicción número de hijos",
   
 )
 
+
+# Parte 
 server <- function(input, output) {
   
   observeEvent(input$enviar, {
@@ -171,7 +177,24 @@ server <- function(input, output) {
       textoMostrar
     })
     
+    output$imagen <- renderImage({
+      
+      filename <- normalizePath(file.path('./img', paste(prediccion[[1]], '.png', sep='')))
+      
+      if(is.null(prediccion[[1]])){
+        filename <- normalizePath(file.path('./img/error.png'))
+      }
+      # Return a list containing the filename
+      list(src = filename,
+           contentType = 'image/png',
+           width = 400,
+           height = 400,
+           alt = "Cantidad hijos")
+    }, deleteFile = FALSE)
+    
   })
 }
 
+
+# Funcionamiento de la app
 shinyApp(ui = ui, server = server)
