@@ -16,7 +16,7 @@ ui <- fluidPage(title = "Predicción número de hijos",
         tags$head(
           
           tags$style(type="text/css", "body {padding-top: 70px;}"),
-          tags$style(type="text/css","#imagen img {max-width: 100%; width: 100%; height: auto}"),
+          tags$style(type="text/css","#imagen img {max-width: 100%; width: 100%; height: auto; max-height: 100%}"),
           tags$style("#texto_hijos{
                                  font-size: 20px;
                                  font-style: bold;
@@ -126,12 +126,15 @@ ui <- fluidPage(title = "Predicción número de hijos",
             ),
             
             column(4,
-               wellPanel(
-                  tags$h3("Resultado"),
-                  imageOutput("imagen"),
-                  hr(),
-                  textOutput("texto_hijos")
-               )
+                   fluidRow(
+                     wellPanel(
+                       tags$h3("Resultado"),
+                       imageOutput("imagen"),
+                       hr(),
+                       textOutput("texto_hijos")
+                     )
+                   )
+               
             )
           ),
   ),
@@ -139,7 +142,9 @@ ui <- fluidPage(title = "Predicción número de hijos",
      tags$h4("Enlace al reporte técnico"),
      tags$a(href="#", icon("book"), "Reporte técnico", class = "btn btn-primary"),
      tags$h4("Enlace al respositorio del proyecto"),
-     tags$a(href="https://github.com/juanescendales/TAE-01-NatalidadColombia", icon("github"), "Repositorio del proyecto", class = "btn", style = "background-color:#000000; color:#ffffff;") 
+     tags$a(href="https://github.com/juanescendales/TAE-01-NatalidadColombia", icon("github"), "Repositorio del proyecto", class = "btn", style = "background-color:#000000; color:#ffffff;"),
+     hr(),
+     HTML('<div>Iconos diseñados por <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.es/" title="Flaticon">www.flaticon.es</a></div>')
   )
 ),
   
