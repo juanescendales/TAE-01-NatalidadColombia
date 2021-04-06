@@ -11,10 +11,9 @@
 library(shiny)
 source("Modelo.R")
 
-# Creo la parte grafica de la pagina
 ui <- fluidPage(title = "Predicción número de hijos",
+        # Algunos cambios en el css de algunos elementos
         tags$head(
-          
           tags$style(type="text/css", "body {padding-top: 70px;}"),
           tags$style(type="text/css","#imagen img {max-width: 100%; width: 100%; height: auto; max-height: 100%}"),
           tags$style("#texto_hijos{
@@ -24,10 +23,14 @@ ui <- fluidPage(title = "Predicción número de hijos",
                                  }"),
           tags$style(HTML("hr {border-top: 1px solid #000000;}"))
         ),
+        # Navegacion
         navbarPage("Predicción número de hijos", inverse = TRUE, position = "fixed-top",
+                   
+          # Tab Modelo
           tabPanel("Modelo",
            fluidRow(
             column(8,
+                # Descripcion
                 wellPanel(
                  fluidRow(
                    column(12,
@@ -39,6 +42,8 @@ ui <- fluidPage(title = "Predicción número de hijos",
                    )
                  ),
                 ),
+                
+                # Campos a rellenar
                 wellPanel(
                 fluidRow(
                  column(12,
@@ -118,6 +123,7 @@ ui <- fluidPage(title = "Predicción número de hijos",
                   )
                 ),
               
+              # Boton de enviar
               actionButton(inputId = "enviar", width = "100%",
                            label = "Enviar datos",
                            class = "btn-success"),
@@ -125,6 +131,7 @@ ui <- fluidPage(title = "Predicción número de hijos",
               )
             ),
             
+            # Espacio para el resultado
             column(4,
                    fluidRow(
                      wellPanel(
@@ -138,24 +145,28 @@ ui <- fluidPage(title = "Predicción número de hijos",
             )
           ),
   ),
+  
+  # Espacio de enlaces 
   tabPanel("Enlaces",
      tags$h4("Enlace al reporte técnico"),
      tags$a(href="#", icon("book"), "Reporte técnico", class = "btn btn-primary"),
      tags$h4("Enlace al respositorio del proyecto"),
      tags$a(href="https://github.com/juanescendales/TAE-01-NatalidadColombia", icon("github"), "Repositorio del proyecto", class = "btn", style = "background-color:#000000; color:#ffffff;"),
      hr(),
+     # Referencia a los iconos usados con los hijos
      HTML('<div>Iconos diseñados por <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.es/" title="Flaticon">www.flaticon.es</a></div>')
   )
 ),
   
 )
 
-
-# Parte 
 server <- function(input, output) {
   
+  # Acciones a ejecutar al momento de presionar enviar
   observeEvent(input$enviar, {
     
+    
+    # Creo un dataframe con los datos de los campos de la ui, para ser usados posteriormente en la prediccion del modelo
     df = data.frame(list(Sexo.Jefe= input$sexoJefe,
                           Tipo.Union = input$tipoUnion,
                           Trabajo.Jefe = input$trabajoJefe,
@@ -165,31 +176,43 @@ server <- function(input, output) {
                           Cantidad.de.personas = input$cantPersonas,
                           Ingresos.totales = input$ingresosTotales,
                           Valor.Electricidad = input$valorElectricidad))
-    prediccion <- generar_prediccion(df)
-    texto = "hijos"
     
+    # Genero la prediccion
+    prediccion <- generar_prediccion(df)
+    
+    # Texto para mostrar el numero de hijos
+    texto = "hijos"
     if(prediccion[[1]] == 1){
       texto = "hijo"
     }
     
+    # Cancateno hijo o hijos segun sea el caso
     textoMostrar = paste(prediccion[[1]], texto, sep=" ")
     
+    
+    # En caso de que sea la respuesta NULL, mostrare el mensaje de error
     if(is.null(prediccion[[1]])){
       textoMostrar = prediccion[[2]]
     }
     
+    
+    # Muestro el mensaje en la ui
     output$texto_hijos <- renderText({
       textoMostrar
     })
     
+    # Imagen de numero de hijos
     output$imagen <- renderImage({
       
+      # Dependiendo del numero de hijos en la prediccion muestro cierta imagen
       filename <- normalizePath(file.path('./img', paste(prediccion[[1]], '.png', sep='')))
       
+      # En caso de error muestro una imagen de error
       if(is.null(prediccion[[1]])){
         filename <- normalizePath(file.path('./img/error.png'))
       }
-      # Return a list containing the filename
+      
+      # Retorno una lista con la informacion de la imagen
       list(src = filename,
            contentType = 'image/png',
            width = 400,
