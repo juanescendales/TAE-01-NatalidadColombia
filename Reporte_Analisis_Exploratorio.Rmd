@@ -101,7 +101,7 @@ Inicialmente, observamos como esta distribuida la variable respuesta ya que esto
 
 
 ```{r}
-ggplot(datos,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(title = "Distribución De Los Hijos")+ylab("Cantidad De Hogaress")
+ggplot(datos,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(title = "Distribución De Los Hijos")+ylab("Cantidad De Hogares")
 ```
 
 La cantidad de los hijos en los hogares que más predomia es 0, es decir que no hay hijos, después de esto la cantidad de hijos en los hogares decae. A partir de esto, se infiere que es más frecuente no encontrar hijos o encontrar al menos uno, y que es menos frecuente encontrar más de uno. 

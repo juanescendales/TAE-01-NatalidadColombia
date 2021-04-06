@@ -1,18 +1,13 @@
 ---
-title: "Reporte Técnico Borrador"
+title: "Test1"
 author: "Santiago Alexis Valencia Zapata"
-date: "4/4/2021"
+date: "5/4/2021"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = F, message = F, warning = F,fig.width=4, fig.height=3.6,fig.align="center")
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
 
 # Intoducción
 
@@ -361,129 +356,494 @@ N.cuartos.dormir|Numérica discreta|Número de cuartos de la vivienda del hogar 
 Valor.Electricidad|Continua|Valor en COP/mes del recibo por el uso de la electricidad en el hogar
 N.usos.Lavadora|Categórica|Número de cargas de ropa que se lavan haciendo uso de la lavadora por semana en el hogar
 
-```{r Imports echo=FALSE}
-library(dplyr)
+```{r Imports, message=F}
+rm(list=ls())
 library(knitr)
+library(caret)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(kableExtra)
+library(corrplot)
+```
+
+```{r Definición de función para tablas divididas}
+# Función para crear tablas en el reporte divididas
+tabla_dividida <- function(tabla) {
+  
+  all <- list()
+  rows <- seq_len(nrow(tabla) %/% 2)
+  rows <- list(rows,-rows)
+  for (i in 1:2) {
+    
+    a <- tabla[rows[[i]],]
+    names <- row.names(tabla)[rows[[i]]]
+    a <- cbind(names,a)
+    colnames(a) <- c("Varaible","Tipo")
+    
+    all[[i]] <- a
+    
+  }
+  
+  
+  kable(all)%>% kable_styling(latex_options = "hold_position")
+}
+
+```
+
+```{r Lectura de datos}
+#Traemos y leemos los datos del conjunto de datos
+datos_originales <- read.csv2(file('./DatosCSVProcesados/DatosCompletosING.csv', encoding="UTF-8"))
 ```
 
 
+## Analisis Exploratorio
 
-```{r Lactura de datos}
-#Traemos y leemos los datos del conjunto de datos
-datos_originales <- read.csv('./DatosCSVProcesados/DatosCompletosING.csv', sep = ';', encoding = "UTF-8")
-# for (col in colnames(datos_originales)){
-#   print(type(datos_originales[[col]]))
-#   #Encoding(datos_originales[[col]]) <- "UTF-8"
-# }
+En el siguiente informe, se realiza una exploración inicial de los datos para encontrar las pósibles relaciones que puedan existir entre la variable respuesta _Hijos_ y las demás covariables que representan las caracteristicas del hogar.
 
-#print(datos_originales)
-summary(datos_originales[-1])
-kable(summary(datos_originales[-1]))
+### Recodificación y Contextualización De Los Datos
+
+En la construcción de la base de datos encontramos que hay multiples tipos de variables que se pueden utilizar tales como: variables numericas, variables ordinales y variables nominales.
+
+Despúes de cargada la base, se encuentra que el tipo de cada variables no necesariamente es el correcto. Esto lo podemos observar en la siguiente tabla:
+
+```{r Generación de tabla de los tipos de datos}
+
+#Jeneramos un dataframe con los datos y su clase de dato
+tipo_datos <- data.frame(sapply(datos_originales,class))
+names(tipo_datos) <- "Tipo"
+tabla_dividida(tipo_datos)
+```
+
+A continuación se recodifica cada variable en su tipo correcto. Los resultados son los siguientes:
+
+
+```{r }
+#Quitamos el identificador único, pues este no nos interesa
+datos_originales$Codigo <- NULL
 
 #Definimos un vector con los nombres de las variables categóricas
-variables_categoricas <- c('Sexo.Jefe',
-                           'Sexo.Conyuge',
-                           'Tipo.Union',
-                           'Region',
-                           'Estrato.vivienda',
-                           'Trabajo.Jefe',
-                           'Trabajo.conyuge',
-                           'Uso.tecnologia.Jefe',
-                           'Uso.tecnologia.conyuge',
-                           'Edu.Jefe',
-                           'Edu.Conyuge',
-                           'Afiliacion.salud',
-                           'N.usos.Lavadora'
-                           )
+variables_categoricas <- c(
+  'Sexo.Jefe',
+  'Sexo.Conyuge',
+  'Tipo.Union',
+  'Region',
+  'Estrato.vivienda',
+  'Trabajo.Jefe',
+  'Trabajo.conyuge',
+  'Uso.tecnologia.Jefe',
+  'Uso.tecnologia.conyuge',
+  'Edu.Jefe',
+  'Edu.Conyuge',
+  'Afiliacion.salud',
+  'N.usos.Lavadora'
+  )
 
 #Creamos un data frame con las variables categóricas
-datos_categoricos <- datos_originales %>% 
-  select(all_of(variables_categoricas)) %>% 
+datos_categoricos <- datos_originales %>%
+  select(all_of(variables_categoricas)) %>%
   mutate_if(is.numeric,as.factor)
 
 #Creamos un data frame excluyendo las variables categóricas
-datos_numericos <- datos_originales %>% 
+datos_numericos <- datos_originales %>%
   select(-all_of(variables_categoricas))
 
-#Juntamos ambos data frames 
+#Juntamos ambos data frames
 datos_tipados <- cbind(datos_numericos,datos_categoricos)
 
-#kable(summary(datos_numericos))
+#Jeneramos un dataframe con los datos y su clase de dato
+tipo_datos <- data.frame(sapply(datos_tipados,class))
+names(tipo_datos) <- "Tipo"
+tabla_dividida(tipo_datos)
+
+```
+Finalmente los datos se encuentras bien codificados.
+
+### % NA
+
+Ahora, se procede a  encontrar el porcentaje de valores _NA_ en cada variable, ya que esto puede ser bastante significativo en procesos posteriores como el ajustar un modelo o seleccionar variables de importancias. La tabla resultante es la siguiente:
+
+```{r Generación tabla comparativa de NA's}
+
+#Buscamos los NA's y los guardamos
+NAs <- apply(datos_tipados, 2, is.na)
+
+#Calculamos el porcentaje de NA's con respecto al total de datos, por variable
+suma_NAs <- data.frame(apply(NAs, 2, sum)/nrow(datos_tipados))
+names(suma_NAs) <- "% NA"
+tabla_dividida(suma_NAs*100)
+```
+Las variables que representan información del cónyuge tienen un $43.4\%$ de valores faltantes. Lo anterior se puede deber a que muy probablemente sean hogares en los que el jefe del hogar sea soltero, viudo, etc. Debido a que el porcentaje de NA's es tan significativo en las variables relacionadas al cónyuge, se opta por prescindir de ellas.
+
+```{r Eliminación de las variables de cónyuge}
+
+#Definimos un vector con los nombres de las variables categóricas
+variables_del_conyuge <- c(
+  'Edad.Conyuge',
+  'Sexo.Conyuge',
+  'Trabajo.conyuge',
+  'Uso.tecnologia.conyuge',
+  'Edu.Conyuge'
+  )
+
+#Borramos las columnas correspondientes a los datos del cónyuge
+datos_sin_conyuge <- datos_tipados %>% 
+  select(-all_of(variables_del_conyuge))
+```
+
+# Distribución Variable Respuesta
+
+Inicialmente, observamos como esta distribuida la variable respuesta ya que esto puede ser de vital importancia en los análisis posteriores.
+
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=Hijos))+geom_bar(color="blue",fill="lightblue")+labs(title = "Distribución De Los Hijos")+ylab("Cantidad De Hogares")
+```
+
+La cantidad de los hijos en los hogares que más predomia es 0, es decir que no hay hijos, después de esto la cantidad de hijos en los hogares decae. A partir de esto, se infiere que es más frecuente no encontrar hijos o encontrar al menos uno, y que es menos frecuente encontrar más de uno. 
+
+# Relaciones Variable Respuesta y Covariables
+
+Ahora se procede a analizar las posibles relaciones que existan entre la variable respuesta y las covariables, esto ayudara a determinar que variables podrán contribuir a explicar la variabilidad de las variable respuesta.
+
+## Edad Del Jefe
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Edad.Jefe, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Edad Del Jefe",subtitle = "Según Los Hijos")+ylab("Edad del jefe")+xlab("Hijos")+theme(legend.position="none")
+```
+
+Cuando en el hogar no hay hijos o hay a lo más 1, la edad del jefe del hogar parece variar bastante, mientras que para los hogares donde hay más de 1 hijos, en general, la edades no presentan mayores variaciones. De lo anterior se puede decir, que la edad del jefe puede influir al momento de determinar la cantidad de hijos que se encuentra en el hogar.
+
+## Cantidad De Personas
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Cantidad.de.personas, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Personas En El Hogar",subtitle = "Según Los Hijos")+ylab("Cantidad De Personas En El Hogar")+xlab("Hijos")+theme(legend.position="none")
+```
+
+En general es de esperar que entre mayor sea la cantidad de personas en el hogar, mayor sea el numero de hijos en esta. De este modo, parece que la cantidad de personas en el hogar influye positivamente en el numero de hijos.
+
+## Estrato De La Vivienda
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Estrato.vivienda),y=Hijos, fill=factor(Estrato.vivienda)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Estrato De La Vivienda")+ylab("Cantidad De Hijos En El Hogar")+xlab("Estrato Vivienda")+theme(legend.position="none")
+```
+En general no parece que el estrado de la vivienda influya mucho en la cantidad de hijos que se pueda encontrar en un hogar, sin embargo, en los hogares de estrato 4 y 5 parece encontrarse una cantidad menor a la de los hogares de los demás estratos. Por lo anterior no podemos decir completamente que el estrato de la vivienda sea influyente en el numero de hijos del hogar.
+
+## Ingresos Totales
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Ingresos.totales, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Ingreso Total De La Vivienda")+ylab("Ingresos Totales En El Hogar")+xlab("Hijos")+theme(legend.position="none")+ylim(c(0,2000000))
+```
+
+Los ingresos totales de los hogares parecen variar mucho y sin embargo no parecen cambiar mucho a medida que se tengan más o menos hijos en el hogar. Por lo anterior, los ingresos totales del hogar no influyen de manera de directa en la cantidad de hijos que se pueda encontrar en el.
+
+## Numero De Cuartos
+
+```{r,ig.width=4, fig.height=3.3}
+ggplot(datos_sin_conyuge,aes(x=factor(N.cuartos),y=Hijos, fill=factor(N.cuartos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Cuartos De La Vivienda")+ylab("Cantidad De Hijos En El Hogar")+xlab("Numero De Cuartos")+theme(legend.position="none")
+```
+
+No necesariamente si hay más cuartos en un hogar se van a encontrar más hijos en este, pero posiblemente si exista algún tipo de variación. Por lo tanto no podemos asegurar con certeza que en numero de cuartos en el hogar influya en el numero de hijos que se encuentren en el.
+
+## Numero De Cuartos
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(N.cuartos.dormir),y=Hijos, fill=factor(N.cuartos.dormir)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Cuartos Donde Se Duerme")+ylab("Cantidad De Hijos En El Hogar")+xlab("Numero De Cuartos Donde Se Duerme")+theme(legend.position="none")
+```
+
+Sutilmente se muestra un patron, aunque no muy fuerte, de que a medida en que el numero de cuartos donde se duerme en el hogar aumenta, tambien lo hace la cantidad de hijos que se encuentran en el. De este modo se infiere que muy probablemnte el numero de cuartos donde se duerme en el hogar ayude a explicar la variabilidad de la cantidad de hijos que se encuentren en el.
+
+## Valor Electricidad
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=Valor.Electricidad, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Valor De Electricidad Que Se Paga")+ylab("Valor De Electricidad Que Se Paga")+xlab("Hijos")+theme(legend.position="none")+ylim(c(0,250000))
+```
+
+No se observan patrones ni negativos ni positivos en relación al cambio de los hijos que se encuentren en el hogar. De este modo el valor que se paga de electricidad no influye directamente con el numero de hijos que se encuentre en el hogar.
+
+## Numero Usos Lavadora
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos),y=N.usos.Lavadora, fill=factor(Hijos)))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Numero De Usos De La Lavadora")+ylab("Numero De Usos De La Lavadora")+xlab("Hijos")+theme(legend.position="none")
+```
+En general no se observan patrones muy claros en que existan algun tipo de relación entre las variables. Por lo tanto, decimos que el numero de usos de la lavadora no influye en la cantidad de hijos que se puedan encontrar en un hogar.
+
+
+## Correlaciones
+
+```{r,fig.width=5, fig.height=5}
+corrplot(cor(datos_sin_conyuge %>% select_if(is.numeric)), type = "upper", order = "hclust", tl.col = "black", tl.srt = 45)
+```
+
+Las variables que tiene relaciones lineales más fuertes con la variable _Hijos_, son: _Cantidad.de.personas_, _N.cuartos.dormir_ y _Edad.Jefe_. Por lo anterior estas 3 variable son candidatas a ser consideradas dentro de un modelo incial.
+
+## Sexo Del Jefe
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Sexo.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Sexo Del Jefe")+ylab("Cantidad De Hogares")+xlab("Hijos")
+```
+
+Sutilmente se observa una diferencia entre los hijos del hogar cuando el jefe del hogar en hombre o mujer. Por lo anterior podemos decir que el sexo del jefe del hogar puede ayudar a explicar la variabilidad del numero de hijos en un hogar.
+
+## Tipo De Union
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=Tipo.Union,y=Hijos, fill=Tipo.Union))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según Tipo De Union")+ylab("Cantidad De Hijos")+xlab("Tipo De Union")+theme(legend.position="none")
+```
+A priori parece que según el tipo de unión la cantidad de de hijos que se encuentre en el hogar puede variar. Dicho esto, es posible que el tipo de unión sea una variable que no ayude a explicar la cantidad de hijos en un hogar.
+
+## Region
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=Region,y=Hijos, fill=Region))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Region Del Hogar")+ylab("Cantidad De Hijos")+xlab("Region")+theme(legend.position="none")
+```
+Se observa claramente que la cantidad de hijos en el hogar es independiente de la region en la cual se encuentre la vivienda. Se concluye que la region no es una variable que influya en la cantidad de hijos que se encuentren en un hogar.
+
+## Trabajo Jefe
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=Trabajo.Jefe,y=Hijos, fill=Trabajo.Jefe))+geom_boxplot(alpha=0.2)+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Trabajon Del Jefe Del Hogar")+ylab("Cantidad De Hijos")+xlab("Tipo De Trabajo")+theme(legend.position="none")
+```
+No parece haber una relación muy clara entre el tipo de trabajo del jefe del hogar y la cantidad de hijos que se encuentren en el hogar. Por lo anterior, no es recomendable suguerir que el tipo de trabajo del jefe de hogar influya en la cantidad de hijos en el.
+
+## Uso De Tecnologia
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Uso.tecnologia.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según El Uso De Tecnologia")+ylab("Cantidad De Hijos")+xlab("Hijos")
+```
+
+Claramente se observa que el numero de hijos cambia dependiendo el uso de tecnologia que tenga el jefe del hogar. Por lo tanto, es muy probable que la variable _Uso.tecnologia.Jefe_ ayude a explicar la variabilidad de la cantidad de hijos en un hogar.
+
+
+## Educación Jefe
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Edu.Jefe))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Educación Del Jefe")+ylab("Cantidad De Hijos")+xlab("Hijos")
+```
+Es notable el cambio en la cantidad de hogares en los que se encuentran ciertas cantidades del hijos según la educación que tenga el jefe del hogar. Dicho esto, es importante considera la variable _Edu.Jefe_ para poder explicar el numero de hijos que se encuentren en el hogar.
+
+## Afiliación Salud
+
+```{r}
+ggplot(datos_sin_conyuge,aes(x=factor(Hijos), fill=Afiliacion.salud))+geom_bar()+labs(title = "Cantidad De Hijos En El Hogar",subtitle = "Según La Afiliación A Salud")+ylab("Cantidad De Hijos")+xlab("Hijos")
+```
+No se observa que la afiliación a salud determine o segmente fuertemente la cantidad de hijos que se encuentren en un hogar. Por lo tanto la variable _Afiliacion.salud_ no ayuda a determinar la cantidad de hijos que se encuentren en un hogar,
+
+# Concluciones Analisis Exploratorio
+
+Por el análisis anterior, se consideran las siguientes variables para ajustar un modelo que prediga el numero de hijos que se encuentran en un hogar:
+
+- Edad.Jefe
+- Cantidad.de.personas
+- N.cuartos.dormir
+- Valor.Electricidad
+- Tipo.Union
+- Trabajo.Jefe
+- Uso.tecnologia.Jefe
+- Sexo.Jefe
+- Edu.Jefe
+
+Estas variables muy probablemente nos ayuden a ajustar un modelo predictivo que funcione correctamente.
+
+
+
+## Elección y construcción del modelo
+
+```{r Funciones para el modelo}
+
+# Creamos una función para separar los datos por entrenamiento y validación
+separacion_de_datos <- function(datos,split){
+  if(missing(split)){
+    split<-0.7 #Por defecto se parte 70/30
+  }
+  indices_de_entrenamiento <- createDataPartition(datos$Hijos, p=split, list=FALSE)
+  datos_entrenamiento <- datos[ indices_de_entrenamiento,]
+  datos_validacion <- datos[-indices_de_entrenamiento,]
+  return(list("entrenamiento" = datos_entrenamiento, "validacion" = datos_validacion))
+}
+
+#Creamos una función que nos imprime la matris de confusión dados el modelo y los datos
+matriz_de_confusion <- function(modelo,datos){
+  modelo_prediccion <- predict(modelo,newdata = datos )
+  print(confusionMatrix(modelo_prediccion, datos$Hijos ))
+}
+
+#Función para evaluar el modelo dados el modelo y los datos de validación
+evaluar_modelo <-function(modelo,datos_validacion){
+  predicciones <- predict(modelo,newdata = datos_validacion)
+}
 
 ```
 
-## Análisis descriptivo de las variables
+```{r Función para generar un modelo de Random Forest}
 
-```{r Revisión de NA's}
-NAs <- as.data.frame(apply(datos_originales, 2, is.na))
-
-NAs <- NAs %>% 
-  rename(
-    Sexo_Jefe = Sexo.Jefe,
-    Sexo_Conyuge = Sexo.Conyuge,
-    Tipo_Union = Tipo.Union,
-    Edad_Jefe = Edad.Jefe,
-    Edad_Conyuge = Edad.Conyuge,
-    Cantidad_de_personas = Cantidad.de.personas,
-    Estrato_vivienda = Estrato.vivienda,
-    Trabajo_Jefe = Trabajo.Jefe,
-    Trabajo_conyuge = Trabajo.conyuge,
-    Ingresos_totales = Ingresos.totales,
-    Uso_tecnologia_Jefe = Uso.tecnologia.Jefe,
-    Uso_tecnologia_conyuge = Uso.tecnologia.conyuge,
-    Edu_Jefe = Edu.Jefe,
-    Edu_Conyuge = Edu.Conyuge,
-    Afiliacion_salud = Afiliacion.salud,
-    N_cuartos = N.cuartos,
-    N_cuartos_dormir = N.cuartos.dormir,
-    Valor_Electricidad = Valor.Electricidad,
-    N_usos_Lavadora = N.usos.Lavadora
+#Función para crear un modelo de random forest, usando el método de "Cross-Validation"
+crear_modelo_random_forest <- function(datos_entrenamiento,datos_entrada_entrenamiento){
+  
+  ctrl <- trainControl(
+    method="cv", #Entrenamiento con validación cruzada
+    number=3,
+    search="grid",
+    verboseIter = TRUE
     )
+  
+  mtry <- ncol(datos_entrada_entrenamiento)/3
+  tunegrid <- expand.grid(.mtry=mtry)
+  
+  modelo_random_forest <- train(
+    Hijos ~ .,
+    data = datos_entrenamiento,
+    method = 'rf',
+    tuneGrid  = tunegrid, 
+    trControl = ctrl
+    )
+  
+  return(modelo_random_forest)
 
-tabla_NAs<-apply(NAs, 2, sum)
-kable(tabla_NAs)
+}
+
+```
+
+
+```{r Función para generar un modelo Ridge}
+
+crear_modelo_ridge <- function(datos_entrenamiento){
+  
+  parameters <- c(seq(0.01, 0.1, 0.01), seq(0.1, 2, by =0.1) , seq(2, 5, 0.5) )
+  
+  ridge<-train(
+    Hijos ~ .,
+    data = datos_entrenamiento,
+    method = 'glmnet', 
+    tuneGrid = expand.grid(alpha = 0, lambda = parameters),
+    metric =  "Rsquared"
+    )
+  
+  return(ridge)
+}
+
+
+```
+
+```{r Función para generar un modelo KNN}
+
+#Creamos función para crear un modelo KNN
+crear_modelo_knn <- function(datos_entrenamiento, rango_k_vecinos = 1:25){
+  ctrl <- trainControl(
+    method="cv", #Entrenamiento con Cross Validation
+    number = 5, 
+    verboseIter = TRUE
+    )
+  
+  modelo_knn <- train(
+    Hijos ~ .,
+    data = datos_entrenamiento,
+    method = "knn",
+    trControl = ctrl,
+    preProcess = c("center","scale"), #Los datos se normalizan
+    tuneGrid = data.frame(k = rango_k_vecinos)
+    )
+  
+  return(modelo_knn)
+}
+
+```
+
+```{r Partición de los datos Entrenamiento/Validación}
+
+#Partimos los datos con la función separacion_de_datos
+particion <- separacion_de_datos(datos_tipados)
+
+#Separamos por entrenamiento
+datos_entrenamiento <- particion$entrenamiento
+datos_de_entrada_entrenamiento <- subset(datos_entrenamiento, select = -c(Hijos))
+
+#Separamos por validación
+datos_validacion <- particion$validacion
+datos_de_entrada_validacion <- subset(datos_validacion, select = -c(Hijos))
+```
+
+```{r Creando modelo de Random Forest}
+#Entrenamos un modelo random forest con la función crea_modelo_random_forest
+modelo_random_forest<-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)
+print(modelo_random_forest)
 ```
 
 
-```{r Correlación entre variables numéricas}
+### Creacion del modelo Ridge
 
-# library(readxl)
-# library(dplyr)
-# library(ggplot2)
-# library(GGally)
-# library(Hmisc)
-# library(corrplot)
-# library(PerformanceAnalytics)
-# 
-# datos <- read.csv('./DatosCSVProcesados/DatosCompletosING.csv', sep = ';')
-# # 
-# # 
-# datos$Codigo <- as.factor(datos$Codigo)
-# datos$Sexo.Jefe <- as.factor(datos$Sexo.Jefe)
-# datos$Sexo.Conyuge <- as.factor(datos$Sexo.Conyuge)
-# datos$Tipo.Union <- as.factor(datos$Tipo.Union)
-# datos$Region <- as.factor(datos$Region)
-# datos$Trabajo.Jefe <- as.factor(datos$Trabajo.Jefe)
-# datos$Trabajo.conyuge <- as.factor(datos$Trabajo.conyuge)
-# datos$Uso.tecnologia.Jefe <- as.factor(datos$Uso.tecnologia.Jefe)
-# datos$Uso.tecnologia.conyuge <- as.factor(datos$Uso.tecnologia.conyuge)
-# datos$Edu.Jefe <- as.factor(datos$Edu.Jefe)
-# datos$Edu.Conyuge <- as.factor(datos$Edu.Conyuge)
-# datos$Afiliacion.salud <- as.factor(datos$Afiliacion.salud)
-# datos$N.usos.Lavadora <- as.factor(datos$N.usos.Lavadora)
-# # 
-# # 
-# # 
-# datos_numericos <- datos%>%select(where(is.numeric))
-# 
-# datos_numericos_sin_na <- datos_numericos%>%select(-Edad.Conyuge)
-# 
-# #chart.Correlation(datos_numericos, histogram = F, pch = 19)
-# 
-# corrplot(cor(datos_numericos_sin_na), type = "upper", order = "hclust", 
-#          tl.col = "black", tl.srt = 45)
 
+```{r Creando modelo Ridge}
+
+#Entrenamos un modelo Ridge con la función crear_modelo_gridge
+modelo_ridge<-crear_modelo_ridge(datos_entrenamiento)
+print(modelo_ridge)
 ```
+### Modelo KNN
+```{r Creando modelo KNN}
+#Entrenamos un modelo KNN con la función crear_modelo_knn
+modelo_knn<-crear_modelo_knn(datos_entrenamiento)
+print(modelo_knn)
+```
+
+## Guardado de modelos
+```{r}
+saveRDS(modelo_random_forest,"./Modelos/rf_modelo.rds")
+saveRDS(modelo_ridge,"./Modelos/ridge_modelo.rds")
+saveRDS(modelo_knn,"./Modelos/knn_modelo.rds")
+```
+
+
+## Carga de modelos
+```{r}
+carga_modelo_random_forest<-readRDS("./Modelos/rf_modelo.rds")
+carga_modelo_ridge <- readRDS("./Modelos/ridge_modelo.rds")
+carga_modelo_knn <- readRDS("./Modelos/knn_modelo.rds")
+```
+
+```{r}
+print(carga_modelo_random_forest)
+print(carga_modelo_ridge)
+print(carga_modelo_knn)
+```
+
+## Seleccion del modelo
+Debido a su simplicidad y los buenos resultados que se obtuvieron consideramos que el modelo mas optimo para afrontar este problema es KNN por encima del Random Forest
+
+## Pruebas con KNN
+
+```{r Gráfica KNN k vs. RMSE}
+#Buscamos el K óptimo comparándolo con el RMSE
+plot(carga_modelo_knn,main = "K vs RMSE")
+```
+
+```{r Predicciones del modelo KNN}
+#Realizamos las predicciones del modelo KNN con los datos de validación (Sin los hijos)
+predicciones <- predict(carga_modelo_knn,datos_de_entrada_validacion)
+```
+
+```{r}
+#Calculamos el mínimo error cuadrado (Minimum Square Error)
+mse <-sum((predicciones - datos_validacion$Hijos)^2)/length(datos_validacion$Hijos)
+
+#Calculamos la raíz del mínimo error cuadrado (Root Minimum Square Error)
+rmse <-sqrt(mse)
+
+
+print(mse)
+print(rmse)
+```
+## Creacion del modelo con todos los datos
+
+```{r}
+knn_modelo_final<-crear_modelo_knn(datos_tipados,10:18)
+print(knn_modelo_final)
+```
+```{r}
+saveRDS(knn_modelo_final,"./Modelos/knn_modelo_final.rds")
+```
+
+
 
 # Resultados
 
@@ -500,3 +860,5 @@ López, Á. R., Silva, A. C., & Sarmiento, J. A. (2014). Autonomía femenina y f
 Pachón, X. (2004). La familia en Colombia a lo largo del siglo XX [Ebook] (1st ed., pp. 145,159). Bogotá: Universidad Nacional de Colombia. Retrieved from <https://www.studocu.com/co/document/universidad-de-pamplona/sociedad-familia-y-salud/resumenes/la-familia-en-colombia-a-lo-largo-del-siglo-xx/8981874/view>
 
 Torres Tabares, C. M., & Vergara MUñoz, E. C. (2012). Características sociodemográficas de personas sometidas a esterilización quirúrgica (Medellín 2006-2010) (Sociodemographic characteristics of people subjected to surgica l sterilization (Medellín 2006-2010)). CES Salud Pública, 3(2), 129-140. <https://doi.org/10.21615/1841>
+ 
+ 
