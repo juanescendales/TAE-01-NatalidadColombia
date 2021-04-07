@@ -150,7 +150,7 @@ ui <- fluidPage(title = "Predicción número de hijos",
   # Espacio de enlaces 
   tabPanel("Enlaces",
      tags$h4("Enlace al reporte técnico"),
-     tags$a(href="#", icon("book"), "Reporte técnico", class = "btn btn-primary"),
+     tags$a(href="https://rpubs.com/Alexitouno19/TAE-01-NatalidadColombia", icon("book"), "Reporte técnico", class = "btn btn-primary"),
      tags$h4("Enlace al respositorio del proyecto"),
      tags$a(href="https://github.com/juanescendales/TAE-01-NatalidadColombia", icon("github"), "Repositorio del proyecto", class = "btn", style = "background-color:#000000; color:#ffffff;"),
      hr(),
