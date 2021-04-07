@@ -1,6 +1,6 @@
 ---
-title: "Reporte técnico - Número de hijos en hogares colombianos"
-author: "Juan Esteban Cendales Sora\nDaniel Escobar David\nAlejandro Jiménez Franco\nJuan José Sapuyes Pino\nSantiago Alexis Valencia Zapata"
+title: "Reporte técnico - Modelo predicctivo del número de hijos en hogares colombianos"
+author: "Juan Esteban Cendales Sora - Daniel Escobar David - Alejandro Jiménez Franco - Juan José Sapuyes Pino - Santiago Alexis Valencia Zapata"
 date: "5/4/2021"
 output:
   prettydoc::html_pretty:
@@ -17,11 +17,24 @@ knitr::opts_chunk$set(echo = T, message = F, warning = F,fig.width=4, fig.height
 
 El número de hijos de un hogar puede ser determinante al momento de ofrecer un servicio financiero, por ejemplo, las empresas que prestan servicios pensionales en Colombia consideran el número de hijos al momento de ofrecer el monto total de una pensión, pues, al momento de la persona morir, se espera que la pensión pueda sostener a los hijos del beneficiado hasta que se cumplan ciertos requisitos. Un número mayor de hijos implica para el fondo de pensiones, mayores gastos a largo plazo. De igual manera, en las entidades bancarias, al momento de analizar los factores de riesgo para la entrega de un préstamo, también se tiene en cuenta el número de hijos en el hogar, puesto que una persona que tenga muchos más hijos tiende a gastar más para poder cubrir las necesidades de estos, lo que puede desembocar que en algún momento le sea mucho más difícil pagar el préstamo que se le ofrece en comparación con otra persona que tiene menos hijos o que no los tiene.
 
+Determinar el número de hijos de un hogar en Colombia se convierte en una tarea complicada, puesto que existen grandes diferencias culturales, generacionales, sociales y económicos que modelan la imagen de familia que tienen los colombianos en las diferentes regiones del país, y por consiguiente, el número de hijos de cada hogar (Pachón, 2004).
+
 Con esta motivación, el estudio aquí presentado tiene como finalidad generar un modelo predictivo para el número de hijos de los hogares colombianos, que pueda ser utilizado por empresas que ofrezcan servicios financieros, para que, puedan estimar con una alta precisión, cuál es el número de hijos que tiene un hogar, en caso de que este dato se desconozca o se tengan dudas sobre él, analizando otras características del hogar de la persona que se está analizando.
 
 # Retos
 
+Los principales retos al momento de realizar este modelo predictivo son:
+
+* Identificar las variables de entrada y de salida del modelo
+* Encontrar en la fuente de datos, la información que permita construir las respectivas variables de entrada y salida
+* Analizar, preprocesar y filtrar los datos obtenidos
+* Encontrar la mejor combinación de variables para simplificar las entradas del modelo
+* Encontrar el tipo de modelo que mejor se adapte a las condiciones de los datos y a la capacidad del equipo investigador
+* Entrenar el modelo y explorar los resultados obtenidos
+
 # Materiales y métodos
+
+Construcción de un modelo descriptivo retrospectivo, con fuente de información secundaria
 
 ## Base de datos inicial
 
@@ -373,6 +386,7 @@ library(dplyr)
 library(ggplot2)
 library(kableExtra)
 library(corrplot)
+library(glmnet)
 ```
 
 ```{r Definición de función para tablas divididas}
@@ -890,6 +904,9 @@ datos_de_entrada_validacion <- subset(datos_validacion, select = -c(Hijos))
 Finalmente entrenamos el modelo y lo exportamos en un archivo RDS para poder hacer uso de él 
 
 ```{r Creando modelo KNN}
+
+#Se comentaron las líneas dónde se crea el modelo para asegurar la reprodcibilidad
+
 #Entrenamos un modelo KNN con la función crear_modelo_knn
 # modelo_knn<-crear_modelo_knn(datos_entrenamiento)
 # saveRDS(modelo_knn,"./Modelos/knn_modelo.rds")
@@ -906,12 +923,24 @@ plot(carga_modelo_knn,main = "K vs RMSE", sub='Para encontrar el mejor K', ylab=
 print(carga_modelo_knn)
 ```
 
-El mejor menor valor para los K vecinos del modelo es de 13
+El mejor menor valor para los K vecinos del modelo es de 13 con un RMSE de 0.6118477 y un $R^2$ de 0.7307199
+
+```{r RMSE y R2 de KNN entrenamiento}
+#Guardamos los valores para futuras comparaciones
+rmse_knn_entrenamiento <- 0.6118477
+r2_knn_entrenamiento <- 0.7307199
+```
 
 
 # Resultados
 
-Para poner en contexto el modelo entrenado 
+## Comparación con otros modelos
+
+Para poner en contexto el modelo entrenado y sus resultados, se comparará en relación con otros dos modelos diferentes al KNN: *Random Forest* y *Ridge Regression*
+
+### Creacion del modelo Random Forest
+
+El modelo Random Forest es ampliamente conocido por ser uno de los modelos más eficaces a la hora de hacer predicciones. Se basa en la generación de Árboles de Decisión de manera aleatoria, para luego realizar un entrenamiento y validación con los mismos datos de entrenamiento para cada uno de los árboles, para buscar entre ellos al o los que generen mejores resultados. A la par de su alta efectivdad, está su necesidad de alta capacidad de cómputo para generar sus mejores resultados, por lo que para ejercicos de "prueba y error" no es un modelo recomendable si no se cuenta con capacidad de cómputo suficiente. El modelo de Random Forest se definió con el siguiente script:
 
 ```{r Función para generar un modelo de Random Forest}
 
@@ -945,16 +974,31 @@ crear_modelo_random_forest <- function(datos_entrenamiento,datos_entrada_entrena
 
 ```
 
+Para evitar problemas por falta de capacidad de cómputo, solo se definió una iteración en el *grid*, definida como el número de columna de los datos de entrada dividido entre 3, que es la más usada por defecto, además de definir un número bajo de *K-Folds* =3
+
 ```{r Creando modelo de Random Forest}
+
+#Se comentaron las líneas dónde se crea el modelo para asegurar la reprodcibilidad
+
 #Entrenamos un modelo random forest con la función crea_modelo_random_forest
 # modelo_random_forest<-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)
 # saveRDS(modelo_random_forest,"./Modelos/rf_modelo.rds")
 carga_modelo_random_forest<-readRDS("./Modelos/rf_modelo.rds")
 print(carga_modelo_random_forest)
 ```
-
+```{r Comparación RMSE y R2 de Random Forest y KNN entrenamiento}
+rmse_random_forest_entrenamiento <- 0.6147983
+r2_random_forest_entrenamiento <- 0.7512361
+print('Diferencia entre RMSE de KNN - Random Forest')
+print(rmse_knn_entrenamiento - rmse_random_forest_entrenamiento)
+print('Diferencia entre R2 de KNN - Random Forest')
+print(r2_knn_entrenamiento - r2_random_forest_entrenamiento)
+```
+Se puede observar que a pesar de que las métricas del Random Forest son ligeramente superiores, la diferencia no es realmente grande en ninguna de las dos métricas.
 
 ### Creacion del modelo Ridge
+
+El modelo *Ridge* es ampliamente utilizado para modelos de regresión. Es especialmente conocido por analizar datos que tengan una alta multicolinealidad. Regulariza sus resultados haciendo uso de la L2 para penalizar los resultados, y así tener resultados menos dispersos. El script para la generación de su modelo es el siguiente:
 
 ```{r Función para generar un modelo Ridge}
 
@@ -962,7 +1006,7 @@ crear_modelo_ridge <- function(datos_entrenamiento){
   
   set.seed(42) #Fijamos la semilla para asegurar la reproducibilidad
   
-  
+  #Establecemos los valores de lambda para el modelo (L2)
   parameters <- c(seq(0.01, 0.1, 0.01), seq(0.1, 2, by =0.1) , seq(2, 5, 0.5) )
   
   ridge<-train(
@@ -979,7 +1023,11 @@ crear_modelo_ridge <- function(datos_entrenamiento){
 
 ```
 
+Definimos un vector de parámetros $\lambda$ para buscar entre ellos al que mejor penaliza los resultados.
+
 ```{r Creando modelo Ridge}
+
+#Se comentaron las líneas dónde se crea el modelo para asegurar la reprodcibilidad
 
 #Entrenamos un modelo Ridge con la función crear_modelo_gridge
 # modelo_ridge<-crear_modelo_ridge(datos_entrenamiento)
@@ -987,25 +1035,92 @@ crear_modelo_ridge <- function(datos_entrenamiento){
 carga_modelo_ridge <- readRDS("./Modelos/ridge_modelo.rds")
 print(carga_modelo_ridge)
 ```
+El mejor resultado se obtiene con un valor de $\lambda=0.09$
+
+```{r Comparación RMSE y R2 de Ridge Regresion y KNN entrenamiento}
+rmse_random_ridge <- 0.6723588
+r2_random_ridge <- 0.6771778
+print('Diferencia entre RMSE de KNN - Ridge Regresion')
+print(rmse_knn_entrenamiento - rmse_random_ridge)
+print('Diferencia entre R2 de KNN - Ridge Regresion')
+print(r2_knn_entrenamiento - r2_random_ridge)
+```
+Al igual que con el modelo de *Random Forest* la diferencia entre las métricas obtenidas en los modelos de *Ridge Regresion* y *KNN* no es muy amplia, incluso podemos observar que el $R^2$ en el método de *KNN* es ligeramente superior
+
+## Evaluación de datos de validación
 
 Para comprobar la efectividad del modelo, hacemos usode la función *evaluar_modelo* para obtener los resultados
 
 ```{r Evaluación de los datos de validación}
+#Evaluamos el modelo con los datos de validación
 resultados_validacion<-evaluar_modelo(carga_modelo_knn,datos_de_entrada_validacion)
 ```
 
+Calculamos el MSE y el RMSE del modelo con los datos de validación y comparamos el RMSE de validación contra el de entrenamiento
+
 ```{r MSE y RMSE}
-metricas_de_error<-mse_y_rmse(datos_validacion,resultados_validacion)
-kable(metricas_de_error, caption='MSE y RMSE para los datos de validación')
+#Almacenamos las métricas de error MSE y RMSE para los datos de validación
+metricas_de_error_knn<-mse_y_rmse(datos_validacion,resultados_validacion)
+#Mostramos las métricas
+kable(metricas_de_error_knn, caption='MSE y RMSE para los datos de validación')
+#Comparamos el RMSE de validación con el de entrenamiento
+kable(metricas_de_error_knn['RMSE']-rmse_knn_entrenamiento, caption = 'Diferencia RMSE de validación - de entrenamiento', col.names = c('Diferencia RMSE'))
 ```
+Podemos observar que el valor del RSME de validación es ligeramente menor que con los datos de entrenamiento.
+
+Aprovechando los modelos ya generados de *Ridge Regresion* y *Random Forest*, los usamos para comparar los resultados con los datos de validación
+
+```{r Evaluación de los datos de validación con Ridge Regresion}
+#Generamos resultados a partir de los datos de validación para el modelo de Ridge Regresion
+resultados_validacion_ridge<-evaluar_modelo(carga_modelo_ridge,datos_de_entrada_validacion)
+
+#Generamos las métricas de error para el modelo Ridge con los datos de validación
+metricas_de_error_ridge<-mse_y_rmse(datos_validacion,resultados_validacion_ridge)
+kable(metricas_de_error_ridge, caption='MSE y RMSE para los datos de validación')
+
+#Calculamos la diferencia entre las métricas con el método KNN y el método Ridge
+kable(metricas_de_error_knn-metricas_de_error_ridge, caption = 'Diferencia métricas con datos de validación (KNN - Ridge Regresion)', col.names = c('Diferencia MSE','Diferencia RMSE'))
+```
+Podemos observar que el error del modelo KNN empieza a ser significativamente menor con los datos de validación, en comparación con el modelo de *Ridge Regresion*
+
+Realizamos el mismo proceso con el modelo *Random Forest*
+
+```{r Evaluación de los datos de validación con Random Forest}
+# Evaluación de los datos de validación con Random Forest
+resultados_validacion_random_forest<-evaluar_modelo(carga_modelo_random_forest,datos_de_entrada_validacion)
+
+#Generamos las métricas MSE y RMSE para el modelo de Random Forest
+metricas_de_error_random_forest<-mse_y_rmse(datos_validacion,resultados_validacion_random_forest)
+kable(metricas_de_error_random_forest, caption='MSE y RMSE para los datos de validación')
+
+#Calculamos la diferencia entre las métricas con el método KNN y el método Random Forest
+kable(metricas_de_error_knn-metricas_de_error_random_forest, caption = 'Diferencia métricas con datos de validación (KNN - Random Forest)', col.names = c('Diferencia MSE','Diferencia RMSE'))
+```
+Aunque las métricas de error son superiores para el modelo KNN, la diferencia no es tan significativa
+
+# Conclusiones
+
+Al hacer una exploración de los datos, se observa una tendencia general a un número de hijos por hogar reducido, lo cual se convierte en un reto para poder identificar características que diferencien a las familias más numerosas. A pesar de esto, el modelo de los K vecinos más cercanos para regresión mostró ser efectivo para predecir, con un RMSE de $\approx$0.612 y un $R^2$ de $\approx$0.731 en el entrenamiento, y de un RMSE de $\approx$0.567 en la validación, con el valor añadido de ser un método que no requiere de un alto costo computacional para ser entrenado.
+
+El modelo también fue comparado con otros dos modelos, el *Random Forest*, reconocido por ser uno de los más certeros, y el *Ridge Regresion*, ampliamente utilizado en modelos de regresión. Se pudo observar que las métricas tanto en la fase de entrenamiento, como en las de validación, para todos los modelos no eran significativamente diferentes. A pesar de ser el *Random Forest* el modelo más certero, los resultados del modelo KNN no se alejaron mucho. Por otra parte, en comparación con el modelo *Ridge Regresion*, KNN llegó a ser ligeramente superior en el entrenamiento, y empezó a ser significativamente superior con los datos de validación.
+
+Los resultados obtenidos de manera individual y las comparativas con otros modelos nos permiten determinar que el modelo construído permite obtener una predicción precisa ycercana a la realidad de la cantidad de hijos de los hogares en Colombia, conociendo datos del hogar como lo son: La edad del Jefe del hogar, la cantidad de personas de componen el hogar, El número de cuartos que destinan para dormir, los ingresos económicos totales de la familia, el valor que pagan por la factura de la electricidad mensualmente, el estado civil, la ocupación, el acceso a internet, el sexo y el nivel de educación del jefe de familia.
+
 ## Creacion del modelo con todos los datos
+
+El siguiente script genera un modelo final con todos los datos, tanto de entrenamiento, como de validación, y sirve para la puesta en marcha del algoritmo en un ambiente de producción
 
 ```{r}
 # knn_modelo_final<-crear_modelo_knn(datos_finales,10:18)
 # saveRDS(knn_modelo_final,"./Modelos/knn_modelo_final.rds")
 ```
 
-# Conclusiones
+# Enlaces del proyecto
+
+* [GitHub](https://github.com/juanescendales/TAE-01-NatalidadColombia)
+* [Rpub](https://rpubs.com/Alexitouno19/TAE-01-NatalidadColombia)
+* [Shiny](https://alemando.shinyapps.io/TAE-Numero-Hijos/)
+* [video explicativo del modelo]()
 
 # Bibliografía
 
