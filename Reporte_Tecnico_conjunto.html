@@ -10,10 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="author" content="Juan Esteban Cendales Sora Daniel Escobar David Alejandro Jiménez Franco Juan José Sapuyes Pino Santiago Alexis Valencia Zapata" />
+<meta name="author" content="Juan Esteban Cendales Sora - Daniel Escobar David - Alejandro Jiménez Franco - Juan José Sapuyes Pino - Santiago Alexis Valencia Zapata" />
 
 
-<title>Reporte técnico - Número de hijos en hogares colombianos</title>
+<title>Reporte técnico - Modelo predicctivo del número de hijos en hogares colombianos</title>
 
 <script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
 <script src="data:application/javascript;base64,JChkb2N1bWVudCkucmVhZHkoZnVuY3Rpb24oKXsKICAgIGlmICh0eXBlb2YgJCgnW2RhdGEtdG9nZ2xlPSJ0b29sdGlwIl0nKS50b29sdGlwID09PSAnZnVuY3Rpb24nKSB7CiAgICAgICAgJCgnW2RhdGEtdG9nZ2xlPSJ0b29sdGlwIl0nKS50b29sdGlwKCk7CiAgICB9CiAgICBpZiAoJCgnW2RhdGEtdG9nZ2xlPSJwb3BvdmVyIl0nKS5wb3BvdmVyID09PSAnZnVuY3Rpb24nKSB7CiAgICAgICAgJCgnW2RhdGEtdG9nZ2xlPSJwb3BvdmVyIl0nKS5wb3BvdmVyKCk7CiAgICB9Cn0pOwo="></script>
@@ -145,8 +145,8 @@ a.sourceLine {
 
 
 <section class="page-header">
-<h1 class="title toc-ignore project-name">Reporte técnico - Número de hijos en hogares colombianos</h1>
-<h4 class="author project-author">Juan Esteban Cendales Sora Daniel Escobar David Alejandro Jiménez Franco Juan José Sapuyes Pino Santiago Alexis Valencia Zapata</h4>
+<h1 class="title toc-ignore project-name">Reporte técnico - Modelo predicctivo del número de hijos en hogares colombianos</h1>
+<h4 class="author project-author">Juan Esteban Cendales Sora - Daniel Escobar David - Alejandro Jiménez Franco - Juan José Sapuyes Pino - Santiago Alexis Valencia Zapata</h4>
 <h4 class="date project-date">5/4/2021</h4>
 </section>
 
@@ -156,13 +156,24 @@ a.sourceLine {
 <div id="intoducción" class="section level1">
 <h1>Intoducción</h1>
 <p>El número de hijos de un hogar puede ser determinante al momento de ofrecer un servicio financiero, por ejemplo, las empresas que prestan servicios pensionales en Colombia consideran el número de hijos al momento de ofrecer el monto total de una pensión, pues, al momento de la persona morir, se espera que la pensión pueda sostener a los hijos del beneficiado hasta que se cumplan ciertos requisitos. Un número mayor de hijos implica para el fondo de pensiones, mayores gastos a largo plazo. De igual manera, en las entidades bancarias, al momento de analizar los factores de riesgo para la entrega de un préstamo, también se tiene en cuenta el número de hijos en el hogar, puesto que una persona que tenga muchos más hijos tiende a gastar más para poder cubrir las necesidades de estos, lo que puede desembocar que en algún momento le sea mucho más difícil pagar el préstamo que se le ofrece en comparación con otra persona que tiene menos hijos o que no los tiene.</p>
+<p>Determinar el número de hijos de un hogar en Colombia se convierte en una tarea complicada, puesto que existen grandes diferencias culturales, generacionales, sociales y económicos que modelan la imagen de familia que tienen los colombianos en las diferentes regiones del país, y por consiguiente, el número de hijos de cada hogar (Pachón, 2004).</p>
 <p>Con esta motivación, el estudio aquí presentado tiene como finalidad generar un modelo predictivo para el número de hijos de los hogares colombianos, que pueda ser utilizado por empresas que ofrezcan servicios financieros, para que, puedan estimar con una alta precisión, cuál es el número de hijos que tiene un hogar, en caso de que este dato se desconozca o se tengan dudas sobre él, analizando otras características del hogar de la persona que se está analizando.</p>
 </div>
 <div id="retos" class="section level1">
 <h1>Retos</h1>
+<p>Los principales retos al momento de realizar este modelo predictivo son:</p>
+<ul>
+<li>Identificar las variables de entrada y de salida del modelo</li>
+<li>Encontrar en la fuente de datos, la información que permita construir las respectivas variables de entrada y salida</li>
+<li>Analizar, preprocesar y filtrar los datos obtenidos</li>
+<li>Encontrar la mejor combinación de variables para simplificar las entradas del modelo</li>
+<li>Encontrar el tipo de modelo que mejor se adapte a las condiciones de los datos y a la capacidad del equipo investigador</li>
+<li>Entrenar el modelo y explorar los resultados obtenidos</li>
+</ul>
 </div>
 <div id="materiales-y-métodos" class="section level1">
 <h1>Materiales y métodos</h1>
+<p>Construcción de un modelo descriptivo retrospectivo, con fuente de información secundaria</p>
 <div id="base-de-datos-inicial" class="section level2">
 <h2>Base de datos inicial</h2>
 <p>Para realizar el análisis de los hogares colombianos y obtener datos con los cuales entrenar el modelo, se recurre a la <em>Encuesta Nacional de Calidad de Vida</em> realizada por la <em>Dirección de Metodología y Producción Estadística - DIMPE</em> y el <em>Departamento Administrativo Nacional de Estadística - DANE</em> realizada en todo el territorio colombiano en el año 2019. Los resultados de esta encuesta recolectan información de los hogares colombianos en un nivel jerárquico de la siguiente manera:</p>
@@ -1269,7 +1280,8 @@ a.sourceLine {
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code></pre></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para crear tablas en el reporte divididas en dos partes</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>tabla_dividida <span class="ot">&lt;-</span> <span class="cf">function</span>(tabla) {</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -3017,12 +3029,14 @@ MSE(f)= \frac {1}{n} \sum_{i=1}^n(f_k(x_i)-y_i)^2
 <span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>datos_validacion <span class="ot">&lt;-</span> particion<span class="sc">$</span>validacion</span>
 <span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>datos_de_entrada_validacion <span class="ot">&lt;-</span> <span class="fu">subset</span>(datos_validacion, <span class="at">select =</span> <span class="sc">-</span><span class="fu">c</span>(Hijos))</span></code></pre></div>
 <p>Finalmente entrenamos el modelo y lo exportamos en un archivo RDS para poder hacer uso de él</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Entrenamos un modelo KNN con la función crear_modelo_knn</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo_knn&lt;-crear_modelo_knn(datos_entrenamiento)</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(modelo_knn,&quot;./Modelos/knn_modelo.rds&quot;)</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Leemos el modelo guardado</span></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>carga_modelo_knn <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;./Modelos/knn_modelo.rds&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Se comentaron las líneas dónde se crea el modelo para asegurar la reprodcibilidad</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Entrenamos un modelo KNN con la función crear_modelo_knn</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo_knn&lt;-crear_modelo_knn(datos_entrenamiento)</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(modelo_knn,&quot;./Modelos/knn_modelo.rds&quot;)</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co">#Leemos el modelo guardado</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>carga_modelo_knn <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;./Modelos/knn_modelo.rds&quot;</span>)</span></code></pre></div>
 <p>Al crear el modelo, se hizo una exploración de diferentes valores de K, entre 1 y 25, para encontrar el valor de K óptimo, comparando los diferentes resultados con respecto al RMSE obtenido</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Buscamos el K óptimo comparándolo con el RMSE</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(carga_modelo_knn,<span class="at">main =</span> <span class="st">&quot;K vs RMSE&quot;</span>, <span class="at">sub=</span><span class="st">&#39;Para encontrar el mejor K&#39;</span>, <span class="at">ylab=</span><span class="st">&#39;RMSE&#39;</span>, <span class="at">xlab=</span><span class="st">&#39;Número de K vecinos&#39;</span>)</span></code></pre></div>
@@ -3067,46 +3081,57 @@ MSE(f)= \frac {1}{n} \sum_{i=1}^n(f_k(x_i)-y_i)^2
 ## 
 ## RMSE was used to select the optimal model using the smallest value.
 ## The final value used for the model was k = 13.</code></pre>
-<p>El mejor menor valor para los K vecinos del modelo es de 13</p>
+<p>El mejor menor valor para los K vecinos del modelo es de 13 con un RMSE de 0.6118477 y un <span class="math inline">\(R^2\)</span> de 0.7307199</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Guardamos los valores para futuras comparaciones</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>rmse_knn_entrenamiento <span class="ot">&lt;-</span> <span class="fl">0.6118477</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>r2_knn_entrenamiento <span class="ot">&lt;-</span> <span class="fl">0.7307199</span></span></code></pre></div>
 </div>
 </div>
 </div>
 </div>
 <div id="resultados" class="section level1">
 <h1>Resultados</h1>
-<p>Para poner en contexto el modelo entrenado</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Función para crear un modelo de random forest</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>crear_modelo_random_forest <span class="ot">&lt;-</span> <span class="cf">function</span>(datos_entrenamiento,datos_entrada_entrenamiento){</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co">#Fijamos la semilla para asegurar la reproducibilidad</span></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  ctrl <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method=</span><span class="st">&quot;cv&quot;</span>, <span class="co">#Entrenamiento con validación cruzada</span></span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">number=</span><span class="dv">3</span>, <span class="co">#Número de folds</span></span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">search=</span><span class="st">&quot;grid&quot;</span>,</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">#verboseIter = TRUE #Muestra la iteración actual por pantalla</span></span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Número de ariables seleccionadas para el mtry</span></span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  mtry <span class="ot">&lt;-</span> <span class="fu">ncol</span>(datos_entrada_entrenamiento)<span class="sc">/</span><span class="dv">3</span>  </span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  tunegrid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">.mtry=</span>mtry) </span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>  modelo_random_forest <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>    Hijos <span class="sc">~</span> .,</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> datos_entrenamiento,</span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&#39;rf&#39;</span>,</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">tuneGrid  =</span> tunegrid, </span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">trControl =</span> ctrl</span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(modelo_random_forest)</span>
-<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Entrenamos un modelo random forest con la función crea_modelo_random_forest</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo_random_forest&lt;-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(modelo_random_forest,&quot;./Modelos/rf_modelo.rds&quot;)</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>carga_modelo_random_forest<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">&quot;./Modelos/rf_modelo.rds&quot;</span>)</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(carga_modelo_random_forest)</span></code></pre></div>
+<div id="comparación-con-otros-modelos" class="section level2">
+<h2>Comparación con otros modelos</h2>
+<p>Para poner en contexto el modelo entrenado y sus resultados, se comparará en relación con otros dos modelos diferentes al KNN: <em>Random Forest</em> y <em>Ridge Regression</em></p>
+<div id="creacion-del-modelo-random-forest" class="section level3">
+<h3>Creacion del modelo Random Forest</h3>
+<p>El modelo Random Forest es ampliamente conocido por ser uno de los modelos más eficaces a la hora de hacer predicciones. Se basa en la generación de Árboles de Decisión de manera aleatoria, para luego realizar un entrenamiento y validación con los mismos datos de entrenamiento para cada uno de los árboles, para buscar entre ellos al o los que generen mejores resultados. A la par de su alta efectivdad, está su necesidad de alta capacidad de cómputo para generar sus mejores resultados, por lo que para ejercicos de “prueba y error” no es un modelo recomendable si no se cuenta con capacidad de cómputo suficiente. El modelo de Random Forest se definió con el siguiente script:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Función para crear un modelo de random forest</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>crear_modelo_random_forest <span class="ot">&lt;-</span> <span class="cf">function</span>(datos_entrenamiento,datos_entrada_entrenamiento){</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co">#Fijamos la semilla para asegurar la reproducibilidad</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  ctrl <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">method=</span><span class="st">&quot;cv&quot;</span>, <span class="co">#Entrenamiento con validación cruzada</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">number=</span><span class="dv">3</span>, <span class="co">#Número de folds</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">search=</span><span class="st">&quot;grid&quot;</span>,</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">#verboseIter = TRUE #Muestra la iteración actual por pantalla</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Número de ariables seleccionadas para el mtry</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>  mtry <span class="ot">&lt;-</span> <span class="fu">ncol</span>(datos_entrada_entrenamiento)<span class="sc">/</span><span class="dv">3</span>  </span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>  tunegrid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">.mtry=</span>mtry) </span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  modelo_random_forest <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    Hijos <span class="sc">~</span> .,</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> datos_entrenamiento,</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&#39;rf&#39;</span>,</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">tuneGrid  =</span> tunegrid, </span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">trControl =</span> ctrl</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(modelo_random_forest)</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Para evitar problemas por falta de capacidad de cómputo, solo se definió una iteración en el <em>grid</em>, definida como el número de columna de los datos de entrada dividido entre 3, que es la más usada por defecto, además de definir un número bajo de <em>K-Folds</em> =3</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Se comentaron las líneas dónde se crea el modelo para asegurar la reprodcibilidad</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Entrenamos un modelo random forest con la función crea_modelo_random_forest</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo_random_forest&lt;-crear_modelo_random_forest(datos_entrenamiento,datos_de_entrada_entrenamiento)</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(modelo_random_forest,&quot;./Modelos/rf_modelo.rds&quot;)</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>carga_modelo_random_forest<span class="ot">&lt;-</span><span class="fu">readRDS</span>(<span class="st">&quot;./Modelos/rf_modelo.rds&quot;</span>)</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(carga_modelo_random_forest)</span></code></pre></div>
 <pre><code>## Random Forest 
 ## 
 ## 60723 samples
@@ -3121,30 +3146,46 @@ MSE(f)= \frac {1}{n} \sum_{i=1}^n(f_k(x_i)-y_i)^2
 ##   0.6147983  0.7512361  0.4168389
 ## 
 ## Tuning parameter &#39;mtry&#39; was held constant at a value of 3</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>rmse_random_forest_entrenamiento <span class="ot">&lt;-</span> <span class="fl">0.6147983</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>r2_random_forest_entrenamiento <span class="ot">&lt;-</span> <span class="fl">0.7512361</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&#39;Diferencia entre RMSE de KNN - Random Forest&#39;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Diferencia entre RMSE de KNN - Random Forest&quot;</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(rmse_knn_entrenamiento <span class="sc">-</span> rmse_random_forest_entrenamiento)</span></code></pre></div>
+<pre><code>## [1] -0.0029506</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&#39;Diferencia entre R2 de KNN - Random Forest&#39;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Diferencia entre R2 de KNN - Random Forest&quot;</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(r2_knn_entrenamiento <span class="sc">-</span> r2_random_forest_entrenamiento)</span></code></pre></div>
+<pre><code>## [1] -0.0205162</code></pre>
+<p>Se puede observar que a pesar de que las métricas del Random Forest son ligeramente superiores, la diferencia no es realmente grande en ninguna de las dos métricas.</p>
+</div>
 <div id="creacion-del-modelo-ridge" class="section level3">
 <h3>Creacion del modelo Ridge</h3>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>crear_modelo_ridge <span class="ot">&lt;-</span> <span class="cf">function</span>(datos_entrenamiento){</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co">#Fijamos la semilla para asegurar la reproducibilidad</span></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>), <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">2</span>, <span class="at">by =</span><span class="fl">0.1</span>) , <span class="fu">seq</span>(<span class="dv">2</span>, <span class="dv">5</span>, <span class="fl">0.5</span>) )</span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  ridge<span class="ot">&lt;-</span><span class="fu">train</span>(</span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>    Hijos <span class="sc">~</span> .,</span>
-<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> datos_entrenamiento,</span>
-<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&#39;glmnet&#39;</span>, </span>
-<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> parameters),</span>
-<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">metric =</span>  <span class="st">&quot;Rsquared&quot;</span></span>
-<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ridge)</span>
-<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Entrenamos un modelo Ridge con la función crear_modelo_gridge</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo_ridge&lt;-crear_modelo_ridge(datos_entrenamiento)</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(modelo_ridge,&quot;./Modelos/ridge_modelo.rds&quot;)</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>carga_modelo_ridge <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;./Modelos/ridge_modelo.rds&quot;</span>)</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(carga_modelo_ridge)</span></code></pre></div>
+<p>El modelo <em>Ridge</em> es ampliamente utilizado para modelos de regresión. Es especialmente conocido por analizar datos que tengan una alta multicolinealidad. Regulariza sus resultados haciendo uso de la L2 para penalizar los resultados, y así tener resultados menos dispersos. El script para la generación de su modelo es el siguiente:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>crear_modelo_ridge <span class="ot">&lt;-</span> <span class="cf">function</span>(datos_entrenamiento){</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set.seed</span>(<span class="dv">42</span>) <span class="co">#Fijamos la semilla para asegurar la reproducibilidad</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Establecemos los valores de lambda para el modelo (L2)</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  parameters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>), <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">2</span>, <span class="at">by =</span><span class="fl">0.1</span>) , <span class="fu">seq</span>(<span class="dv">2</span>, <span class="dv">5</span>, <span class="fl">0.5</span>) )</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>  ridge<span class="ot">&lt;-</span><span class="fu">train</span>(</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>    Hijos <span class="sc">~</span> .,</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> datos_entrenamiento,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&#39;glmnet&#39;</span>, </span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">alpha =</span> <span class="dv">0</span>, <span class="at">lambda =</span> parameters),</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">metric =</span>  <span class="st">&quot;Rsquared&quot;</span></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(ridge)</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Definimos un vector de parámetros <span class="math inline">\(\lambda\)</span> para buscar entre ellos al que mejor penaliza los resultados.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Se comentaron las líneas dónde se crea el modelo para asegurar la reprodcibilidad</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Entrenamos un modelo Ridge con la función crear_modelo_gridge</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># modelo_ridge&lt;-crear_modelo_ridge(datos_entrenamiento)</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(modelo_ridge,&quot;./Modelos/ridge_modelo.rds&quot;)</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>carga_modelo_ridge <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;./Modelos/ridge_modelo.rds&quot;</span>)</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(carga_modelo_ridge)</span></code></pre></div>
 <pre><code>## glmnet 
 ## 
 ## 60723 samples
@@ -3196,10 +3237,30 @@ MSE(f)= \frac {1}{n} \sum_{i=1}^n(f_k(x_i)-y_i)^2
 ## Tuning parameter &#39;alpha&#39; was held constant at a value of 0
 ## Rsquared was used to select the optimal model using the largest value.
 ## The final values used for the model were alpha = 0 and lambda = 0.09.</code></pre>
+<p>El mejor resultado se obtiene con un valor de <span class="math inline">\(\lambda=0.09\)</span></p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>rmse_random_ridge <span class="ot">&lt;-</span> <span class="fl">0.6723588</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>r2_random_ridge <span class="ot">&lt;-</span> <span class="fl">0.6771778</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&#39;Diferencia entre RMSE de KNN - Ridge Regresion&#39;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Diferencia entre RMSE de KNN - Ridge Regresion&quot;</code></pre>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(rmse_knn_entrenamiento <span class="sc">-</span> rmse_random_ridge)</span></code></pre></div>
+<pre><code>## [1] -0.0605111</code></pre>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&#39;Diferencia entre R2 de KNN - Ridge Regresion&#39;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;Diferencia entre R2 de KNN - Ridge Regresion&quot;</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(r2_knn_entrenamiento <span class="sc">-</span> r2_random_ridge)</span></code></pre></div>
+<pre><code>## [1] 0.0535421</code></pre>
+<p>Al igual que con el modelo de <em>Random Forest</em> la diferencia entre las métricas obtenidas en los modelos de <em>Ridge Regresion</em> y <em>KNN</em> no es muy amplia, incluso podemos observar que el <span class="math inline">\(R^2\)</span> en el método de <em>KNN</em> es ligeramente superior</p>
+</div>
+</div>
+<div id="evaluación-de-datos-de-validación" class="section level2">
+<h2>Evaluación de datos de validación</h2>
 <p>Para comprobar la efectividad del modelo, hacemos usode la función <em>evaluar_modelo</em> para obtener los resultados</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>resultados_validacion<span class="ot">&lt;-</span><span class="fu">evaluar_modelo</span>(carga_modelo_knn,datos_de_entrada_validacion)</span></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>metricas_de_error<span class="ot">&lt;-</span><span class="fu">mse_y_rmse</span>(datos_validacion,resultados_validacion)</span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(metricas_de_error, <span class="at">caption=</span><span class="st">&#39;MSE y RMSE para los datos de validación&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Evaluamos el modelo con los datos de validación</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>resultados_validacion<span class="ot">&lt;-</span><span class="fu">evaluar_modelo</span>(carga_modelo_knn,datos_de_entrada_validacion)</span></code></pre></div>
+<p>Calculamos el MSE y el RMSE del modelo con los datos de validación y comparamos el RMSE de validación contra el de entrenamiento</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Almacenamos las métricas de error MSE y RMSE para los datos de validación</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>metricas_de_error_knn<span class="ot">&lt;-</span><span class="fu">mse_y_rmse</span>(datos_validacion,resultados_validacion)</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Mostramos las métricas</span></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(metricas_de_error_knn, <span class="at">caption=</span><span class="st">&#39;MSE y RMSE para los datos de validación&#39;</span>)</span></code></pre></div>
 <table>
 <caption>
 MSE y RMSE para los datos de validación
@@ -3217,23 +3278,178 @@ RMSE
 <tbody>
 <tr>
 <td style="text-align:right;">
-0.3254707
+0.3311276
 </td>
 <td style="text-align:right;">
-0.5705004
+0.5754369
 </td>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="creacion-del-modelo-con-todos-los-datos" class="section level2">
-<h2>Creacion del modelo con todos los datos</h2>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># knn_modelo_final&lt;-crear_modelo_knn(datos_finales,10:18)</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(knn_modelo_final,&quot;./Modelos/knn_modelo_final.rds&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Comparamos el RMSE de validación con el de entrenamiento</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(metricas_de_error_knn[<span class="st">&#39;RMSE&#39;</span>]<span class="sc">-</span>rmse_knn_entrenamiento, <span class="at">caption =</span> <span class="st">&#39;Diferencia RMSE de validación - de entrenamiento&#39;</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&#39;Diferencia RMSE&#39;</span>))</span></code></pre></div>
+<table>
+<caption>
+Diferencia RMSE de validación - de entrenamiento
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Diferencia RMSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+-0.0364108
+</td>
+</tr>
+</tbody>
+</table>
+<p>Podemos observar que el valor del RSME de validación es ligeramente menor que con los datos de entrenamiento.</p>
+<p>Aprovechando los modelos ya generados de <em>Ridge Regresion</em> y <em>Random Forest</em>, los usamos para comparar los resultados con los datos de validación</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Generamos resultados a partir de los datos de validación para el modelo de Ridge Regresion</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>resultados_validacion_ridge<span class="ot">&lt;-</span><span class="fu">evaluar_modelo</span>(carga_modelo_ridge,datos_de_entrada_validacion)</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Generamos las métricas de error para el modelo Ridge con los datos de validación</span></span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>metricas_de_error_ridge<span class="ot">&lt;-</span><span class="fu">mse_y_rmse</span>(datos_validacion,resultados_validacion_ridge)</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(metricas_de_error_ridge, <span class="at">caption=</span><span class="st">&#39;MSE y RMSE para los datos de validación&#39;</span>)</span></code></pre></div>
+<table>
+<caption>
+MSE y RMSE para los datos de validación
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+MSE
+</th>
+<th style="text-align:right;">
+RMSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.4519479
+</td>
+<td style="text-align:right;">
+0.6722707
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Calculamos la diferencia entre las métricas con el método KNN y el método Ridge</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(metricas_de_error_knn<span class="sc">-</span>metricas_de_error_ridge, <span class="at">caption =</span> <span class="st">&#39;Diferencia métricas con datos de validación (KNN - Ridge Regresion)&#39;</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&#39;Diferencia MSE&#39;</span>,<span class="st">&#39;Diferencia RMSE&#39;</span>))</span></code></pre></div>
+<table>
+<caption>
+Diferencia métricas con datos de validación (KNN - Ridge Regresion)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Diferencia MSE
+</th>
+<th style="text-align:right;">
+Diferencia RMSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+-0.1208203
+</td>
+<td style="text-align:right;">
+-0.0968338
+</td>
+</tr>
+</tbody>
+</table>
+<p>Podemos observar que el error del modelo KNN empieza a ser significativamente menor con los datos de validación, en comparación con el modelo de <em>Ridge Regresion</em></p>
+<p>Realizamos el mismo proceso con el modelo <em>Random Forest</em></p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluación de los datos de validación con Random Forest</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>resultados_validacion_random_forest<span class="ot">&lt;-</span><span class="fu">evaluar_modelo</span>(carga_modelo_random_forest,datos_de_entrada_validacion)</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Generamos las métricas MSE y RMSE para el modelo de Random Forest</span></span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>metricas_de_error_random_forest<span class="ot">&lt;-</span><span class="fu">mse_y_rmse</span>(datos_validacion,resultados_validacion_random_forest)</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(metricas_de_error_random_forest, <span class="at">caption=</span><span class="st">&#39;MSE y RMSE para los datos de validación&#39;</span>)</span></code></pre></div>
+<table>
+<caption>
+MSE y RMSE para los datos de validación
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+MSE
+</th>
+<th style="text-align:right;">
+RMSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.3264549
+</td>
+<td style="text-align:right;">
+0.5713623
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Calculamos la diferencia entre las métricas con el método KNN y el método Random Forest</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(metricas_de_error_knn<span class="sc">-</span>metricas_de_error_random_forest, <span class="at">caption =</span> <span class="st">&#39;Diferencia métricas con datos de validación (KNN - Random Forest)&#39;</span>, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&#39;Diferencia MSE&#39;</span>,<span class="st">&#39;Diferencia RMSE&#39;</span>))</span></code></pre></div>
+<table>
+<caption>
+Diferencia métricas con datos de validación (KNN - Random Forest)
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+Diferencia MSE
+</th>
+<th style="text-align:right;">
+Diferencia RMSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+0.0046727
+</td>
+<td style="text-align:right;">
+0.0040746
+</td>
+</tr>
+</tbody>
+</table>
+<p>Aunque las métricas de error son superiores para el modelo KNN, la diferencia no es tan significativa</p>
 </div>
 </div>
 <div id="conclusiones" class="section level1">
 <h1>Conclusiones</h1>
+<p>Al hacer una exploración de los datos, se observa una tendencia general a un número de hijos por hogar reducido, lo cual se convierte en un reto para poder identificar características que diferencien a las familias más numerosas. A pesar de esto, el modelo de los K vecinos más cercanos para regresión mostró ser efectivo para predecir, con un RMSE de $$0.612 y un <span class="math inline">\(R^2\)</span> de $$0.731 en el entrenamiento, y de un RMSE de $$0.567 en la validación, con el valor añadido de ser un método que no requiere de un alto costo computacional para ser entrenado.</p>
+<p>El modelo también fue comparado con otros dos modelos, el <em>Random Forest</em>, reconocido por ser uno de los más certeros, y el <em>Ridge Regresion</em>, ampliamente utilizado en modelos de regresión. Se pudo observar que las métricas tanto en la fase de entrenamiento, como en las de validación, para todos los modelos no eran significativamente diferentes. A pesar de ser el <em>Random Forest</em> el modelo más certero, los resultados del modelo KNN no se alejaron mucho. Por otra parte, en comparación con el modelo <em>Ridge Regresion</em>, KNN llegó a ser ligeramente superior en el entrenamiento, y empezó a ser significativamente superior con los datos de validación.</p>
+<p>Los resultados obtenidos de manera individual y las comparativas con otros modelos nos permiten determinar que el modelo construído permite obtener una predicción precisa ycercana a la realidad de la cantidad de hijos de los hogares en Colombia, conociendo datos del hogar como lo son: La edad del Jefe del hogar, la cantidad de personas de componen el hogar, El número de cuartos que destinan para dormir, los ingresos económicos totales de la familia, el valor que pagan por la factura de la electricidad mensualmente, el estado civil, la ocupación, el acceso a internet, el sexo y el nivel de educación del jefe de familia.</p>
+<div id="creacion-del-modelo-con-todos-los-datos" class="section level2">
+<h2>Creacion del modelo con todos los datos</h2>
+<p>El siguiente script genera un modelo final con todos los datos, tanto de entrenamiento, como de validación, y sirve para la puesta en marcha del algoritmo en un ambiente de producción</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># knn_modelo_final&lt;-crear_modelo_knn(datos_finales,10:18)</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="co"># saveRDS(knn_modelo_final,&quot;./Modelos/knn_modelo_final.rds&quot;)</span></span></code></pre></div>
+</div>
+</div>
+<div id="enlaces-del-proyecto" class="section level1">
+<h1>Enlaces del proyecto</h1>
+<ul>
+<li><a href="https://github.com/juanescendales/TAE-01-NatalidadColombia">GitHub</a></li>
+<li><a href="https://rpubs.com/Alexitouno19/TAE-01-NatalidadColombia">Rpub</a></li>
+<li><a href="https://alemando.shinyapps.io/TAE-Numero-Hijos/">Shiny</a></li>
+<li><a href>video explicativo del modelo</a></li>
+</ul>
 </div>
 <div id="bibliografía" class="section level1">
 <h1>Bibliografía</h1>
